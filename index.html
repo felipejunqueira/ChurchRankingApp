@@ -1069,14 +1069,35 @@
   const DB_KEY = 'church_ranking_db_v2';
   const USER_KEY = 'church_ranking_last_user_v2';
 
+  const OFFICIAL_SEED_RECORDS = [
+    { id: 'seed_jonas', name: 'Jonas', unit: 'Adolescentes', date: '2026-09-30', total: 3865, answers: [] },
+    { id: 'seed_luiza', name: 'Luiza', unit: 'Adolescentes', date: '2026-09-30', total: 3040, answers: [] },
+    { id: 'seed_isac', name: 'Isac', unit: 'Adolescentes', date: '2026-09-30', total: 2800, answers: [] },
+    { id: 'seed_vitor', name: 'Vítor Soares', unit: 'Adolescentes', date: '2026-09-30', total: 2670, answers: [] },
+    { id: 'seed_gabriel', name: 'Gabriel Santana', unit: 'Adolescentes', date: '2026-09-30', total: 530, answers: [] },
+    { id: 'seed_izaque', name: 'Izaque', unit: 'Adolescentes', date: '2026-09-30', total: 355, answers: [] },
+    { id: 'seed_josue', name: 'Josué', unit: 'Adolescentes', date: '2026-09-30', total: 318, answers: [] },
+    { id: 'seed_moises', name: 'Moisés', unit: 'Adolescentes', date: '2026-09-30', total: 285, answers: [] },
+    { id: 'seed_isaias', name: 'Isaías', unit: 'Adolescentes', date: '2026-09-30', total: 285, answers: [] },
+    { id: 'seed_alex', name: 'Alex', unit: 'Adolescentes', date: '2026-09-30', total: 270, answers: [] },
+    { id: 'seed_nycolas', name: 'Nycolas', unit: 'Adolescentes', date: '2026-09-30', total: 65, answers: [] },
+    { id: 'seed_arthur', name: 'Arthur', unit: 'Adolescentes', date: '2026-09-30', total: 45, answers: [] },
+    { id: 'seed_juan', name: 'Juan', unit: 'Adolescentes', date: '2026-09-30', total: 20, answers: [] },
+    { id: 'seed_nicholas', name: 'Nicholas', unit: 'Adolescentes', date: '2026-09-30', total: 0, answers: [] }
+  ];
+
   const TeenDB = {
     getAll() {
       try {
         const raw = localStorage.getItem(DB_KEY);
-        return raw ? JSON.parse(raw) : [];
+        if (!raw) {
+          localStorage.setItem(DB_KEY, JSON.stringify(OFFICIAL_SEED_RECORDS));
+          return [...OFFICIAL_SEED_RECORDS];
+        }
+        return JSON.parse(raw);
       } catch (e) {
         console.error(e);
-        return [];
+        return [...OFFICIAL_SEED_RECORDS];
       }
     },
     save(entry) {
@@ -1096,6 +1117,9 @@
     },
     clear() {
       localStorage.removeItem(DB_KEY);
+    },
+    resetToOfficial() {
+      localStorage.setItem(DB_KEY, JSON.stringify(OFFICIAL_SEED_RECORDS));
     },
     getLeaderboard() {
       const all = this.getAll();
@@ -1481,10 +1505,10 @@
   }
 
   function confirmClearHistory() {
-    if (confirm('Atenção: Tem certeza que deseja zerar todo o histórico de pontos e o ranking deste dispositivo?')) {
-      TeenDB.clear();
+    if (confirm('Deseja restaurar o ranking para a pontuação oficial atualizada deste sábado?\n\n(OK = Restaurar placar oficial atualizado)')) {
+      TeenDB.resetToOfficial();
       renderRanking();
-      alert('Histórico reiniciado!');
+      alert('Ranking restaurado com sucesso para a pontuação oficial!');
     }
   }
 
