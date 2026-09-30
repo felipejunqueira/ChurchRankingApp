@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f0c29" />
+  <meta name="theme-color" content="#0b0f19" />
   <meta name="description" content="Tabela Oficial de Pontos — Escola Sabatina dos Adolescentes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -13,303 +13,1035 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 
-  <title>⭐ Tabela Oficial de Pontos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Fredoka+One&display=swap" rel="stylesheet" />
-  <!-- Fallback font stack if offline and fonts not yet cached -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Fredoka+One&display=swap');
-  </style>
+  <title>🏆 Tabela Oficial de Pontos — Teens</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0f0c29;
-      --card: #1e1a45;
-      --accent1: #ff6b6b;
-      --accent2: #ffd93d;
-      --accent3: #6bcb77;
-      --accent4: #4d96ff;
-      --text: #ffffff;
-      --muted: #a99fd6;
-      --radius: 20px;
+      --bg: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18223a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(99, 102, 241, 0.4);
+      --primary: #4f46e5;
+      --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --text-1: #f8fafc;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-pill: 9999px;
+      --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.2);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-1);
       min-height: 100vh;
-      padding: 20px 16px 110px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
       background-image:
-        radial-gradient(ellipse at 20% 20%, rgba(77,150,255,0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(255,107,107,0.15) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(16, 185, 129, 0.08), transparent);
+      padding-bottom: 120px;
     }
 
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Top Nav & Header */
     header {
+      padding: 24px 0 16px;
       text-align: center;
-      padding: 24px 0 32px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 8px;
     }
 
     header h1 {
-      font-family: 'Fredoka One', cursive;
-      font-size: clamp(1.8rem, 7vw, 3rem);
-      background: linear-gradient(135deg, var(--accent2), var(--accent1), var(--accent4));
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 6vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     header p {
-      color: var(--muted);
-      font-size: 0.9rem;
+      color: var(--text-2);
+      font-size: 0.92rem;
     }
 
-    /* Install banner */
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+      margin: 16px auto 20px;
+      max-width: 420px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+
+    /* Install Banner */
     #installBanner {
       display: none;
-      max-width: 540px;
-      margin: 0 auto 20px;
-      background: linear-gradient(135deg, #1e1a45, #2a2460);
-      border: 1.5px solid rgba(77,150,255,0.4);
-      border-radius: var(--radius);
-      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.12));
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
     }
-
     #installBanner.visible { display: flex; }
-
-    #installBanner p {
-      flex: 1;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    #installBanner p strong { color: #fff; }
-
+    #installBanner p { font-size: 0.85rem; color: var(--text-1); flex: 1; }
     #installBtn {
-      background: var(--accent4);
+      background: var(--primary-gradient);
       color: #fff;
       border: none;
-      border-radius: 50px;
-      padding: 8px 16px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 900;
-      font-size: 0.85rem;
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 0.8rem;
       cursor: pointer;
-      white-space: nowrap;
     }
-
     #dismissBanner {
       background: none;
       border: none;
-      color: var(--muted);
-      font-size: 1.2rem;
+      color: var(--text-3);
       cursor: pointer;
-      padding: 0 4px;
+      font-size: 1.1rem;
     }
 
-    .questions-list {
-      max-width: 540px;
-      margin: 0 auto;
+    /* Student Info Card */
+    .student-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .student-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #818cf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 500px) {
+      .inputs-grid { grid-template-columns: 1fr; }
+    }
+
+    .input-group {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 4px;
     }
 
-    .question-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 18px 16px;
-      border: 1.5px solid rgba(255,255,255,0.07);
+    .input-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    .styled-input {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .styled-input:focus {
+      border-color: #6366f1;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .styled-input.error {
+      border-color: var(--accent-rose);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Progress Stats */
+    .progress-bar-wrap {
+      margin-top: 14px;
+    }
+
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-2);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #10b981);
+      border-radius: var(--radius-pill);
+      transition: width 0.3s ease;
+    }
+
+    /* Category Filter */
+    .filter-pills {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+    .filter-pills::-webkit-scrollbar { display: none; }
+
+    .pill-btn {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      color: var(--text-2);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: #6366f1;
+      color: #ffffff;
+    }
+
+    /* Question Cards List */
+    .questions-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
       overflow: hidden;
     }
 
-    .question-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
-      background: var(--stripe, var(--accent4));
-      border-radius: 4px 0 0 4px;
+    .question-card.answered-yes {
+      border-color: rgba(16, 185, 129, 0.45);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), var(--bg-card));
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
     }
 
-    .question-card:nth-child(4n+1) { --stripe: var(--accent4); }
-    .question-card:nth-child(4n+2) { --stripe: var(--accent1); }
-    .question-card:nth-child(4n+3) { --stripe: var(--accent2); }
-    .question-card:nth-child(4n+0) { --stripe: var(--accent3); }
-
-    .question-card.active {
-      border-color: rgba(255,255,255,0.25);
-      transform: scale(1.01);
+    .question-card.answered-no {
+      opacity: 0.75;
+      border-color: rgba(244, 63, 94, 0.2);
     }
 
-    .q-top {
+    .q-top-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .q-category {
-      font-size: 0.7rem;
-      font-weight: 900;
+    .q-cat-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--stripe, var(--accent4));
-      margin-bottom: 2px;
+      letter-spacing: 0.08em;
+      color: #818cf8;
+      margin-bottom: 4px;
     }
 
     .q-text {
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
-      line-height: 1.4;
-      flex: 1;
+      color: var(--text-1);
+      line-height: 1.45;
     }
 
-    .q-value {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.15rem;
-      color: var(--stripe, var(--accent4));
+    .q-points-badge {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
       white-space: nowrap;
-      background: rgba(255,255,255,0.06);
-      padding: 4px 10px;
-      border-radius: 50px;
+      flex-shrink: 0;
+    }
+
+    .question-card.answered-yes .q-points-badge {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(16, 185, 129, 0.4);
     }
 
     .q-note {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: -4px;
+      font-size: 0.78rem;
+      color: var(--text-3);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
+    /* Yes/No Buttons */
     .btn-group {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .btn {
+    .btn-choice {
       flex: 1;
-      padding: 12px 0;
-      border: none;
-      border-radius: 50px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
+      padding: 10px 0;
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.5px;
+      border: 1.5px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-yes {
-      background: rgba(107, 203, 119, 0.15);
-      color: var(--accent3);
-      border: 2px solid var(--accent3);
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .btn-yes:hover { background: rgba(16, 185, 129, 0.16); }
+    .btn-yes.selected {
+      background: var(--accent-emerald);
+      color: #0b0f19;
+      border-color: var(--accent-emerald);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
     }
 
     .btn-no {
-      background: rgba(255, 107, 107, 0.1);
-      color: var(--accent1);
-      border: 2px solid rgba(255,107,107,0.4);
+      background: rgba(244, 63, 94, 0.06);
+      color: var(--accent-rose);
+      border-color: rgba(244, 63, 94, 0.2);
+    }
+    .btn-no:hover { background: rgba(244, 63, 94, 0.14); }
+    .btn-no.selected {
+      background: rgba(244, 63, 94, 0.85);
+      color: #ffffff;
+      border-color: var(--accent-rose);
     }
 
-    .btn-yes.selected { background: var(--accent3); color: #0f0c29; }
-    .btn-no.selected  { background: var(--accent1); color: #fff; }
-    .btn:active { transform: scale(0.96); }
+    .btn-choice:active { transform: scale(0.97); }
 
-    /* Sticky total bar */
-    .total-bar {
+    /* Sticky Bottom Action Bar */
+    .sticky-bar {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(15, 12, 41, 0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1.5px solid rgba(255,255,255,0.1);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 15, 25, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
       z-index: 100;
     }
 
-    .total-label {
-      font-size: 0.9rem;
-      color: var(--muted);
+    .sticky-bar-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .score-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .score-label {
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
     }
 
-    .total-score {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2rem;
-      background: linear-gradient(135deg, var(--accent2), var(--accent1));
+    .score-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fcd34d, #f59e0b, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.2s;
     }
 
-    .total-score.pop { animation: pop 0.25s ease; }
+    .score-number.pop { animation: numberPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-    @keyframes pop {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.3); }
+    @keyframes numberPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
       100% { transform: scale(1); }
     }
 
-    .reset-btn {
-      background: rgba(255,255,255,0.07);
-      border: 1.5px solid rgba(255,255,255,0.15);
-      color: var(--muted);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
+    .action-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-reset {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
+    .btn-reset:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
-    .reset-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .btn-submit {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      border: none;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+    }
+    .btn-submit:active { transform: scale(0.97); }
 
-    @media (max-width: 360px) {
-      .q-text { font-size: 0.9rem; }
-      .btn { font-size: 0.9rem; padding: 10px 0; }
+    /* ───── RANKING & LEADERBOARD TAB ───── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Podium */
+    .podium-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      margin: 24px 0 32px;
+      padding: 0 8px;
+    }
+
+    .podium-spot {
+      flex: 1;
+      max-width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .podium-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      position: relative;
+    }
+
+    .podium-spot.first .podium-avatar {
+      width: 66px;
+      height: 66px;
+      border-color: #f59e0b;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .podium-crown {
+      position: absolute;
+      top: -16px;
+      font-size: 1.2rem;
+    }
+
+    .podium-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      max-width: 110px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .podium-pts {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 6px;
+    }
+
+    .podium-pillar {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    .podium-spot.first .podium-pillar {
+      height: 110px;
+      background: linear-gradient(180deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05));
+      border-color: rgba(245,158,11,0.5);
+      color: #f59e0b;
+    }
+    .podium-spot.second .podium-pillar {
+      height: 80px;
+      background: linear-gradient(180deg, rgba(148,163,184,0.2), rgba(148,163,184,0.05));
+      border-color: rgba(148,163,184,0.4);
+      color: #94a3b8;
+    }
+    .podium-spot.third .podium-pillar {
+      height: 60px;
+      background: linear-gradient(180deg, rgba(180,83,9,0.2), rgba(180,83,9,0.05));
+      border-color: rgba(180,83,9,0.4);
+      color: #d97706;
+    }
+
+    /* Ranking List Table */
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .leader-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+    .leader-row:hover { background: var(--bg-card-hover); }
+
+    .leader-rank {
+      width: 32px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-3);
+      text-align: center;
+    }
+
+    .leader-rank.top-1 { color: #f59e0b; }
+    .leader-rank.top-2 { color: #94a3b8; }
+    .leader-rank.top-3 { color: #d97706; }
+
+    .leader-info {
+      flex: 1;
+    }
+    .leader-name {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .leader-sub {
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+
+    .leader-score {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+    }
+
+    /* Ranking Actions */
+    .ranking-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin: 24px 0 16px;
+    }
+
+    .tool-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-3);
+    }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ───── MODAL DE SUCESSO & ENVIO ───── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: #151d30;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 460px;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      animation: modalZoom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalZoom {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-confetti-badge {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(99,102,241,0.2));
+      border: 2px solid var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 16px;
+    }
+
+    .modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      margin-bottom: 20px;
+    }
+
+    .modal-score-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 22px;
+    }
+
+    .modal-score-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      line-height: 1;
+    }
+
+    .modal-score-caption {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    .modal-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-wa-share {
+      background: #25d366;
+      color: #0b0f19;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-wa-share:hover { background: #22c55e; transform: translateY(-1px); }
+
+    .btn-modal-rank {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-modal-rank:hover { background: rgba(255, 255, 255, 0.14); }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: none;
+      color: var(--text-3);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* Canvas de Confete */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>⭐ Tabela Oficial de Pontos</h1>
-  <p>Escola Sabatina dos Adolescentes • total atualiza em tempo real!</p>
-</header>
+<canvas id="confettiCanvas"></canvas>
 
-<!-- PWA Install banner (Android / Desktop) -->
-<div id="installBanner">
-  <p><strong>📲 Instalar o app?</strong> Funciona offline e fica na tela inicial!</p>
-  <button id="installBtn">Instalar</button>
-  <button id="dismissBanner">✕</button>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-badge">⭐ Escola Sabatina Teens</div>
+    <h1>Tabela Oficial de Pontos</h1>
+    <p>Pontuação semanal, ranking automático e registro ao vivo</p>
+
+    <!-- NAVEGAÇÃO DE ABAS -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="tabScoreBtn" onclick="switchTab('score')">
+        ⚡ Pontuação
+      </button>
+      <button class="tab-btn" id="tabRankBtn" onclick="switchTab('rank')">
+        🏆 Ranking Geral
+      </button>
+    </div>
+  </header>
+
+  <!-- PWA Install Banner -->
+  <div id="installBanner">
+    <p><strong>📲 Instalar Aplicativo?</strong> Salva na tela inicial e funciona 100% offline!</p>
+    <button id="installBtn">Instalar</button>
+    <button id="dismissBanner">✕</button>
+  </div>
+
+  <!-- ═══════════ ABA 1: CALCULADORA DE PONTOS ═══════════ -->
+  <div id="tabScore" class="tab-content active">
+
+    <!-- IDENTIFICAÇÃO DO ADOLESCENTE -->
+    <div class="student-card">
+      <div class="student-card-title">
+        <span>👤</span> Dados do Adolescente
+      </div>
+      <div class="inputs-grid">
+        <div class="input-group">
+          <label class="input-label" for="teenName">Seu Nome / Apelido *</label>
+          <input type="text" id="teenName" class="styled-input" placeholder="Ex: Gabriel Silva" autocomplete="name" />
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="teenUnit">Unidade / Base (opcional)</label>
+          <input type="text" id="teenUnit" class="styled-input" placeholder="Ex: Base Alpha" />
+        </div>
+      </div>
+      <div class="input-group" style="margin-top: 10px;">
+        <label class="input-label" for="subDate">Data do Sábado</label>
+        <input type="date" id="subDate" class="styled-input" />
+      </div>
+
+      <!-- Barra de Progresso de Perguntas Respondidas -->
+      <div class="progress-bar-wrap">
+        <div class="progress-label-row">
+          <span>Itens respondidos</span>
+          <span id="progressText">0 de 18 (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTRO DE CATEGORIAS -->
+    <div class="filter-pills" id="filterPills">
+      <button class="pill-btn active" onclick="filterCategory('all', this)">Todos (18)</button>
+      <button class="pill-btn" onclick="filterCategory('Liderança', this)">Liderança</button>
+      <button class="pill-btn" onclick="filterCategory('Missão', this)">Missão</button>
+      <button class="pill-btn" onclick="filterCategory('Estudo', this)">Estudo</button>
+      <button class="pill-btn" onclick="filterCategory('Comunidade', this)">Comunidade</button>
+      <button class="pill-btn" onclick="filterCategory('Zelo', this)">Zelo &amp; Oferta</button>
+    </div>
+
+    <!-- LISTA DE PERGUNTAS -->
+    <div class="questions-list" id="questionsList"></div>
+
+  </div>
+
+  <!-- ═══════════ ABA 2: RANKING GERAL & HISTÓRICO ═══════════ -->
+  <div id="tabRank" class="tab-content">
+    
+    <!-- PÓDIO DOS TOP 3 -->
+    <div class="podium-wrap" id="podiumArea">
+      <!-- Inserido dinamicamente via JS -->
+    </div>
+
+    <!-- BARRA DE FERRAMENTAS DO RANKING -->
+    <div class="ranking-toolbar">
+      <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;">
+        📊 Classificação Geral
+      </h3>
+      <div style="display:flex;gap:6px;">
+        <button class="tool-btn" onclick="exportCSV()" title="Exportar para Excel / Google Planilhas">
+          📥 Exportar CSV
+        </button>
+        <button class="tool-btn" onclick="confirmClearHistory()" title="Limpar Histórico">
+          🗑️ Limpar
+        </button>
+      </div>
+    </div>
+
+    <!-- LISTA COMPLETA DE CLASSIFICAÇÃO -->
+    <div class="leaderboard-list" id="leaderboardList">
+      <!-- Inserido dinamicamente via JS -->
+    </div>
+
+    <!-- HISTÓRICO RECENTE DE REGISTROS -->
+    <div style="margin-top:32px;">
+      <h4 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text-2);margin-bottom:12px;">
+        🕒 Últimos Registros Enviados
+      </h4>
+      <div id="recentHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+  </div>
+
 </div>
 
-<div class="questions-list" id="questionsList"></div>
+<!-- ═══════════ BARRA INFERIOR FIXA ═══════════ -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-bar-inner">
+    <div class="score-summary">
+      <span class="score-label">Pontuação Atual</span>
+      <span class="score-number" id="totalScore">0 pts</span>
+    </div>
+    <div class="action-btns">
+      <button class="btn-reset" onclick="resetAll()" title="Zerar respostas">
+        🔄 Zerar
+      </button>
+      <button class="btn-submit" onclick="submitScore()">
+        🚀 Salvar &amp; Enviar
+      </button>
+    </div>
+  </div>
+</div>
 
-<div class="total-bar">
-  <span class="total-label">Total</span>
-  <span class="total-score" id="totalScore">0</span>
-  <button class="reset-btn" onclick="resetAll()">🔄 Reiniciar</button>
+<!-- ═══════════ MODAL DE SUCESSO ═══════════ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-card">
+    <button class="btn-close-modal" onclick="closeModal()">✕</button>
+    
+    <div class="modal-confetti-badge">🎉</div>
+    
+    <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
+    <p class="modal-desc">Seus pontos deste sábado foram salvos no banco de dados local com sucesso.</p>
+
+    <div class="modal-score-box">
+      <div class="modal-score-val" id="modalFinalScore">0</div>
+      <div class="modal-score-caption">Pontos Conquistados Hoje ⭐</div>
+    </div>
+
+    <div class="modal-btns">
+      <a href="#" id="modalWaBtn" target="_blank" class="btn-wa-share">
+        <span>📲</span> Enviar no WhatsApp do Professor
+      </a>
+      <button class="btn-modal-rank" onclick="closeModal(); switchTab('rank');">
+        🏆 Ver Meu Lugar no Ranking
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
-  // ── PERGUNTAS ──────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────
+  // 1. BANCO DE PERGUNTAS E PONTUAÇÕES OFICIAIS (100% PRESERVADAS)
+  // ─────────────────────────────────────────────────────────────
   const questions = [
     { category: "Liderança",       text: "Dirigir a Escola Sabatina",                                        value: 150 },
     { category: "Missão Especial", text: "Levar Visitas NÃO ADVENTISTAS (por pessoa)",                       value: 110 },
@@ -321,7 +1053,7 @@
     { category: "Engajamento",     text: "Participação Ativa nas Redes Sociais da Escola Sabatina (aparecer, falar, curtir, comentar, compartilhar)", value: 65 },
     { category: "Serviço",         text: "Trabalho Missionário na semana",                                   value: 65  },
     { category: "Comunidade",      text: "Participar de Pequenos Grupos",                                    value: 65, note: "por semana" },
-    { category: "Assiduidade",     text: "Preencher os apontamentos no app 7me",                             value: 60, note: "por semana"},
+    { category: "Assiduidade",     text: "Preencher os apontamentos no app 7me",                             value: 60, note: "por semana" },
     { category: "Generosidade",    text: "Oferta Caixa dos Adolescentes (5 reais por sábado)",               value: 60  },
     { category: "Mordomia",        text: "Oferta Escola Sabatina",                                           value: 60  },
     { category: "Pontualidade",    text: "Chegar no horário (até as 08:59h)",                                value: 50  },
@@ -330,91 +1062,532 @@
     { category: "Missão real",     text: "Orar em Público",                                                  value: 20  },
     { category: "Compromisso",     text: "Ter assinatura da lição da escola sabatina",                       value: 5,  note: "por sábado" },
   ];
-  // ──────────────────────────────────────────────────────────────
 
+  // ─────────────────────────────────────────────────────────────
+  // 2. BANCO DE DADOS LOCAL (STORAGE)
+  // ─────────────────────────────────────────────────────────────
+  const DB_KEY = 'church_ranking_db_v2';
+  const USER_KEY = 'church_ranking_last_user_v2';
+
+  const TeenDB = {
+    getAll() {
+      try {
+        const raw = localStorage.getItem(DB_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    },
+    save(entry) {
+      const list = this.getAll();
+      list.unshift(entry);
+      localStorage.setItem(DB_KEY, JSON.stringify(list));
+      localStorage.setItem(USER_KEY, JSON.stringify({ name: entry.name, unit: entry.unit }));
+      return list;
+    },
+    getLastUser() {
+      try {
+        const raw = localStorage.getItem(USER_KEY);
+        return raw ? JSON.parse(raw) : { name: '', unit: '' };
+      } catch {
+        return { name: '', unit: '' };
+      }
+    },
+    clear() {
+      localStorage.removeItem(DB_KEY);
+    },
+    getLeaderboard() {
+      const all = this.getAll();
+      const grouped = {};
+      all.forEach(sub => {
+        const cleanName = sub.name.trim();
+        const key = cleanName.toLowerCase();
+        if (!grouped[key]) {
+          grouped[key] = {
+            name: cleanName,
+            unit: sub.unit || '',
+            totalPoints: 0,
+            count: 0,
+            lastDate: sub.date
+          };
+        }
+        grouped[key].totalPoints += Number(sub.total);
+        grouped[key].count += 1;
+        if (sub.date > grouped[key].lastDate) {
+          grouped[key].lastDate = sub.date;
+          if (sub.unit) grouped[key].unit = sub.unit;
+        }
+      });
+      return Object.values(grouped).sort((a, b) => b.totalPoints - a.totalPoints);
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. ESTADO & INICIALIZAÇÃO DA INTERFACE
+  // ─────────────────────────────────────────────────────────────
   const state = new Array(questions.length).fill(null);
+  let activeCategory = 'all';
 
-  function buildUI() {
+  function initApp() {
+    // 1. Data atual
+    const today = new Date().toISOString().slice(0, 10);
+    const dateInput = document.getElementById('subDate');
+    if (dateInput) dateInput.value = today;
+
+    // 2. Lembrar nome anterior
+    const lastUser = TeenDB.getLastUser();
+    if (lastUser.name) document.getElementById('teenName').value = lastUser.name;
+    if (lastUser.unit) document.getElementById('teenUnit').value = lastUser.unit;
+
+    // 3. Montar perguntas
+    buildQuestionsUI();
+    updateProgress();
+    renderRanking();
+  }
+
+  function buildQuestionsUI() {
     const list = document.getElementById('questionsList');
     list.innerHTML = '';
+
     questions.forEach((q, i) => {
+      const isVisible = checkCategoryMatch(q.category, activeCategory);
       const card = document.createElement('div');
       card.className = 'question-card';
       card.id = `card-${i}`;
+      if (!isVisible) card.style.display = 'none';
+
       card.innerHTML = `
-        <div class="q-top">
+        <div class="q-top-row">
           <div style="flex:1">
-            <div class="q-category">${q.category}</div>
-            <span class="q-text">${q.text}</span>
+            <span class="q-cat-tag">${q.category}</span>
+            <div class="q-text">${q.text}</div>
             ${q.note ? `<div class="q-note">📌 ${q.note}</div>` : ''}
           </div>
-          <span class="q-value">+${q.value} pts</span>
+          <span class="q-points-badge">+${q.value} pts</span>
         </div>
         <div class="btn-group">
-          <button class="btn btn-yes" id="yes-${i}" onclick="answer(${i}, 'yes')">✅ Sim</button>
-          <button class="btn btn-no"  id="no-${i}"  onclick="answer(${i}, 'no')">❌ Não</button>
+          <button class="btn-choice btn-yes" id="yes-${i}" onclick="answer(${i}, 'yes')">
+            ✅ Sim (+${q.value})
+          </button>
+          <button class="btn-choice btn-no" id="no-${i}" onclick="answer(${i}, 'no')">
+            ❌ Não (0 pts)
+          </button>
         </div>
       `;
       list.appendChild(card);
     });
   }
 
+  function checkCategoryMatch(cat, filter) {
+    if (filter === 'all') return true;
+    if (filter === 'Liderança' && cat.includes('Liderança')) return true;
+    if (filter === 'Missão' && (cat.includes('Missão') || cat.includes('Competição') || cat.includes('Engajamento'))) return true;
+    if (filter === 'Estudo' && cat.includes('Estudo')) return true;
+    if (filter === 'Comunidade' && (cat.includes('Comunidade') || cat.includes('Serviço'))) return true;
+    if (filter === 'Zelo' && (cat.includes('Zelo') || cat.includes('Generosidade') || cat.includes('Mordomia') || cat.includes('Pontualidade') || cat.includes('Assiduidade') || cat.includes('Compromisso') || cat.includes('Espiritualidade'))) return true;
+    return false;
+  }
+
+  function filterCategory(cat, btn) {
+    activeCategory = cat;
+    document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    questions.forEach((q, i) => {
+      const card = document.getElementById(`card-${i}`);
+      if (card) {
+        card.style.display = checkCategoryMatch(q.category, cat) ? 'flex' : 'none';
+      }
+    });
+  }
+
   function answer(index, choice) {
     state[index] = choice;
-    document.getElementById(`yes-${index}`).classList.toggle('selected', choice === 'yes');
-    document.getElementById(`no-${index}`).classList.toggle('selected', choice === 'no');
-    document.getElementById(`card-${index}`).classList.add('active');
+    
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate(25);
+
+    const card = document.getElementById(`card-${index}`);
+    const yesBtn = document.getElementById(`yes-${index}`);
+    const noBtn = document.getElementById(`no-${index}`);
+
+    yesBtn.classList.toggle('selected', choice === 'yes');
+    noBtn.classList.toggle('selected', choice === 'no');
+
+    card.classList.toggle('answered-yes', choice === 'yes');
+    card.classList.toggle('answered-no', choice === 'no');
+
     updateTotal();
+    updateProgress();
   }
 
   function updateTotal() {
     let total = 0;
-    state.forEach((s, i) => { if (s === 'yes') total += questions[i].value; });
+    state.forEach((s, i) => {
+      if (s === 'yes') total += questions[i].value;
+    });
+
     const el = document.getElementById('totalScore');
-    el.textContent = total;
+    el.textContent = `${total} pts`;
     el.classList.remove('pop');
     void el.offsetWidth;
     el.classList.add('pop');
   }
 
-  function resetAll() {
-    state.fill(null);
-    buildUI();
-    document.getElementById('totalScore').textContent = '0';
+  function updateProgress() {
+    const answered = state.filter(s => s !== null).length;
+    const total = questions.length;
+    const pct = Math.round((answered / total) * 100);
+
+    const label = document.getElementById('progressText');
+    const fill = document.getElementById('progressFill');
+
+    if (label) label.textContent = `${answered} de ${total} (${pct}%)`;
+    if (fill) fill.style.width = `${pct}%`;
   }
 
-  buildUI();
+  function resetAll() {
+    if (state.some(s => s !== null)) {
+      if (!confirm('Deseja zerar as respostas da pontuação atual?')) return;
+    }
+    state.fill(null);
+    buildQuestionsUI();
+    updateTotal();
+    updateProgress();
+  }
 
-  // ── PWA Install prompt ────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────
+  // 4. ENVIO AUTOMATIZADO & PERSISTÊNCIA NO BANCO DE DADOS
+  // ─────────────────────────────────────────────────────────────
+  function submitScore() {
+    const nameInput = document.getElementById('teenName');
+    const name = nameInput.value.trim();
+
+    if (!name) {
+      nameInput.classList.add('error');
+      nameInput.focus();
+      setTimeout(() => nameInput.classList.remove('error'), 1000);
+      alert('Por favor, digite o seu nome antes de enviar a pontuação!');
+      return;
+    }
+
+    const unit = document.getElementById('teenUnit').value.trim();
+    const date = document.getElementById('subDate').value || new Date().toISOString().slice(0, 10);
+
+    let total = 0;
+    const detailedAnswers = questions.map((q, i) => {
+      const choice = state[i] || 'no';
+      if (choice === 'yes') total += q.value;
+      return {
+        index: i,
+        category: q.category,
+        text: q.text,
+        value: q.value,
+        choice
+      };
+    });
+
+    // 1. Salvar no banco de dados local
+    const record = {
+      id: 'sub_' + Date.now(),
+      name,
+      unit,
+      date,
+      total,
+      answers: detailedAnswers,
+      submittedAt: new Date().toISOString()
+    };
+    TeenDB.save(record);
+
+    // 2. Atualizar ranking em segundo plano
+    renderRanking();
+
+    // 3. Disparar confetes! 🎊
+    triggerConfetti();
+
+    // 4. Preparar WhatsApp formatado
+    const formattedDate = date.split('-').reverse().join('/');
+    const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
+    
+    let msg = `⭐ *PONTUAÇÃO ESCOLA SABATINA TEENS* ⭐\n`;
+    msg += `👤 *Adolescente:* ${name}${unit ? ` (${unit})` : ''}\n`;
+    msg += `📅 *Data:* ${formattedDate}\n`;
+    msg += `🏆 *TOTAL CONQUISTADO:* ${total} PONTOS!\n\n`;
+    
+    if (yesItems.length > 0) {
+      msg += `✅ *Itens cumpridos hoje:*\n`;
+      yesItems.forEach(item => {
+        msg += `• ${item.text} (+${item.value} pts)\n`;
+      });
+    } else {
+      msg += `(Nenhum item pontuado neste sábado)\n`;
+    }
+    msg += `\n_Registrado no ChurchRankingApp_ ✨`;
+
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+    // 5. Exibir Modal de Sucesso
+    document.getElementById('modalTeenName').textContent = `Parabéns, ${name}! 🎉`;
+    document.getElementById('modalFinalScore').textContent = `${total} pts`;
+    document.getElementById('modalWaBtn').href = waUrl;
+    document.getElementById('successModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('open');
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 5. RENDERIZAÇÃO DO RANKING & HISTÓRICO
+  // ─────────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    const isScore = tab === 'score';
+    document.getElementById('tabScore').classList.toggle('active', isScore);
+    document.getElementById('tabRank').classList.toggle('active', !isScore);
+
+    document.getElementById('tabScoreBtn').classList.toggle('active', isScore);
+    document.getElementById('tabRankBtn').classList.toggle('active', !isScore);
+
+    const stickyBar = document.getElementById('stickyBar');
+    if (stickyBar) stickyBar.style.display = isScore ? 'block' : 'none';
+
+    if (!isScore) {
+      renderRanking();
+    }
+  }
+
+  function renderRanking() {
+    const leaderboard = TeenDB.getLeaderboard();
+    const podium = document.getElementById('podiumArea');
+    const list = document.getElementById('leaderboardList');
+    const recent = document.getElementById('recentHistoryList');
+
+    if (!leaderboard.length) {
+      podium.innerHTML = '';
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🏆</div>
+          <h4>Nenhum ponto registrado ainda</h4>
+          <p>Preencha sua pontuação na aba anterior e clique em "Salvar & Enviar" para inaugurar o ranking!</p>
+        </div>
+      `;
+      recent.innerHTML = '';
+      return;
+    }
+
+    // PÓDIO DOS 3 PRIMEIROS
+    const top1 = leaderboard[0];
+    const top2 = leaderboard[1];
+    const top3 = leaderboard[2];
+
+    podium.innerHTML = `
+      <!-- 2º LUGAR -->
+      <div class="podium-spot second">
+        ${top2 ? `
+          <div class="podium-avatar">🥈</div>
+          <div class="podium-name">${top2.name}</div>
+          <div class="podium-pts">${top2.totalPoints} pts</div>
+          <div class="podium-pillar">2</div>
+        ` : ''}
+      </div>
+
+      <!-- 1º LUGAR -->
+      <div class="podium-spot first">
+        <div class="podium-avatar">
+          <span class="podium-crown">👑</span>
+          🥇
+        </div>
+        <div class="podium-name">${top1.name}</div>
+        <div class="podium-pts">${top1.totalPoints} pts</div>
+        <div class="podium-pillar">1</div>
+      </div>
+
+      <!-- 3º LUGAR -->
+      <div class="podium-spot third">
+        ${top3 ? `
+          <div class="podium-avatar">🥉</div>
+          <div class="podium-name">${top3.name}</div>
+          <div class="podium-pts">${top3.totalPoints} pts</div>
+          <div class="podium-pillar">3</div>
+        ` : ''}
+      </div>
+    `;
+
+    // LISTA COMPLETA
+    list.innerHTML = '';
+    leaderboard.forEach((user, index) => {
+      const pos = index + 1;
+      const rankClass = pos === 1 ? 'top-1' : pos === 2 ? 'top-2' : pos === 3 ? 'top-3' : '';
+      const badgeIcon = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `#${pos}`;
+
+      const row = document.createElement('div');
+      row.className = 'leader-row';
+      row.innerHTML = `
+        <div class="leader-rank ${rankClass}">${badgeIcon}</div>
+        <div class="leader-info">
+          <div class="leader-name">${user.name}</div>
+          <div class="leader-sub">${user.unit ? `${user.unit} • ` : ''}${user.count} sábado(s) registrado(s)</div>
+        </div>
+        <div class="leader-score">${user.totalPoints} pts</div>
+      `;
+      list.appendChild(row);
+    });
+
+    // ÚLTIMOS REGISTROS
+    const all = TeenDB.getAll().slice(0, 6);
+    recent.innerHTML = '';
+    all.forEach(sub => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;';
+      const fDate = sub.date.split('-').reverse().join('/');
+      card.innerHTML = `
+        <div>
+          <strong>${sub.name}</strong>
+          <span style="color:var(--text-3);font-size:0.78rem;margin-left:6px;">(${fDate})</span>
+        </div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--accent-gold);">
+          +${sub.total} pts
+        </div>
+      `;
+      recent.appendChild(card);
+    });
+  }
+
+  function exportCSV() {
+    const all = TeenDB.getAll();
+    if (!all.length) {
+      alert('Nenhum dado registrado para exportar.');
+      return;
+    }
+
+    let csv = 'Data;Nome;Unidade;Pontos Cumpridos;Itens Cumpridos\n';
+    all.forEach(sub => {
+      const fDate = sub.date.split('-').reverse().join('/');
+      const cumpridos = sub.answers
+        .filter(a => a.choice === 'yes')
+        .map(a => `${a.text} (+${a.value})`)
+        .join(' | ');
+      csv += `"${fDate}";"${sub.name}";"${sub.unit || ''}";${sub.total};"${cumpridos}"\n`;
+    });
+
+    const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ranking_escola_sabatina_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function confirmClearHistory() {
+    if (confirm('Atenção: Tem certeza que deseja zerar todo o histórico de pontos e o ranking deste dispositivo?')) {
+      TeenDB.clear();
+      renderRanking();
+      alert('Histórico reiniciado!');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 6. ANIMAÇÃO DE CONFETES NATIVA (100% OFFLINE / ZERO DEPENDÊNCIAS)
+  // ─────────────────────────────────────────────────────────────
+  function triggerConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#38bdf8', '#fbbf24'];
+
+    for (let i = 0; i < 90; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 16,
+        vy: (Math.random() - 0.7) * 18,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rSpeed: (Math.random() - 0.5) * 12,
+        alpha: 1
+      });
+    }
+
+    let frame = 0;
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.4; // gravidade
+        p.rotation += p.rSpeed;
+        p.alpha -= 0.012;
+
+        if (p.alpha > 0) {
+          alive = true;
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      frame++;
+      if (alive && frame < 120) {
+        requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    requestAnimationFrame(render);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 7. PWA - INSTALAÇÃO & SERVICE WORKER
+  // ─────────────────────────────────────────────────────────────
   let deferredPrompt = null;
-  const banner  = document.getElementById('installBanner');
+  const banner = document.getElementById('installBanner');
   const installBtn = document.getElementById('installBtn');
   const dismissBtn = document.getElementById('dismissBanner');
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    banner.classList.add('visible');
+    if (banner) banner.classList.add('visible');
   });
 
-  installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    banner.classList.remove('visible');
-  });
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (banner) banner.classList.remove('visible');
+    });
+  }
 
-  dismissBtn.addEventListener('click', () => banner.classList.remove('visible'));
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      if (banner) banner.classList.remove('visible');
+    });
+  }
 
-  // ── Service Worker ────────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js', { scope: './' })
-        .then((reg) => console.log('SW registered, scope:', reg.scope))
-        .catch(err => console.error('SW error:', err));
+        .then(reg => console.log('SW ativo:', reg.scope))
+        .catch(err => console.error('Erro no SW:', err));
     });
   }
+
+  // Iniciar App
+  initApp();
 </script>
 </body>
 </html>
