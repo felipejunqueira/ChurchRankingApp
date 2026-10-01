@@ -14,7 +14,7 @@
   <link rel="alternate icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-  <title>🏆 Tabela Oficial de Pontos — Teens</title>
+  <title>Tabela de Pontos — Escola Sabatina dos Adolescentes</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,24 +34,24 @@
 
   <!-- HEADER -->
   <header>
-    <div class="brand-badge">⭐ Escola Sabatina Teens</div>
+    <div class="brand-badge">Escola Sabatina dos Adolescentes</div>
     <h1>Tabela Oficial de Pontos</h1>
     <p>Pontuação semanal, ranking automático e registro oficial da classe</p>
 
     <!-- NAVEGAÇÃO DE ABAS -->
     <div class="nav-tabs">
       <button class="tab-btn active" id="tabScoreBtn" onclick="switchTab('score')">
-        ⚡ Pontuação
+        Lançar Pontos
       </button>
       <button class="tab-btn" id="tabRankBtn" onclick="switchTab('rank')">
-        🏆 Ranking Geral
+        Ranking Geral
       </button>
     </div>
   </header>
 
   <!-- PWA Install Banner -->
   <div id="installBanner">
-    <p><strong>📲 Instalar Aplicativo?</strong> Salve no seu celular para abrir sempre sem digitar!</p>
+    <p><strong>Instalar Aplicativo</strong> Salve no celular para preencher sua pontuação todo sábado.</p>
     <button id="installBtn">Instalar</button>
     <button id="dismissBanner">✕</button>
   </div>
@@ -63,7 +63,7 @@
     <div class="student-card">
       <div class="student-header-row">
         <div class="student-card-title">
-          <span>👤</span> Selecione o Adolescente
+          Selecione o seu nome na lista abaixo
         </div>
         <!-- Data 100% Automática -->
         <div class="auto-date-badge">
@@ -73,7 +73,7 @@
       </div>
 
       <div class="select-instruction">
-        Toque diretamente no seu nome para computar seus pontos deste sábado:
+        Toque no seu nome para marcar as atividades realizadas nesta semana:
       </div>
 
       <!-- Grade de chips interativos -->
@@ -84,8 +84,8 @@
       <!-- Rodapé da seleção com sincronização e opção de visitante -->
       <div class="selector-footer-row">
         <div class="current-selected-label">
-          <span>Nome Selecionado:</span>
-          <strong id="selectedNamePreview">Nenhum selecionado</strong>
+          <span>Adolescente Selecionado:</span>
+          <strong id="selectedNamePreview">Selecione seu nome acima</strong>
         </div>
         <select id="teenSelect" class="styled-select" onchange="onSelectChange(this.value)">
           <option value="">-- Ou escolha na lista --</option>
@@ -130,14 +130,14 @@
     <!-- BARRA DE FERRAMENTAS DO RANKING -->
     <div class="ranking-toolbar">
       <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-1);">
-        📊 Classificação Geral Oficial
+        Classificação Geral
       </h3>
       <div style="display:flex;gap:6px;">
         <button class="tool-btn" onclick="exportCSV()" title="Exportar para Excel / Google Planilhas">
-          📥 Exportar CSV
+          Exportar Planilha (CSV)
         </button>
         <button class="tool-btn" onclick="confirmClearHistory()" title="Restaurar Ranking Oficial">
-          🔄 Restaurar Oficial
+          Restaurar Dados
         </button>
       </div>
     </div>
@@ -150,7 +150,7 @@
     <!-- HISTÓRICO RECENTE DE REGISTROS -->
     <div style="margin-top:32px;">
       <h4 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text-2);margin-bottom:12px;">
-        🕒 Últimos Registros Enviados
+        Últimos Registros Salvos
       </h4>
       <div id="recentHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
@@ -167,11 +167,11 @@
       <span class="score-number" id="totalScore">0 pts</span>
     </div>
     <div class="action-btns">
-      <button class="btn-reset" onclick="resetAll()" title="Zerar respostas desta rodada">
-        🔄 Zerar
+      <button class="btn-reset" onclick="resetAll()" title="Limpar respostas desta rodada">
+        Limpar
       </button>
       <button class="btn-submit" onclick="submitScore()">
-        🚀 Salvar &amp; Enviar
+        Salvar Pontuação
       </button>
     </div>
   </div>
@@ -182,22 +182,22 @@
   <div class="modal-card">
     <button class="btn-close-modal" onclick="closeModal()">✕</button>
     
-    <div class="modal-confetti-badge">🎉</div>
+    <div class="modal-confetti-badge">✓</div>
     
     <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
     <p class="modal-desc">Seus pontos foram salvos com sucesso e o ranking já foi atualizado.</p>
 
     <div class="modal-score-box">
       <div class="modal-score-val" id="modalFinalScore">0</div>
-      <div class="modal-score-caption">Pontos Conquistados Hoje ⭐</div>
+      <div class="modal-score-caption">Pontos Conquistados Hoje</div>
     </div>
 
     <div class="modal-btns">
       <a href="#" id="modalWaBtn" target="_blank" class="btn-wa-share">
-        <span>📲</span> Enviar no WhatsApp do Professor
+        Compartilhar no WhatsApp
       </a>
       <button class="btn-modal-rank" onclick="closeModal(); switchTab('rank');">
-        🏆 Ver Meu Lugar no Ranking
+        Ver Ranking Geral
       </button>
     </div>
   </div>

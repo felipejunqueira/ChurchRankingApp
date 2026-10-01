@@ -30,20 +30,20 @@ const questions = [
  * ─────────────────────────────────────────────────────────────
  */
 const REGISTERED_TEENS = [
-  { name: "Jonas",           initial: "JO", rank: "1º" },
-  { name: "Luiza",           initial: "LU", rank: "2º" },
-  { name: "Isac",            initial: "IS", rank: "3º" },
-  { name: "Vítor Soares",    initial: "VS", rank: "4º" },
-  { name: "Gabriel Santana", initial: "GS", rank: "5º" },
-  { name: "Josué",           initial: "JS", rank: "6º" },
-  { name: "Izaque",          initial: "IZ", rank: "7º" },
-  { name: "Moisés",          initial: "MO", rank: "8º" },
-  { name: "Isaías",          initial: "IA", rank: "9º" },
-  { name: "Alex",            initial: "AL", rank: "10º" },
-  { name: "Nycolas",         initial: "NY", rank: "11º" },
-  { name: "Arthur",          initial: "AR", rank: "12º" },
-  { name: "Juan",            initial: "JU", rank: "13º" },
-  { name: "Nicholas",        initial: "NI", rank: "14º" }
+  { name: "Alex",            initial: "AL" },
+  { name: "Arthur",          initial: "AR" },
+  { name: "Gabriel Santana", initial: "GS" },
+  { name: "Isac",            initial: "IS" },
+  { name: "Isaías",          initial: "IA" },
+  { name: "Izaque",          initial: "IZ" },
+  { name: "Jonas",           initial: "JO" },
+  { name: "Josué",           initial: "JS" },
+  { name: "Juan",            initial: "JU" },
+  { name: "Luiza",           initial: "LU" },
+  { name: "Moisés",          initial: "MO" },
+  { name: "Nicholas",        initial: "NI" },
+  { name: "Nycolas",         initial: "NY" },
+  { name: "Vítor Soares",    initial: "VS" }
 ];
 
 /**

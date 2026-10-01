@@ -41,17 +41,14 @@ function setupTeenSelector() {
 
     chip.innerHTML = `
       <div class="teen-avatar">${teen.initial}</div>
-      <div style="flex:1;min-width:0;">
-        <div class="teen-name-text">${teen.name}</div>
-        <div style="font-size:0.7rem;color:var(--text-3);">${teen.rank}</div>
-      </div>
+      <div class="teen-name-text">${teen.name}</div>
     `;
     grid.appendChild(chip);
 
     // 2. Opção no Select
     const opt = document.createElement('option');
     opt.value = teen.name;
-    opt.textContent = `${teen.name} (${teen.rank})`;
+    opt.textContent = teen.name;
     select.appendChild(opt);
   });
 
@@ -86,7 +83,7 @@ function selectTeen(name) {
   // Atualizar Preview
   const preview = document.getElementById('selectedNamePreview');
   if (preview) {
-    preview.textContent = name ? `${name} ✅` : 'Nenhum selecionado';
+    preview.textContent = name || 'Selecione seu nome acima';
   }
 }
 
@@ -98,7 +95,7 @@ function onSelectChange(val) {
       const cleanCustom = custom.trim();
       selectTeen(cleanCustom);
       const preview = document.getElementById('selectedNamePreview');
-      if (preview) preview.textContent = `${cleanCustom} (Visitante) ✅`;
+      if (preview) preview.textContent = `${cleanCustom} (Visitante)`;
     }
     return;
   }
@@ -121,16 +118,16 @@ function buildQuestionsUI() {
         <div style="flex:1">
           <span class="q-cat-tag">${q.category}</span>
           <div class="q-text">${q.text}</div>
-          ${q.note ? `<div class="q-note">📌 ${q.note}</div>` : ''}
+          ${q.note ? `<div class="q-note">${q.note}</div>` : ''}
         </div>
         <span class="q-points-badge">+${q.value} pts</span>
       </div>
       <div class="btn-group">
         <button class="btn-choice btn-yes" id="yes-${i}" onclick="answer(${i}, 'yes')">
-          ✅ Sim (+${q.value})
+          Sim (+${q.value})
         </button>
         <button class="btn-choice btn-no" id="no-${i}" onclick="answer(${i}, 'no')">
-          ❌ Não (0 pts)
+          Não (0 pts)
         </button>
       </div>
     `;

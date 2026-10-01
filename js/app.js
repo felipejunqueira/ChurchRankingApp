@@ -49,21 +49,21 @@ function submitScore() {
   // 4. Preparar WhatsApp formatado
   const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
   
-  let msg = `⭐ *PONTUAÇÃO ESCOLA SABATINA TEENS* ⭐\n`;
-  msg += `👤 *Adolescente:* ${selectedTeenName}\n`;
-  msg += `📅 *Data:* ${dateFormatted}\n`;
-  msg += `🏆 *TOTAL CONQUISTADO:* ${total} PONTOS!\n\n`;
+  let msg = `*ESCOLA SABATINA DOS ADOLESCENTES*\n`;
+  msg += `*Adolescente:* ${selectedTeenName}\n`;
+  msg += `*Data:* ${dateFormatted}\n`;
+  msg += `*Pontuação da semana:* +${total} pontos\n\n`;
   
   if (yesItems.length > 0) {
-    msg += `✅ *Itens cumpridos hoje:*\n`;
+    msg += `*Atividades cumpridas:*\n`;
     yesItems.forEach(item => {
       msg += `• ${item.text} (+${item.value} pts)\n`;
     });
   } else {
-    msg += `Nenhum item marcado com Sim hoje.\n`;
+    msg += `Nenhum item marcado nesta rodada.\n`;
   }
 
-  msg += `\n🎯 _Enviado via Tabela Oficial de Pontos Teens_`;
+  msg += `\n_Registro enviado via Tabela de Pontos dos Adolescentes_`;
 
   const encodedMsg = encodeURIComponent(msg);
   const waUrl = `https://api.whatsapp.com/send?text=${encodedMsg}`;
