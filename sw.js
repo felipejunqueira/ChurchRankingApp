@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pontos-es-v8';
+const CACHE_NAME = 'pontos-es-v10';
 
 // Core files only — fonts load from network (or cache if already fetched)
 const CORE_ASSETS = [
@@ -7,7 +7,14 @@ const CORE_ASSETS = [
   './manifest.json',
   './favicon.svg',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './css/base.css',
+  './css/components.css',
+  './css/ranking.css',
+  './js/data.js',
+  './js/db.js',
+  './js/ui.js',
+  './js/app.js'
 ];
 
 // Install: cache core files — don't let fonts block this
