@@ -344,9 +344,28 @@
   color: var(--text-1);
 }
 
-.ranking-actions {
-  display: flex;
-  gap: 6px;
+.history-toggle-wrap {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.btn-toggle-history {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+.btn-toggle-history:hover {
+  background: var(--bg-warm-tint);
+  border-color: #d6bead;
+  transform: translateY(-1px);
 }
 
 /* Seção de Histórico Recente */

@@ -8,6 +8,7 @@ const AppState = {
   activeCategory: 'all',
   selectedTeenName: '',
   isSubmitting: false,
+  showAllHistory: false,
 
   setAnswer(index, choice) {
     this.answers[index] = choice;
@@ -410,10 +411,13 @@ function renderRanking() {
   // ÚLTIMOS REGISTROS ENVIADOS
   if (recent) {
     const all = [...TeenDB.getAll()]
-      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-      .slice(0, 25);
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+    const limit = AppState.showAllHistory ? all.length : 25;
+    const itemsToShow = all.slice(0, limit);
     recent.innerHTML = '';
-    all.forEach(sub => {
+
+    itemsToShow.forEach(sub => {
       const card = document.createElement('div');
       card.className = 'history-card';
       const fDate = formatDateBR(sub.date);
@@ -428,5 +432,24 @@ function renderRanking() {
       `;
       recent.appendChild(card);
     });
+
+    const toggleWrap = document.getElementById('historyToggleWrap');
+    if (toggleWrap) {
+      if (all.length > 25) {
+        toggleWrap.style.display = 'block';
+        toggleWrap.innerHTML = `
+          <button class="btn-toggle-history" onclick="toggleHistoryView()">
+            ${AppState.showAllHistory ? '▲ Mostrar apenas os 25 mais recentes' : `▼ Ver todos os lançamentos (${all.length})`}
+          </button>
+        `;
+      } else {
+        toggleWrap.style.display = 'none';
+      }
+    }
   }
+}
+
+function toggleHistoryView() {
+  AppState.showAllHistory = !AppState.showAllHistory;
+  renderRanking();
 }
