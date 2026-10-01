@@ -105,21 +105,41 @@ const OFFICIAL_SEED_RECORDS = [
   { id: 'rec_2802_jonas',   name: 'Jonas',           date: '2026-02-28', total: 240, answers: [] },
 
   // ─── SÁBADO 21/02/2026 ───
+  { id: 'rec_2102_vitor',   name: 'Vítor Soares',    date: '2026-02-21', total: 280, answers: [] },
+  { id: 'rec_2102_alex',    name: 'Alex',            date: '2026-02-21', total: 200, answers: [] },
+  { id: 'rec_2102_izaque',  name: 'Izaque',          date: '2026-02-21', total: 180, answers: [] },
+  { id: 'rec_2102_jonas',   name: 'Jonas',           date: '2026-02-21', total: 135, answers: [] },
   { id: 'rec_2102_isac',    name: 'Isac',            date: '2026-02-21', total: 130, answers: [] },
+  { id: 'rec_2102_gabriel', name: 'Gabriel Santana', date: '2026-02-21', total: 115, answers: [] },
+  { id: 'rec_2102_moises',  name: 'Moisés',          date: '2026-02-21', total: 70,  answers: [] },
+  { id: 'rec_2102_luiza',   name: 'Luiza',           date: '2026-02-21', total: 70,  answers: [] },
+  { id: 'rec_2102_nycolas', name: 'Nycolas',         date: '2026-02-21', total: 65,  answers: [] },
+  { id: 'rec_2102_josue',   name: 'Josué',           date: '2026-02-21', total: 28,  answers: [] },
+
+  // ─── SÁBADO 07/02/2026 ───
+  { id: 'rec_0702_isac',    name: 'Isac',            date: '2026-02-07', total: 130, answers: [] },
+
+  // ─── SÁBADO 31/01/2026 ───
+  { id: 'rec_3101_izaque',  name: 'Izaque',          date: '2026-01-31', total: 175, answers: [] },
+  { id: 'rec_3101_isac',    name: 'Isac',            date: '2026-01-31', total: 150, answers: [] },
+  { id: 'rec_3101_moises',  name: 'Moisés',          date: '2026-01-31', total: 100, answers: [] },
+  { id: 'rec_3101_vitor',   name: 'Vítor Soares',    date: '2026-01-31', total: 70,  answers: [] },
+  { id: 'rec_3101_arthur',  name: 'Arthur',          date: '2026-01-31', total: 45,  answers: [] },
+  { id: 'rec_3101_juan',    name: 'Juan',            date: '2026-01-31', total: 20,  answers: [] },
+
+  // ─── SÁBADO 17/01/2026 ───
+  { id: 'rec_1701_vitor',   name: 'Vítor Soares',    date: '2026-01-17', total: 115, answers: [] },
+  { id: 'rec_1701_isac',    name: 'Isac',            date: '2026-01-17', total: 105, answers: [] },
+  { id: 'rec_1701_alex',    name: 'Alex',            date: '2026-01-17', total: 70,  answers: [] },
 
   // ─── PONTUAÇÕES ANTERIORES ACUMULADAS (BASE DO DRIVE) ───
-  { id: 'base_luiza',       name: 'Luiza',           date: '2026-02-14', total: 1920, answers: [] },
-  { id: 'base_isac',        name: 'Isac',            date: '2026-02-14', total: 1865, answers: [] },
-  { id: 'base_vitor',       name: 'Vítor Soares',    date: '2026-02-14', total: 1585, answers: [] },
-  { id: 'base_jonas',       name: 'Jonas',           date: '2026-02-14', total: 1055, answers: [] },
-  { id: 'base_gabriel',     name: 'Gabriel Santana', date: '2026-02-14', total: 275,  answers: [] },
-  { id: 'base_josue',       name: 'Josué',           date: '2026-02-14', total: 318,  answers: [] },
-  { id: 'base_izaque',      name: 'Izaque',          date: '2026-02-14', total: 355,  answers: [] },
-  { id: 'base_moises',      name: 'Moisés',          date: '2026-02-14', total: 285,  answers: [] },
+  { id: 'base_luiza',       name: 'Luiza',           date: '2026-02-14', total: 1850, answers: [] },
+  { id: 'base_isac',        name: 'Isac',            date: '2026-02-14', total: 1480, answers: [] },
+  { id: 'base_vitor',       name: 'Vítor Soares',    date: '2026-02-14', total: 1120, answers: [] },
+  { id: 'base_jonas',       name: 'Jonas',           date: '2026-02-14', total: 920,  answers: [] },
+  { id: 'base_josue',       name: 'Josué',           date: '2026-02-14', total: 290,  answers: [] },
   { id: 'base_isaias',      name: 'Isaías',          date: '2026-02-14', total: 285,  answers: [] },
-  { id: 'base_alex',        name: 'Alex',            date: '2026-02-14', total: 270,  answers: [] },
-  { id: 'base_nycolas',     name: 'Nycolas',         date: '2026-02-14', total: 65,   answers: [] },
-  { id: 'base_arthur',      name: 'Arthur',          date: '2026-02-14', total: 45,   answers: [] },
-  { id: 'base_juan',        name: 'Juan',            date: '2026-02-14', total: 20,   answers: [] },
+  { id: 'base_gabriel',     name: 'Gabriel Santana', date: '2026-02-14', total: 160,  answers: [] },
+  { id: 'base_moises',      name: 'Moisés',          date: '2026-02-14', total: 115,  answers: [] },
   { id: 'base_nicholas',    name: 'Nicholas',        date: '2026-02-14', total: 0,    answers: [] }
 ];
