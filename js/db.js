@@ -1,10 +1,17 @@
 /**
  * ─────────────────────────────────────────────────────────────
- * BANCO DE DADOS LOCAL (STORAGE) & EXPORTAÇÃO
+ * BANCO DE DADOS HÍBRIDO (SUPABASE AO VIVO + CACHE LOCAL OFFLINE)
  * ─────────────────────────────────────────────────────────────
  */
 const DB_KEY = 'church_ranking_db_v9';
 const USER_KEY = 'church_ranking_last_user_v9';
+
+const SUPABASE_CONFIG = {
+  url: 'https://akqckxynvvavroiwijxo.supabase.co',
+  anonKey: 'sb_publishable_TKCbyuzHCtNvtgWzNXlnwQ_XgLegHFn'
+};
+
+let supabaseClient = null;
 
 const TeenDB = {
   getAll() {
@@ -42,7 +49,95 @@ const TeenDB = {
 
     localStorage.setItem(DB_KEY, JSON.stringify(list));
     localStorage.setItem(USER_KEY, JSON.stringify({ name: entry.name }));
+
+    // Sincroniza em segundo plano com a Nuvem Supabase
+    this.saveToCloud(entry).catch(err => console.warn('Supabase sync background notice:', err));
+
     return list;
+  },
+  async fetchFromCloud() {
+    try {
+      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores?select=*&order=date.desc`, {
+        headers: {
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+        }
+      });
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (Array.isArray(cloudData) && cloudData.length > 0) {
+          localStorage.setItem(DB_KEY, JSON.stringify(cloudData));
+          this.updateSyncBadge('online');
+          return cloudData;
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase offline / fallback ativo:', e.message);
+    }
+    this.updateSyncBadge('local');
+    return this.getAll();
+  },
+  async saveToCloud(entry) {
+    try {
+      const payload = {
+        id: entry.id,
+        name: entry.name,
+        date: entry.date,
+        total: entry.total,
+        answers: entry.answers || [],
+        submitted_at: entry.submittedAt || new Date().toISOString()
+      };
+      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        this.updateSyncBadge('online');
+        return true;
+      }
+    } catch (e) {
+      console.warn('Erro ao sincronizar com Supabase:', e);
+    }
+    return false;
+  },
+  updateSyncBadge(status) {
+    const badge = document.getElementById('cloudSyncBadge');
+    if (!badge) return;
+    if (status === 'online') {
+      badge.innerHTML = '<span class="cloud-dot online"></span> Nuvem Ao Vivo';
+      badge.title = 'Conectado ao Supabase em tempo real';
+    } else {
+      badge.innerHTML = '<span class="cloud-dot local"></span> Sincronizado Local';
+      badge.title = 'Armazenamento local ativo';
+    }
+  },
+  initRealtime() {
+    if (window.supabase && !supabaseClient) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+        supabaseClient
+          .channel('public:teen_scores')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'teen_scores' }, async () => {
+            console.log('⚡ Atualização em tempo real recebida do Supabase!');
+            await TeenDB.fetchFromCloud();
+            if (typeof renderRanking === 'function') renderRanking();
+          })
+          .subscribe((status) => {
+            console.log('Status Realtime Supabase:', status);
+            if (status === 'SUBSCRIBED') {
+              TeenDB.updateSyncBadge('online');
+            }
+          });
+      } catch (e) {
+        console.warn('Realtime client init notice:', e);
+      }
+    }
   },
   getLastUser() {
     try {

@@ -213,10 +213,15 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-function initApp() {
+async function initApp() {
   setupAutoDate();
   setupTeenSelector();
   buildQuestionsUI();
+  renderRanking();
+
+  // Conectar com a Nuvem Supabase e habilitar Realtime
+  TeenDB.initRealtime();
+  await TeenDB.fetchFromCloud();
   renderRanking();
 }
 
