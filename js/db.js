@@ -118,25 +118,32 @@ const TeenDB = {
     }
   },
   initRealtime() {
-    if (window.supabase && !supabaseClient) {
-      try {
-        supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-        supabaseClient
-          .channel('public:teen_scores')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'teen_scores' }, async () => {
-            console.log('⚡ Atualização em tempo real recebida do Supabase!');
-            await TeenDB.fetchFromCloud();
-            if (typeof renderRanking === 'function') renderRanking();
-          })
-          .subscribe((status) => {
-            console.log('Status Realtime Supabase:', status);
-            if (status === 'SUBSCRIBED') {
-              TeenDB.updateSyncBadge('online');
-            }
-          });
-      } catch (e) {
-        console.warn('Realtime client init notice:', e);
+    const setup = () => {
+      if (window.supabase && !supabaseClient) {
+        try {
+          supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+          supabaseClient
+            .channel('public:teen_scores')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'teen_scores' }, async () => {
+              console.log('⚡ Atualização em tempo real recebida do Supabase!');
+              await TeenDB.fetchFromCloud();
+              if (typeof renderRanking === 'function') renderRanking();
+            })
+            .subscribe((status) => {
+              if (status === 'SUBSCRIBED') {
+                TeenDB.updateSyncBadge('online');
+              }
+            });
+        } catch (e) {
+          console.warn('Realtime client init notice:', e);
+        }
       }
+    };
+
+    if (window.supabase) {
+      setup();
+    } else {
+      window.addEventListener('load', setup);
     }
   },
   getLastUser() {
@@ -192,8 +199,9 @@ function exportCSV() {
     const cumpridos = (sub.answers || [])
       .filter(a => a.choice === 'yes')
       .map(a => `${a.text} (+${a.value})`)
-      .join(' | ');
-    csv += `"${fDate}";"${sub.name}";${sub.total};"${cumpridos}"\n`;
+    const safeName = (sub.name || '').replace(/"/g, '""');
+    const safeCumpridos = cumpridos.replace(/"/g, '""');
+    csv += `"${fDate}";"${safeName}";${Number(sub.total || 0)};"${safeCumpridos}"\n`;
   });
 
   const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });

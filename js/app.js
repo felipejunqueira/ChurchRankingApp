@@ -94,6 +94,11 @@ function submitScore() {
 function closeModal() {
   const modal = document.getElementById('successModal');
   if (modal) modal.classList.remove('open');
+  // Prepara o formulário limpo para a próxima avaliação
+  AppState.reset();
+  buildQuestionsUI();
+  updateTotal();
+  updateProgress();
 }
 
 // Fechar modal ao clicar fora ou apertar Escape (prevenção de toque acidental)

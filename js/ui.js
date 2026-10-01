@@ -115,7 +115,8 @@ function promptCustomVisitor() {
     // Adiciona ao select se ainda não estiver listado
     const select = document.getElementById('teenSelect');
     if (select) {
-      const exists = Array.from(select.options).some(o => o.value.toLowerCase() === clean.toLowerCase());
+      const optionsArr = Array.from(select.options || []);
+      const exists = optionsArr.some(o => (o.value || '').toLowerCase() === clean.toLowerCase());
       if (!exists) {
         const newOpt = document.createElement('option');
         newOpt.value = clean;
@@ -135,6 +136,13 @@ function promptCustomVisitor() {
 }
 
 function selectTeen(name, isVisitor = false) {
+  if (AppState.selectedTeenName && AppState.selectedTeenName !== name && AppState.hasAnyAnswer()) {
+    AppState.reset();
+    buildQuestionsUI();
+    updateTotal();
+    updateProgress();
+  }
+
   AppState.selectedTeenName = name;
 
   // Atualizar classe visual nos chips
@@ -154,7 +162,8 @@ function selectTeen(name, isVisitor = false) {
   // Atualizar Dropdown
   const select = document.getElementById('teenSelect');
   if (select) {
-    const match = Array.from(select.options).some(o => o.value === name);
+    const optionsArr = Array.from(select.options || []);
+    const match = optionsArr.some(o => o.value === name);
     select.value = match ? name : '';
   }
 
