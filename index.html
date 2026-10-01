@@ -3,43 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0f19" />
+  <meta name="theme-color" content="#7c4424" />
   <meta name="description" content="Tabela Oficial de Pontos — Escola Sabatina dos Adolescentes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="TabelaTeens" />
 
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="alternate icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 
   <title>🏆 Tabela Oficial de Pontos — Teens</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --bg-card: #131b2e;
-      --bg-card-hover: #18223a;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-active: rgba(99, 102, 241, 0.4);
-      --primary: #4f46e5;
-      --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
-      --accent-gold: #f59e0b;
-      --accent-emerald: #10b981;
-      --accent-rose: #f43f5e;
-      --accent-cyan: #06b6d4;
-      --text-1: #f8fafc;
-      --text-2: #94a3b8;
-      --text-3: #64748b;
+      /* Paleta Quente: Bege Claro, Chocolate Nobre, Café e Caramelo Dourado */
+      --bg: #faf7f2;
+      --bg-card: #ffffff;
+      --bg-card-hover: #fcf9f5;
+      --bg-warm-tint: #f4eae0;
+      --bg-accent-soft: #fef7ed;
+      
+      --border: #ebdcd0;
+      --border-light: #f5ebe1;
+      --border-focus: #b45309;
+      
+      --primary: #5c3826;
+      --primary-hover: #45291b;
+      --primary-gradient: linear-gradient(135deg, #7c4424 0%, #522e1a 100%);
+      
+      --accent-gold: #c88226;
+      --accent-gold-dark: #92400e;
+      --accent-gold-soft: #fef3c7;
+      --accent-gold-border: #fde68a;
+      
+      --accent-emerald: #15803d;
+      --accent-emerald-soft: #f0fdf4;
+      --accent-emerald-border: #86efac;
+      
+      --accent-rose: #dc2626;
+      --accent-rose-soft: #fef2f2;
+      --accent-rose-border: #fecaca;
+      
+      --text-1: #2d1a10;
+      --text-2: #6d5240;
+      --text-3: #9c8270;
+      --text-inverse: #ffffff;
+      
       --radius-sm: 10px;
       --radius-md: 16px;
       --radius-lg: 24px;
       --radius-pill: 9999px;
-      --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.2);
+      
+      --shadow-sm: 0 2px 8px rgba(92, 56, 38, 0.04);
+      --shadow-md: 0 6px 20px rgba(92, 56, 38, 0.07);
+      --shadow-lg: 0 14px 34px rgba(92, 56, 38, 0.1);
+      --shadow-sticky: 0 -4px 25px rgba(92, 56, 38, 0.08);
     }
 
     *, *::before, *::after {
@@ -58,12 +82,12 @@
       flex-direction: column;
       line-height: 1.6;
       background-image:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
-        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(16, 185, 129, 0.08), transparent);
-      padding-bottom: 120px;
+        radial-gradient(ellipse 90% 45% at 50% -5%, #f2e5d7 0%, transparent 65%),
+        radial-gradient(ellipse 70% 35% at 90% 90%, rgba(200, 130, 38, 0.06) 0%, transparent 70%);
+      padding-bottom: 125px;
     }
 
-    /* Container */
+    /* Container Central */
     .container {
       width: 100%;
       max-width: 680px;
@@ -81,44 +105,45 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #818cf8;
-      font-size: 0.75rem;
-      font-weight: 700;
+      background: var(--bg-warm-tint);
+      border: 1px solid #dfcfc2;
+      color: #7c4424;
+      font-size: 0.78rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 4px 12px;
+      letter-spacing: 0.09em;
+      padding: 5px 14px;
       border-radius: var(--radius-pill);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-sm);
     }
 
     header h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(1.8rem, 6vw, 2.4rem);
+      font-size: clamp(1.85rem, 6vw, 2.45rem);
       font-weight: 800;
       letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
+      color: var(--text-1);
+      line-height: 1.2;
+      margin-bottom: 6px;
     }
 
     header p {
       color: var(--text-2);
-      font-size: 0.92rem;
+      font-size: 0.94rem;
     }
 
-    /* Navigation Tabs */
+    /* Abas de Navegação */
     .nav-tabs {
       display: flex;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+      background: #efe4d8;
+      border: 1px solid #dfd1c3;
       border-radius: var(--radius-pill);
       padding: 4px;
-      margin: 16px auto 20px;
+      margin: 18px auto 22px;
       max-width: 420px;
       gap: 4px;
+      box-shadow: inset 0 1px 3px rgba(92, 56, 38, 0.06);
     }
 
     .tab-btn {
@@ -136,29 +161,31 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
 
     .tab-btn.active {
       background: var(--primary-gradient);
       color: #ffffff;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 14px rgba(92, 56, 38, 0.25);
     }
 
-    /* Install Banner */
+    /* PWA Install Banner */
     #installBanner {
       display: none;
-      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.12));
-      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
       border-radius: var(--radius-md);
       padding: 12px 16px;
       margin-bottom: 16px;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      box-shadow: var(--shadow-sm);
     }
     #installBanner.visible { display: flex; }
-    #installBanner p { font-size: 0.85rem; color: var(--text-1); flex: 1; }
+    #installBanner p { font-size: 0.86rem; color: var(--text-1); flex: 1; }
     #installBtn {
       background: var(--primary-gradient);
       color: #fff;
@@ -175,85 +202,187 @@
       color: var(--text-3);
       cursor: pointer;
       font-size: 1.1rem;
+      padding: 4px;
     }
 
-    /* Student Info Card */
+    /* ══════════ SELEÇÃO DO ADOLESCENTE (SEM DIGITAÇÃO) ══════════ */
     .student-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 18px 20px;
+      padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .student-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
     }
 
     .student-card-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.92rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #818cf8;
-      margin-bottom: 12px;
+      letter-spacing: 0.07em;
+      color: #7c4424;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .inputs-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    @media (max-width: 500px) {
-      .inputs-grid { grid-template-columns: 1fr; }
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .input-label {
+    /* Data 100% Automática */
+    .auto-date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-accent-soft);
+      border: 1px solid var(--accent-gold-border);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
       font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-2);
+      font-weight: 700;
+      color: var(--accent-gold-dark);
     }
 
-    .styled-input {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+    .auto-date-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #16a34a;
+      box-shadow: 0 0 6px rgba(22, 163, 74, 0.6);
+      display: inline-block;
+    }
+
+    .select-instruction {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      margin-bottom: 12px;
+    }
+
+    /* Grade Clicável de Nomes */
+    .teen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .teen-chip {
+      background: #faf6f0;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      text-align: left;
+    }
+
+    .teen-chip:hover {
+      background: #f4eae0;
+      border-color: #d8c2b1;
+      transform: translateY(-1px);
+    }
+
+    .teen-chip.selected {
+      background: var(--primary-gradient);
+      border-color: #5c3826;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(92, 56, 38, 0.22);
+      transform: scale(1.02);
+    }
+
+    .teen-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ede2d5;
+      color: #63391d;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .teen-chip.selected .teen-avatar {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    .teen-name-text {
+      font-size: 0.86rem;
+      font-weight: 700;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .teen-chip.selected .teen-name-text {
+      color: #ffffff;
+    }
+
+    /* Dropdown Alternativo & Status Selecionado */
+    .selector-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #fbf8f4;
+      border: 1px dashed var(--border);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
-      color: #ffffff;
+    }
+
+    .current-selected-label {
+      font-size: 0.84rem;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .current-selected-label strong {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .styled-select {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      color: var(--text-1);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 0.84rem;
+      font-weight: 700;
       outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
     }
 
-    .styled-input:focus {
-      border-color: #6366f1;
-      background: rgba(255, 255, 255, 0.07);
+    .styled-select:focus {
+      border-color: var(--primary);
     }
 
-    .styled-input.error {
-      border-color: var(--accent-rose);
-      animation: shake 0.3s ease;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-
-    /* Progress Stats */
+    /* Barra de Progresso */
     .progress-bar-wrap {
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     .progress-label-row {
@@ -262,13 +391,13 @@
       font-size: 0.8rem;
       color: var(--text-2);
       margin-bottom: 6px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .progress-track {
       width: 100%;
-      height: 7px;
-      background: rgba(255, 255, 255, 0.06);
+      height: 8px;
+      background: #ebdcd0;
       border-radius: var(--radius-pill);
       overflow: hidden;
     }
@@ -276,12 +405,12 @@
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #6366f1, #10b981);
+      background: linear-gradient(90deg, #c88226, #16a34a);
       border-radius: var(--radius-pill);
       transition: width 0.3s ease;
     }
 
-    /* Category Filter */
+    /* Filtro de Categorias */
     .filter-pills {
       display: flex;
       overflow-x: auto;
@@ -294,24 +423,31 @@
 
     .pill-btn {
       flex-shrink: 0;
-      padding: 6px 14px;
-      background: rgba(255, 255, 255, 0.04);
+      padding: 7px 15px;
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);
       color: var(--text-2);
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pill-btn:hover {
+      background: #fbf7f2;
+      border-color: #dcc8b7;
     }
 
     .pill-btn.active {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: #6366f1;
+      background: var(--primary-gradient);
+      border-color: #5c3826;
       color: #ffffff;
+      box-shadow: 0 2px 10px rgba(92, 56, 38, 0.2);
     }
 
-    /* Question Cards List */
+    /* Lista de Perguntas */
     .questions-list {
       display: flex;
       flex-direction: column;
@@ -326,20 +462,20 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      position: relative;
-      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      box-shadow: var(--shadow-sm);
     }
 
     .question-card.answered-yes {
-      border-color: rgba(16, 185, 129, 0.45);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), var(--bg-card));
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
+      background: var(--accent-emerald-soft);
+      border-color: var(--accent-emerald-border);
+      box-shadow: 0 4px 18px rgba(22, 163, 74, 0.08);
     }
 
     .question-card.answered-no {
-      opacity: 0.75;
-      border-color: rgba(244, 63, 94, 0.2);
+      background: #fefcfb;
+      border-color: #f0ddd2;
+      opacity: 0.85;
     }
 
     .q-top-row {
@@ -355,24 +491,24 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #818cf8;
-      margin-bottom: 4px;
+      color: #8c5230;
+      margin-bottom: 3px;
     }
 
     .q-text {
       font-size: 0.98rem;
       font-weight: 700;
       color: var(--text-1);
-      line-height: 1.45;
+      line-height: 1.42;
     }
 
     .q-points-badge {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      color: var(--accent-gold);
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: var(--accent-gold-dark);
+      background: var(--accent-gold-soft);
+      border: 1px solid var(--accent-gold-border);
       padding: 3px 10px;
       border-radius: var(--radius-pill);
       white-space: nowrap;
@@ -380,9 +516,9 @@
     }
 
     .question-card.answered-yes .q-points-badge {
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.16);
-      border-color: rgba(16, 185, 129, 0.4);
+      color: #15803d;
+      background: #dcfce7;
+      border-color: #bbf7d0;
     }
 
     .q-note {
@@ -394,7 +530,7 @@
       gap: 4px;
     }
 
-    /* Yes/No Buttons */
+    /* Botões Sim / Não */
     .btn-group {
       display: flex;
       gap: 8px;
@@ -417,44 +553,46 @@
     }
 
     .btn-yes {
-      background: rgba(16, 185, 129, 0.08);
-      color: var(--accent-emerald);
-      border-color: rgba(16, 185, 129, 0.25);
+      background: #f0fdf4;
+      color: #16a34a;
+      border-color: #bbf7d0;
     }
-    .btn-yes:hover { background: rgba(16, 185, 129, 0.16); }
+    .btn-yes:hover { background: #dcfce7; }
     .btn-yes.selected {
-      background: var(--accent-emerald);
-      color: #0b0f19;
-      border-color: var(--accent-emerald);
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      background: #16a34a;
+      color: #ffffff;
+      border-color: #15803d;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
     }
 
     .btn-no {
-      background: rgba(244, 63, 94, 0.06);
-      color: var(--accent-rose);
-      border-color: rgba(244, 63, 94, 0.2);
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
     }
-    .btn-no:hover { background: rgba(244, 63, 94, 0.14); }
+    .btn-no:hover { background: #fee2e2; }
     .btn-no.selected {
-      background: rgba(244, 63, 94, 0.85);
+      background: #dc2626;
       color: #ffffff;
-      border-color: var(--accent-rose);
+      border-color: #b91c1c;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
     }
 
     .btn-choice:active { transform: scale(0.97); }
 
-    /* Sticky Bottom Action Bar */
+    /* Barra Inferior Fixa */
     .sticky-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(11, 15, 25, 0.92);
+      background: rgba(250, 247, 242, 0.95);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--border);
       padding: 12px 16px;
       z-index: 100;
+      box-shadow: var(--shadow-sticky);
     }
 
     .sticky-bar-inner {
@@ -473,7 +611,7 @@
 
     .score-label {
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-2);
@@ -481,9 +619,10 @@
 
     .score-number {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.9rem;
+      font-size: 1.95rem;
       font-weight: 900;
-      background: linear-gradient(135deg, #fcd34d, #f59e0b, #ec4899);
+      color: var(--primary);
+      background: linear-gradient(135deg, #7c4424 0%, #b45309 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
@@ -506,20 +645,20 @@
     }
 
     .btn-reset {
-      background: rgba(255, 255, 255, 0.06);
+      background: #ffffff;
       border: 1px solid var(--border);
       color: var(--text-2);
       padding: 12px 14px;
       border-radius: var(--radius-sm);
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-reset:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .btn-reset:hover { background: #fbf7f2; border-color: #d6bead; color: var(--text-1); }
 
     .btn-submit {
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #15803d, #166534);
       color: #ffffff;
       border: none;
       padding: 12px 22px;
@@ -531,27 +670,27 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 4px 16px rgba(21, 128, 61, 0.32);
       transition: all 0.2s ease;
     }
     .btn-submit:hover {
-      background: linear-gradient(135deg, #059669, #047857);
+      background: linear-gradient(135deg, #166534, #14532d);
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 22px rgba(21, 128, 61, 0.45);
     }
     .btn-submit:active { transform: scale(0.97); }
 
-    /* ───── RANKING & LEADERBOARD TAB ───── */
+    /* ══════════ ABA RANKING & PÓDIO ══════════ */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Podium */
+    /* Pódio */
     .podium-wrap {
       display: flex;
       justify-content: center;
       align-items: flex-end;
       gap: 12px;
-      margin: 24px 0 32px;
+      margin: 20px 0 32px;
       padding: 0 8px;
     }
 
@@ -568,35 +707,37 @@
       width: 54px;
       height: 54px;
       border-radius: 50%;
-      background: var(--bg-card);
+      background: #ffffff;
       border: 3px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Outfit', sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       margin-bottom: 6px;
       position: relative;
+      box-shadow: var(--shadow-sm);
     }
 
     .podium-spot.first .podium-avatar {
-      width: 66px;
-      height: 66px;
+      width: 68px;
+      height: 68px;
       border-color: #f59e0b;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+      background: #fffbeb;
     }
 
     .podium-crown {
       position: absolute;
       top: -16px;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
     }
 
     .podium-name {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-1);
       max-width: 110px;
       white-space: nowrap;
       overflow: hidden;
@@ -606,45 +747,44 @@
 
     .podium-pts {
       font-family: 'Outfit', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       font-weight: 800;
-      color: var(--accent-gold);
+      color: var(--accent-gold-dark);
       margin-bottom: 6px;
     }
 
     .podium-pillar {
       width: 100%;
       border-radius: 12px 12px 0 0;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Outfit', sans-serif;
       font-size: 1.3rem;
       font-weight: 900;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
     }
 
     .podium-spot.first .podium-pillar {
       height: 110px;
-      background: linear-gradient(180deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05));
-      border-color: rgba(245,158,11,0.5);
-      color: #f59e0b;
+      background: linear-gradient(180deg, #fde68a, #fef3c7);
+      border: 1.5px solid #f59e0b;
+      color: #92400e;
     }
     .podium-spot.second .podium-pillar {
       height: 80px;
-      background: linear-gradient(180deg, rgba(148,163,184,0.2), rgba(148,163,184,0.05));
-      border-color: rgba(148,163,184,0.4);
-      color: #94a3b8;
+      background: linear-gradient(180deg, #e2e8f0, #f1f5f9);
+      border: 1.5px solid #94a3b8;
+      color: #475569;
     }
     .podium-spot.third .podium-pillar {
       height: 60px;
-      background: linear-gradient(180deg, rgba(180,83,9,0.2), rgba(180,83,9,0.05));
-      border-color: rgba(180,83,9,0.4);
-      color: #d97706;
+      background: linear-gradient(180deg, #fed7aa, #ffedd5);
+      border: 1.5px solid #ea580c;
+      color: #9a3412;
     }
 
-    /* Ranking List Table */
+    /* Lista de Ranking */
     .leaderboard-list {
       display: flex;
       flex-direction: column;
@@ -659,30 +799,34 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: var(--shadow-sm);
     }
-    .leader-row:hover { background: var(--bg-card-hover); }
+    .leader-row:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
+    }
 
     .leader-rank {
       width: 32px;
       font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 800;
+      font-size: 1.15rem;
+      font-weight: 900;
       color: var(--text-3);
       text-align: center;
     }
 
-    .leader-rank.top-1 { color: #f59e0b; }
-    .leader-rank.top-2 { color: #94a3b8; }
-    .leader-rank.top-3 { color: #d97706; }
+    .leader-rank.top-1 { color: #d97706; }
+    .leader-rank.top-2 { color: #64748b; }
+    .leader-rank.top-3 { color: #c2410c; }
 
     .leader-info {
       flex: 1;
     }
     .leader-name {
       font-size: 0.98rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-weight: 800;
+      color: var(--text-1);
     }
     .leader-sub {
       font-size: 0.78rem;
@@ -692,11 +836,11 @@
     .leader-score {
       font-family: 'Outfit', sans-serif;
       font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--accent-gold);
+      font-weight: 900;
+      color: var(--primary);
     }
 
-    /* Ranking Actions */
+    /* Barra de Ações do Ranking */
     .ranking-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -707,34 +851,31 @@
     }
 
     .tool-btn {
-      background: rgba(255, 255, 255, 0.05);
+      background: #ffffff;
       border: 1px solid var(--border);
       color: var(--text-2);
       padding: 8px 14px;
       border-radius: var(--radius-pill);
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: var(--shadow-sm);
       transition: all 0.2s;
     }
-    .tool-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-3);
+    .tool-btn:hover {
+      background: #fbf7f2;
+      border-color: #d6bead;
+      color: var(--text-1);
     }
-    .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
 
-    /* ───── MODAL DE SUCESSO & ENVIO ───── */
+    /* ══════════ MODAL DE SUCESSO ══════════ */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(45, 26, 16, 0.75);
       backdrop-filter: blur(8px);
       display: none;
       align-items: center;
@@ -746,20 +887,20 @@
     .modal-overlay.open { display: flex; }
 
     .modal-card {
-      background: #151d30;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #ffffff;
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       width: 100%;
       max-width: 460px;
       padding: 28px 24px;
       text-align: center;
       position: relative;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: var(--shadow-lg);
       animation: modalZoom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes modalZoom {
-      from { transform: scale(0.9); opacity: 0; }
+      from { transform: scale(0.92); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
@@ -767,8 +908,8 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(99,102,241,0.2));
-      border: 2px solid var(--accent-emerald);
+      background: var(--bg-warm-tint);
+      border: 2px solid var(--accent-gold);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -780,19 +921,19 @@
       font-family: 'Outfit', sans-serif;
       font-size: 1.5rem;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--text-1);
       margin-bottom: 6px;
     }
 
     .modal-desc {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--text-2);
       margin-bottom: 20px;
     }
 
     .modal-score-box {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+      background: var(--bg-warm-tint);
+      border: 1px solid #e2d2c3;
       border-radius: var(--radius-md);
       padding: 16px;
       margin-bottom: 22px;
@@ -802,7 +943,7 @@
       font-family: 'Outfit', sans-serif;
       font-size: 2.5rem;
       font-weight: 900;
-      color: var(--accent-gold);
+      color: var(--primary);
       line-height: 1;
     }
 
@@ -810,7 +951,7 @@
       font-size: 0.8rem;
       color: var(--text-2);
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.08em;
       margin-top: 4px;
     }
@@ -842,16 +983,16 @@
     .btn-wa-share:hover { background: #22c55e; transform: translateY(-1px); }
 
     .btn-modal-rank {
-      background: rgba(255, 255, 255, 0.08);
+      background: #fbf7f2;
       border: 1px solid var(--border);
-      color: #fff;
+      color: var(--text-1);
       padding: 12px;
       border-radius: var(--radius-sm);
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-modal-rank:hover { background: rgba(255, 255, 255, 0.14); }
+    .btn-modal-rank:hover { background: #f0e6dc; }
 
     .btn-close-modal {
       position: absolute;
@@ -884,7 +1025,7 @@
   <header>
     <div class="brand-badge">⭐ Escola Sabatina Teens</div>
     <h1>Tabela Oficial de Pontos</h1>
-    <p>Pontuação semanal, ranking automático e registro ao vivo</p>
+    <p>Pontuação semanal, ranking automático e registro oficial da classe</p>
 
     <!-- NAVEGAÇÃO DE ABAS -->
     <div class="nav-tabs">
@@ -899,7 +1040,7 @@
 
   <!-- PWA Install Banner -->
   <div id="installBanner">
-    <p><strong>📲 Instalar Aplicativo?</strong> Salva na tela inicial e funciona 100% offline!</p>
+    <p><strong>📲 Instalar Aplicativo?</strong> Salve no seu celular para abrir sempre sem digitar!</p>
     <button id="installBtn">Instalar</button>
     <button id="dismissBanner">✕</button>
   </div>
@@ -907,24 +1048,37 @@
   <!-- ═══════════ ABA 1: CALCULADORA DE PONTOS ═══════════ -->
   <div id="tabScore" class="tab-content active">
 
-    <!-- IDENTIFICAÇÃO DO ADOLESCENTE -->
+    <!-- SELEÇÃO RÁPIDA DO ADOLESCENTE (ZERO DIGITAÇÃO) -->
     <div class="student-card">
-      <div class="student-card-title">
-        <span>👤</span> Dados do Adolescente
-      </div>
-      <div class="inputs-grid">
-        <div class="input-group">
-          <label class="input-label" for="teenName">Seu Nome / Apelido *</label>
-          <input type="text" id="teenName" class="styled-input" placeholder="Ex: Gabriel Silva" autocomplete="name" />
+      <div class="student-header-row">
+        <div class="student-card-title">
+          <span>👤</span> Selecione o Adolescente
         </div>
-        <div class="input-group">
-          <label class="input-label" for="teenUnit">Unidade / Base (opcional)</label>
-          <input type="text" id="teenUnit" class="styled-input" placeholder="Ex: Base Alpha" />
+        <!-- Data 100% Automática -->
+        <div class="auto-date-badge">
+          <span class="auto-date-dot"></span>
+          <span id="displayCurrentDate">Carregando data...</span>
         </div>
       </div>
-      <div class="input-group" style="margin-top: 10px;">
-        <label class="input-label" for="subDate">Data do Sábado</label>
-        <input type="date" id="subDate" class="styled-input" />
+
+      <div class="select-instruction">
+        Toque diretamente no seu nome para computar seus pontos deste sábado:
+      </div>
+
+      <!-- Grade de chips interativos -->
+      <div class="teen-grid" id="teenGrid">
+        <!-- Preenchido dinamicamente via JS -->
+      </div>
+
+      <!-- Rodapé da seleção com sincronização e opção de visitante -->
+      <div class="selector-footer-row">
+        <div class="current-selected-label">
+          <span>Nome Selecionado:</span>
+          <strong id="selectedNamePreview">Nenhum selecionado</strong>
+        </div>
+        <select id="teenSelect" class="styled-select" onchange="onSelectChange(this.value)">
+          <option value="">-- Ou escolha na lista --</option>
+        </select>
       </div>
 
       <!-- Barra de Progresso de Perguntas Respondidas -->
@@ -964,15 +1118,15 @@
 
     <!-- BARRA DE FERRAMENTAS DO RANKING -->
     <div class="ranking-toolbar">
-      <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;">
-        📊 Classificação Geral
+      <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-1);">
+        📊 Classificação Geral Oficial
       </h3>
       <div style="display:flex;gap:6px;">
         <button class="tool-btn" onclick="exportCSV()" title="Exportar para Excel / Google Planilhas">
           📥 Exportar CSV
         </button>
-        <button class="tool-btn" onclick="confirmClearHistory()" title="Limpar Histórico">
-          🗑️ Limpar
+        <button class="tool-btn" onclick="confirmClearHistory()" title="Restaurar Ranking Oficial">
+          🔄 Restaurar Oficial
         </button>
       </div>
     </div>
@@ -984,7 +1138,7 @@
 
     <!-- HISTÓRICO RECENTE DE REGISTROS -->
     <div style="margin-top:32px;">
-      <h4 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text-2);margin-bottom:12px;">
+      <h4 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text-2);margin-bottom:12px;">
         🕒 Últimos Registros Enviados
       </h4>
       <div id="recentHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
@@ -1002,7 +1156,7 @@
       <span class="score-number" id="totalScore">0 pts</span>
     </div>
     <div class="action-btns">
-      <button class="btn-reset" onclick="resetAll()" title="Zerar respostas">
+      <button class="btn-reset" onclick="resetAll()" title="Zerar respostas desta rodada">
         🔄 Zerar
       </button>
       <button class="btn-submit" onclick="submitScore()">
@@ -1020,7 +1174,7 @@
     <div class="modal-confetti-badge">🎉</div>
     
     <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
-    <p class="modal-desc">Seus pontos deste sábado foram salvos no banco de dados local com sucesso.</p>
+    <p class="modal-desc">Seus pontos foram salvos com sucesso e o ranking já foi atualizado.</p>
 
     <div class="modal-score-box">
       <div class="modal-score-val" id="modalFinalScore">0</div>
@@ -1064,26 +1218,46 @@
   ];
 
   // ─────────────────────────────────────────────────────────────
-  // 2. BANCO DE DADOS LOCAL (STORAGE)
+  // 2. LISTA OFICIAL DE ADOLESCENTES PRÉ-CADASTRADOS (SEM DIGITAÇÃO)
+  // ─────────────────────────────────────────────────────────────
+  const REGISTERED_TEENS = [
+    { name: "Jonas",           initial: "JO", rank: "1º" },
+    { name: "Luiza",           initial: "LU", rank: "2º" },
+    { name: "Isac",            initial: "IS", rank: "3º" },
+    { name: "Vítor Soares",    initial: "VS", rank: "4º" },
+    { name: "Gabriel Santana", initial: "GS", rank: "5º" },
+    { name: "Josué",           initial: "JS", rank: "6º" },
+    { name: "Izaque",          initial: "IZ", rank: "7º" },
+    { name: "Moisés",          initial: "MO", rank: "8º" },
+    { name: "Isaías",          initial: "IA", rank: "9º" },
+    { name: "Alex",            initial: "AL", rank: "10º" },
+    { name: "Nycolas",         initial: "NY", rank: "11º" },
+    { name: "Arthur",          initial: "AR", rank: "12º" },
+    { name: "Juan",            initial: "JU", rank: "13º" },
+    { name: "Nicholas",        initial: "NI", rank: "14º" }
+  ];
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. BANCO DE DADOS LOCAL (STORAGE) & SEED OFICIAL ATUALIZADO
   // ─────────────────────────────────────────────────────────────
   const DB_KEY = 'church_ranking_db_v2';
   const USER_KEY = 'church_ranking_last_user_v2';
 
   const OFFICIAL_SEED_RECORDS = [
-    { id: 'seed_jonas', name: 'Jonas', unit: 'Adolescentes', date: '2026-09-30', total: 3865, answers: [] },
-    { id: 'seed_luiza', name: 'Luiza', unit: 'Adolescentes', date: '2026-09-30', total: 3040, answers: [] },
-    { id: 'seed_isac', name: 'Isac', unit: 'Adolescentes', date: '2026-09-30', total: 2800, answers: [] },
-    { id: 'seed_vitor', name: 'Vítor Soares', unit: 'Adolescentes', date: '2026-09-30', total: 2670, answers: [] },
-    { id: 'seed_gabriel', name: 'Gabriel Santana', unit: 'Adolescentes', date: '2026-09-30', total: 530, answers: [] },
-    { id: 'seed_josue', name: 'Josué', unit: 'Adolescentes', date: '2026-09-30', total: 498, answers: [] },
-    { id: 'seed_izaque', name: 'Izaque', unit: 'Adolescentes', date: '2026-09-30', total: 355, answers: [] },
-    { id: 'seed_moises', name: 'Moisés', unit: 'Adolescentes', date: '2026-09-30', total: 285, answers: [] },
-    { id: 'seed_isaias', name: 'Isaías', unit: 'Adolescentes', date: '2026-09-30', total: 285, answers: [] },
-    { id: 'seed_alex', name: 'Alex', unit: 'Adolescentes', date: '2026-09-30', total: 270, answers: [] },
-    { id: 'seed_nycolas', name: 'Nycolas', unit: 'Adolescentes', date: '2026-09-30', total: 65, answers: [] },
-    { id: 'seed_arthur', name: 'Arthur', unit: 'Adolescentes', date: '2026-09-30', total: 45, answers: [] },
-    { id: 'seed_juan', name: 'Juan', unit: 'Adolescentes', date: '2026-09-30', total: 20, answers: [] },
-    { id: 'seed_nicholas', name: 'Nicholas', unit: 'Adolescentes', date: '2026-09-30', total: 0, answers: [] }
+    { id: 'seed_jonas',    name: 'Jonas',           date: '2026-09-30', total: 3865, answers: [] },
+    { id: 'seed_luiza',    name: 'Luiza',           date: '2026-09-30', total: 3040, answers: [] },
+    { id: 'seed_isac',     name: 'Isac',            date: '2026-09-30', total: 2800, answers: [] },
+    { id: 'seed_vitor',    name: 'Vítor Soares',    date: '2026-09-30', total: 2670, answers: [] },
+    { id: 'seed_gabriel',  name: 'Gabriel Santana', date: '2026-09-30', total: 530,  answers: [] },
+    { id: 'seed_josue',    name: 'Josué',           date: '2026-09-30', total: 498,  answers: [] },
+    { id: 'seed_izaque',   name: 'Izaque',          date: '2026-09-30', total: 355,  answers: [] },
+    { id: 'seed_moises',   name: 'Moisés',          date: '2026-09-30', total: 285,  answers: [] },
+    { id: 'seed_isaias',   name: 'Isaías',          date: '2026-09-30', total: 285,  answers: [] },
+    { id: 'seed_alex',     name: 'Alex',            date: '2026-09-30', total: 270,  answers: [] },
+    { id: 'seed_nycolas',  name: 'Nycolas',         date: '2026-09-30', total: 65,   answers: [] },
+    { id: 'seed_arthur',   name: 'Arthur',          date: '2026-09-30', total: 45,   answers: [] },
+    { id: 'seed_juan',     name: 'Juan',            date: '2026-09-30', total: 20,   answers: [] },
+    { id: 'seed_nicholas', name: 'Nicholas',        date: '2026-09-30', total: 0,    answers: [] }
   ];
 
   const TeenDB = {
@@ -1104,15 +1278,15 @@
       const list = this.getAll();
       list.unshift(entry);
       localStorage.setItem(DB_KEY, JSON.stringify(list));
-      localStorage.setItem(USER_KEY, JSON.stringify({ name: entry.name, unit: entry.unit }));
+      localStorage.setItem(USER_KEY, JSON.stringify({ name: entry.name }));
       return list;
     },
     getLastUser() {
       try {
         const raw = localStorage.getItem(USER_KEY);
-        return raw ? JSON.parse(raw) : { name: '', unit: '' };
+        return raw ? JSON.parse(raw) : { name: '' };
       } catch {
-        return { name: '', unit: '' };
+        return { name: '' };
       }
     },
     clear() {
@@ -1130,7 +1304,6 @@
         if (!grouped[key]) {
           grouped[key] = {
             name: cleanName,
-            unit: sub.unit || '',
             totalPoints: 0,
             count: 0,
             lastDate: sub.date
@@ -1140,7 +1313,6 @@
         grouped[key].count += 1;
         if (sub.date > grouped[key].lastDate) {
           grouped[key].lastDate = sub.date;
-          if (sub.unit) grouped[key].unit = sub.unit;
         }
       });
       return Object.values(grouped).sort((a, b) => b.totalPoints - a.totalPoints);
@@ -1148,26 +1320,122 @@
   };
 
   // ─────────────────────────────────────────────────────────────
-  // 3. ESTADO & INICIALIZAÇÃO DA INTERFACE
+  // 4. ESTADO & INICIALIZAÇÃO DA INTERFACE
   // ─────────────────────────────────────────────────────────────
   const state = new Array(questions.length).fill(null);
   let activeCategory = 'all';
+  let selectedTeenName = '';
 
   function initApp() {
-    // 1. Data atual
-    const today = new Date().toISOString().slice(0, 10);
-    const dateInput = document.getElementById('subDate');
-    if (dateInput) dateInput.value = today;
+    // 1. Data 100% Automática exibida por extenso
+    setupAutoDate();
 
-    // 2. Lembrar nome anterior
-    const lastUser = TeenDB.getLastUser();
-    if (lastUser.name) document.getElementById('teenName').value = lastUser.name;
-    if (lastUser.unit) document.getElementById('teenUnit').value = lastUser.unit;
+    // 2. Montar Grade e Select de Adolescentes
+    setupTeenSelector();
 
-    // 3. Montar perguntas
+    // 3. Montar Lista de Perguntas
     buildQuestionsUI();
-    updateProgress();
+
+    // 4. Inicializar Ranking em segundo plano
     renderRanking();
+  }
+
+  function setupAutoDate() {
+    const now = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const dateFormatted = now.toLocaleDateString('pt-BR', options);
+    
+    // Capitalizar primeira letra do dia da semana
+    const capitalized = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1);
+    
+    const displayEl = document.getElementById('displayCurrentDate');
+    if (displayEl) {
+      displayEl.textContent = capitalized;
+    }
+  }
+
+  function setupTeenSelector() {
+    const grid = document.getElementById('teenGrid');
+    const select = document.getElementById('teenSelect');
+    
+    grid.innerHTML = '';
+    select.innerHTML = '<option value="">-- Selecione na lista suspensa --</option>';
+
+    // Lembrar o último usuário
+    const lastUser = TeenDB.getLastUser();
+    let initialChoice = lastUser.name || (REGISTERED_TEENS[0] ? REGISTERED_TEENS[0].name : '');
+
+    REGISTERED_TEENS.forEach(teen => {
+      // 1. Chip Clicável
+      const chip = document.createElement('div');
+      chip.className = 'teen-chip';
+      chip.id = `teen-chip-${teen.name.replace(/\s+/g, '_')}`;
+      chip.onclick = () => selectTeen(teen.name);
+
+      chip.innerHTML = `
+        <div class="teen-avatar">${teen.initial}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="teen-name-text">${teen.name}</div>
+          <div style="font-size:0.7rem;color:var(--text-3);">${teen.rank}</div>
+        </div>
+      `;
+      grid.appendChild(chip);
+
+      // 2. Opção no Select
+      const opt = document.createElement('option');
+      opt.value = teen.name;
+      opt.textContent = `${teen.name} (${teen.rank})`;
+      select.appendChild(opt);
+    });
+
+    // Opção de Visitante / Novo Aluno
+    const visitorOpt = document.createElement('option');
+    visitorOpt.value = "__custom__";
+    visitorOpt.textContent = "+ Outro / Visitante";
+    select.appendChild(visitorOpt);
+
+    // Selecionar o inicial
+    if (initialChoice) {
+      selectTeen(initialChoice);
+    }
+  }
+
+  function selectTeen(name) {
+    selectedTeenName = name;
+
+    // Atualizar classe visual nos chips
+    document.querySelectorAll('.teen-chip').forEach(chip => chip.classList.remove('selected'));
+    const safeId = `teen-chip-${name.replace(/\s+/g, '_')}`;
+    const activeChip = document.getElementById(safeId);
+    if (activeChip) activeChip.classList.add('selected');
+
+    // Atualizar Dropdown
+    const select = document.getElementById('teenSelect');
+    if (select) {
+      const match = Array.from(select.options).some(o => o.value === name);
+      select.value = match ? name : '';
+    }
+
+    // Atualizar Preview
+    const preview = document.getElementById('selectedNamePreview');
+    if (preview) {
+      preview.textContent = name ? `${name} ✅` : 'Nenhum selecionado';
+    }
+  }
+
+  function onSelectChange(val) {
+    if (!val) return;
+    if (val === '__custom__') {
+      const custom = prompt('Digite o nome do novo adolescente ou visitante:');
+      if (custom && custom.trim()) {
+        const cleanCustom = custom.trim();
+        selectTeen(cleanCustom);
+        const preview = document.getElementById('selectedNamePreview');
+        if (preview) preview.textContent = `${cleanCustom} (Visitante) ✅`;
+      }
+      return;
+    }
+    selectTeen(val);
   }
 
   function buildQuestionsUI() {
@@ -1229,7 +1497,6 @@
   function answer(index, choice) {
     state[index] = choice;
     
-    // Haptic feedback
     if (navigator.vibrate) navigator.vibrate(25);
 
     const card = document.getElementById(`card-${index}`);
@@ -1282,22 +1549,19 @@
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 4. ENVIO AUTOMATIZADO & PERSISTÊNCIA NO BANCO DE DADOS
+  // 5. ENVIO AUTOMATIZADO COM DATA AUTOMÁTICA
   // ─────────────────────────────────────────────────────────────
   function submitScore() {
-    const nameInput = document.getElementById('teenName');
-    const name = nameInput.value.trim();
-
-    if (!name) {
-      nameInput.classList.add('error');
-      nameInput.focus();
-      setTimeout(() => nameInput.classList.remove('error'), 1000);
-      alert('Por favor, digite o seu nome antes de enviar a pontuação!');
+    if (!selectedTeenName) {
+      alert('Por favor, selecione o seu nome clicando em um dos botões acima!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    const unit = document.getElementById('teenUnit').value.trim();
-    const date = document.getElementById('subDate').value || new Date().toISOString().slice(0, 10);
+    // Data capturada 100% automaticamente
+    const now = new Date();
+    const dateISO = now.toISOString().slice(0, 10);
+    const dateFormatted = now.toLocaleDateString('pt-BR');
 
     let total = 0;
     const detailedAnswers = questions.map((q, i) => {
@@ -1315,28 +1579,26 @@
     // 1. Salvar no banco de dados local
     const record = {
       id: 'sub_' + Date.now(),
-      name,
-      unit,
-      date,
+      name: selectedTeenName,
+      date: dateISO,
       total,
       answers: detailedAnswers,
-      submittedAt: new Date().toISOString()
+      submittedAt: now.toISOString()
     };
     TeenDB.save(record);
 
-    // 2. Atualizar ranking em segundo plano
+    // 2. Atualizar ranking
     renderRanking();
 
-    // 3. Disparar confetes! 🎊
+    // 3. Disparar confetes festivos! 🎊
     triggerConfetti();
 
     // 4. Preparar WhatsApp formatado
-    const formattedDate = date.split('-').reverse().join('/');
     const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
     
     let msg = `⭐ *PONTUAÇÃO ESCOLA SABATINA TEENS* ⭐\n`;
-    msg += `👤 *Adolescente:* ${name}${unit ? ` (${unit})` : ''}\n`;
-    msg += `📅 *Data:* ${formattedDate}\n`;
+    msg += `👤 *Adolescente:* ${selectedTeenName}\n`;
+    msg += `📅 *Data:* ${dateFormatted}\n`;
     msg += `🏆 *TOTAL CONQUISTADO:* ${total} PONTOS!\n\n`;
     
     if (yesItems.length > 0) {
@@ -1345,15 +1607,17 @@
         msg += `• ${item.text} (+${item.value} pts)\n`;
       });
     } else {
-      msg += `(Nenhum item pontuado neste sábado)\n`;
+      msg += `Nenhum item marcado com Sim hoje.\n`;
     }
-    msg += `\n_Registrado no ChurchRankingApp_ ✨`;
 
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    msg += `\n🎯 _Enviado via Tabela Oficial de Pontos Teens_`;
+
+    const encodedMsg = encodeURIComponent(msg);
+    const waUrl = `https://api.whatsapp.com/send?text=${encodedMsg}`;
 
     // 5. Exibir Modal de Sucesso
-    document.getElementById('modalTeenName').textContent = `Parabéns, ${name}! 🎉`;
-    document.getElementById('modalFinalScore').textContent = `${total} pts`;
+    document.getElementById('modalTeenName').textContent = `Parabéns, ${selectedTeenName}!`;
+    document.getElementById('modalFinalScore').textContent = `+${total}`;
     document.getElementById('modalWaBtn').href = waUrl;
     document.getElementById('successModal').classList.add('open');
   }
@@ -1363,21 +1627,22 @@
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 5. RENDERIZAÇÃO DO RANKING & HISTÓRICO
+  // 6. RENDERIZAÇÃO DO RANKING, PÓDIO E TABELA
   // ─────────────────────────────────────────────────────────────
   function switchTab(tab) {
     const isScore = tab === 'score';
+    
     document.getElementById('tabScore').classList.toggle('active', isScore);
     document.getElementById('tabRank').classList.toggle('active', !isScore);
 
     document.getElementById('tabScoreBtn').classList.toggle('active', isScore);
     document.getElementById('tabRankBtn').classList.toggle('active', !isScore);
 
-    const stickyBar = document.getElementById('stickyBar');
-    if (stickyBar) stickyBar.style.display = isScore ? 'block' : 'none';
+    document.getElementById('stickyBar').style.display = isScore ? 'block' : 'none';
 
     if (!isScore) {
       renderRanking();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -1390,8 +1655,8 @@
     if (!leaderboard.length) {
       podium.innerHTML = '';
       list.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">🏆</div>
+        <div style="text-align:center;padding:40px 20px;color:var(--text-3);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🏆</div>
           <h4>Nenhum ponto registrado ainda</h4>
           <p>Preencha sua pontuação na aba anterior e clique em "Salvar & Enviar" para inaugurar o ranking!</p>
         </div>
@@ -1411,7 +1676,7 @@
         ${top2 ? `
           <div class="podium-avatar">🥈</div>
           <div class="podium-name">${top2.name}</div>
-          <div class="podium-pts">${top2.totalPoints} pts</div>
+          <div class="podium-pts">${top2.totalPoints.toLocaleString('pt-BR')} pts</div>
           <div class="podium-pillar">2</div>
         ` : ''}
       </div>
@@ -1423,7 +1688,7 @@
           🥇
         </div>
         <div class="podium-name">${top1.name}</div>
-        <div class="podium-pts">${top1.totalPoints} pts</div>
+        <div class="podium-pts">${top1.totalPoints.toLocaleString('pt-BR')} pts</div>
         <div class="podium-pillar">1</div>
       </div>
 
@@ -1432,7 +1697,7 @@
         ${top3 ? `
           <div class="podium-avatar">🥉</div>
           <div class="podium-name">${top3.name}</div>
-          <div class="podium-pts">${top3.totalPoints} pts</div>
+          <div class="podium-pts">${top3.totalPoints.toLocaleString('pt-BR')} pts</div>
           <div class="podium-pillar">3</div>
         ` : ''}
       </div>
@@ -1442,36 +1707,40 @@
     list.innerHTML = '';
     leaderboard.forEach((user, index) => {
       const pos = index + 1;
-      const rankClass = pos === 1 ? 'top-1' : pos === 2 ? 'top-2' : pos === 3 ? 'top-3' : '';
-      const badgeIcon = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `#${pos}`;
-
       const row = document.createElement('div');
       row.className = 'leader-row';
+
+      let rankClass = '';
+      let medal = `#${pos}`;
+      if (pos === 1) { rankClass = 'top-1'; medal = '🥇'; }
+      else if (pos === 2) { rankClass = 'top-2'; medal = '🥈'; }
+      else if (pos === 3) { rankClass = 'top-3'; medal = '🥉'; }
+
       row.innerHTML = `
-        <div class="leader-rank ${rankClass}">${badgeIcon}</div>
+        <div class="leader-rank ${rankClass}">${medal}</div>
         <div class="leader-info">
           <div class="leader-name">${user.name}</div>
-          <div class="leader-sub">${user.unit ? `${user.unit} • ` : ''}${user.count} sábado(s) registrado(s)</div>
+          <div class="leader-sub">${user.count} lançamento(s) somados</div>
         </div>
-        <div class="leader-score">${user.totalPoints} pts</div>
+        <div class="leader-score">${user.totalPoints.toLocaleString('pt-BR')} pts</div>
       `;
       list.appendChild(row);
     });
 
-    // ÚLTIMOS REGISTROS
-    const all = TeenDB.getAll().slice(0, 6);
+    // ÚLTIMOS REGISTROS ENVIADOS
+    const all = TeenDB.getAll().slice(0, 10);
     recent.innerHTML = '';
     all.forEach(sub => {
       const card = document.createElement('div');
-      card.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;';
-      const fDate = sub.date.split('-').reverse().join('/');
+      card.style.cssText = 'background:#ffffff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;box-shadow:var(--shadow-sm);';
+      const fDate = sub.date ? sub.date.split('-').reverse().join('/') : '';
       card.innerHTML = `
         <div>
-          <strong>${sub.name}</strong>
+          <strong style="color:var(--text-1);">${sub.name}</strong>
           <span style="color:var(--text-3);font-size:0.78rem;margin-left:6px;">(${fDate})</span>
         </div>
-        <div style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--accent-gold);">
-          +${sub.total} pts
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--primary);">
+          +${sub.total.toLocaleString('pt-BR')} pts
         </div>
       `;
       recent.appendChild(card);
@@ -1485,14 +1754,14 @@
       return;
     }
 
-    let csv = 'Data;Nome;Unidade;Pontos Cumpridos;Itens Cumpridos\n';
+    let csv = 'Data;Nome;Pontos Cumpridos;Itens Cumpridos\n';
     all.forEach(sub => {
-      const fDate = sub.date.split('-').reverse().join('/');
-      const cumpridos = sub.answers
+      const fDate = sub.date ? sub.date.split('-').reverse().join('/') : '';
+      const cumpridos = (sub.answers || [])
         .filter(a => a.choice === 'yes')
         .map(a => `${a.text} (+${a.value})`)
         .join(' | ');
-      csv += `"${fDate}";"${sub.name}";"${sub.unit || ''}";${sub.total};"${cumpridos}"\n`;
+      csv += `"${fDate}";"${sub.name}";${sub.total};"${cumpridos}"\n`;
     });
 
     const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
@@ -1505,7 +1774,7 @@
   }
 
   function confirmClearHistory() {
-    if (confirm('Deseja restaurar o ranking para a pontuação oficial atualizada deste sábado?\n\n(OK = Restaurar placar oficial atualizado)')) {
+    if (confirm('Deseja restaurar o ranking para a pontuação oficial atualizada deste sábado?\n\n(OK = Restaurar placar oficial com Jonas, Luiza, Isac, Vítor...)')) {
       TeenDB.resetToOfficial();
       renderRanking();
       alert('Ranking restaurado com sucesso para a pontuação oficial!');
@@ -1513,7 +1782,7 @@
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 6. ANIMAÇÃO DE CONFETES NATIVA (100% OFFLINE / ZERO DEPENDÊNCIAS)
+  // 7. ANIMAÇÃO DE CONFETES NATIVA
   // ─────────────────────────────────────────────────────────────
   function triggerConfetti() {
     const canvas = document.getElementById('confettiCanvas');
@@ -1523,7 +1792,7 @@
     canvas.height = window.innerHeight;
 
     const particles = [];
-    const colors = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#38bdf8', '#fbbf24'];
+    const colors = ['#c88226', '#15803d', '#7c4424', '#f59e0b', '#dc2626', '#b45309'];
 
     for (let i = 0; i < 90; i++) {
       particles.push({
@@ -1546,7 +1815,7 @@
       particles.forEach(p => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.4; // gravidade
+        p.vy += 0.4;
         p.rotation += p.rSpeed;
         p.alpha -= 0.012;
 
@@ -1573,7 +1842,7 @@
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 7. PWA - INSTALAÇÃO & SERVICE WORKER
+  // 8. PWA - INSTALAÇÃO & SERVICE WORKER
   // ─────────────────────────────────────────────────────────────
   let deferredPrompt = null;
   const banner = document.getElementById('installBanner');

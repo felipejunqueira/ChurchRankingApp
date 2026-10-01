@@ -1,10 +1,11 @@
-const CACHE_NAME = 'pontos-es-v6';
+const CACHE_NAME = 'pontos-es-v7';
 
 // Core files only — fonts load from network (or cache if already fetched)
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './favicon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];

@@ -1,14 +1,20 @@
 {
   "name": "Tabela Oficial de Pontos — Escola Sabatina",
   "short_name": "TabelaTeens",
-  "description": "Calculadora de pontos da Escola Sabatina dos Adolescentes",
+  "description": "Calculadora e Ranking Oficial da Escola Sabatina dos Adolescentes",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f0c29",
-  "theme_color": "#0f0c29",
+  "background_color": "#faf7f2",
+  "theme_color": "#7c4424",
   "orientation": "portrait",
   "lang": "pt-BR",
   "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
