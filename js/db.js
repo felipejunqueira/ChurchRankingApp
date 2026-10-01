@@ -3,8 +3,8 @@
  * BANCO DE DADOS LOCAL (STORAGE) & EXPORTAÇÃO
  * ─────────────────────────────────────────────────────────────
  */
-const DB_KEY = 'church_ranking_db_v8';
-const USER_KEY = 'church_ranking_last_user_v8';
+const DB_KEY = 'church_ranking_db_v9';
+const USER_KEY = 'church_ranking_last_user_v9';
 
 const TeenDB = {
   getAll() {
@@ -92,12 +92,4 @@ function exportCSV() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-}
-
-function confirmClearHistory() {
-  if (confirm('Deseja restaurar o ranking para a pontuação oficial atualizada deste sábado?\n\n(OK = Restaurar placar oficial com Jonas, Luiza, Isac, Vítor...)')) {
-    TeenDB.resetToOfficial();
-    renderRanking();
-    alert('Ranking restaurado com sucesso para a pontuação oficial!');
-  }
 }
