@@ -22,7 +22,24 @@ const TeenDB = {
   },
   save(entry) {
     const list = this.getAll();
-    list.unshift(entry);
+    const entryDate = entry.date;
+    const entryName = (entry.name || '').trim().toLowerCase();
+
+    // Se já houver registro deste adolescente na mesma data, atualiza com os novos dados
+    const existingIndex = list.findIndex(item => 
+      item.date === entryDate && (item.name || '').trim().toLowerCase() === entryName
+    );
+
+    if (existingIndex >= 0) {
+      list[existingIndex] = {
+        ...list[existingIndex],
+        ...entry,
+        id: list[existingIndex].id // Preserva ID original
+      };
+    } else {
+      list.unshift(entry);
+    }
+
     localStorage.setItem(DB_KEY, JSON.stringify(list));
     localStorage.setItem(USER_KEY, JSON.stringify({ name: entry.name }));
     return list;
@@ -45,19 +62,20 @@ const TeenDB = {
     const all = this.getAll();
     const grouped = {};
     all.forEach(sub => {
-      const cleanName = sub.name.trim();
+      const cleanName = (sub.name || '').trim();
+      if (!cleanName) return;
       const key = cleanName.toLowerCase();
       if (!grouped[key]) {
         grouped[key] = {
           name: cleanName,
           totalPoints: 0,
           count: 0,
-          lastDate: sub.date
+          lastDate: sub.date || ''
         };
       }
-      grouped[key].totalPoints += Number(sub.total);
+      grouped[key].totalPoints += Number(sub.total || 0);
       grouped[key].count += 1;
-      if (sub.date > grouped[key].lastDate) {
+      if (sub.date && sub.date > grouped[key].lastDate) {
         grouped[key].lastDate = sub.date;
       }
     });
@@ -75,7 +93,7 @@ function exportCSV() {
   let csv = 'Data;Nome;Pontos Cumpridos;Itens Cumpridos\n';
   const sorted = [...all].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   sorted.forEach(sub => {
-    const fDate = sub.date ? sub.date.split('-').reverse().join('/') : '';
+    const fDate = formatDateBR(sub.date);
     const cumpridos = (sub.answers || [])
       .filter(a => a.choice === 'yes')
       .map(a => `${a.text} (+${a.value})`)
@@ -87,7 +105,7 @@ function exportCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `ranking_escola_sabatina_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `ranking_escola_sabatina_${getLocalDateISO()}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

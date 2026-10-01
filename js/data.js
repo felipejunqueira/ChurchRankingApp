@@ -4,25 +4,42 @@
  * ─────────────────────────────────────────────────────────────
  */
 const questions = [
-  { category: "Liderança",       text: "Dirigir a Escola Sabatina",                                        value: 150 },
-  { category: "Missão Especial", text: "Levar Visitas NÃO ADVENTISTAS (por pessoa)",                       value: 110 },
-  { category: "Estudo Diário",   text: "Passar a Lição da Escola Sabatina",                                value: 105 },
-  { category: "Estudo Profundo", text: "Resumo Manuscrito do Livro + Explicação Oral",                     value: 100, note: "90 pts resumo + 10 pts explicação oral" },
-  { category: "Iniciativa",      text: "Trazer Inovações para a sala",                                     value: 100 },
-  { category: "Missão",          text: "Ser instrutor bíblico",                                            value: 90  },
-  { category: "Competição",      text: "Ter ficado em primeiro lugar no quiz",                             value: 75  },
-  { category: "Engajamento",     text: "Participação Ativa nas Redes Sociais da Escola Sabatina (aparecer, falar, curtir, comentar, compartilhar)", value: 65 },
-  { category: "Serviço",         text: "Trabalho Missionário na semana",                                   value: 65  },
-  { category: "Comunidade",      text: "Participar de Pequenos Grupos",                                    value: 65, note: "por semana" },
-  { category: "Assiduidade",     text: "Preencher os apontamentos no app 7me",                             value: 60, note: "por semana" },
-  { category: "Generosidade",    text: "Oferta Caixa dos Adolescentes (5 reais por sábado)",               value: 60  },
-  { category: "Mordomia",        text: "Oferta Escola Sabatina",                                           value: 60  },
-  { category: "Pontualidade",    text: "Chegar no horário (até as 08:59h)",                                value: 50  },
-  { category: "Zelo",            text: "Arrumar a sala / cuidar da lousa",                                 value: 45  },
-  { category: "Espiritualidade", text: "Passar a Carta Missionária",                                       value: 40  },
-  { category: "Missão real",     text: "Orar em Público",                                                  value: 20  },
-  { category: "Compromisso",     text: "Ter assinatura da lição da escola sabatina",                       value: 5,  note: "por sábado" },
+  { group: "Liderança",  category: "Liderança",       text: "Dirigir a Escola Sabatina",                                        value: 150 },
+  { group: "Missão",     category: "Missão Especial", text: "Levar Visitas NÃO ADVENTISTAS (por pessoa)",                       value: 110 },
+  { group: "Estudo",     category: "Estudo Diário",   text: "Passar a Lição da Escola Sabatina",                                value: 105 },
+  { group: "Estudo",     category: "Estudo Profundo", text: "Resumo Manuscrito do Livro + Explicação Oral",                     value: 100, note: "90 pts resumo + 10 pts explicação oral" },
+  { group: "Liderança",  category: "Iniciativa",      text: "Trazer Inovações para a sala",                                     value: 100 },
+  { group: "Missão",     category: "Missão",          text: "Ser instrutor bíblico",                                            value: 90  },
+  { group: "Missão",     category: "Competição",      text: "Ter ficado em primeiro lugar no quiz",                             value: 75  },
+  { group: "Missão",     category: "Engajamento",     text: "Participação Ativa nas Redes Sociais da Escola Sabatina (aparecer, falar, curtir, comentar, compartilhar)", value: 65 },
+  { group: "Comunidade", category: "Serviço",         text: "Trabalho Missionário na semana",                                   value: 65  },
+  { group: "Comunidade", category: "Comunidade",      text: "Participar de Pequenos Grupos",                                    value: 65, note: "por semana" },
+  { group: "Zelo",       category: "Assiduidade",     text: "Preencher os apontamentos no app 7me",                             value: 60, note: "por semana" },
+  { group: "Zelo",       category: "Generosidade",    text: "Oferta Caixa dos Adolescentes (5 reais por sábado)",               value: 60  },
+  { group: "Zelo",       category: "Mordomia",        text: "Oferta Escola Sabatina",                                           value: 60  },
+  { group: "Zelo",       category: "Pontualidade",    text: "Chegar no horário (até as 08:59h)",                                value: 50  },
+  { group: "Zelo",       category: "Zelo",            text: "Arrumar a sala / cuidar da lousa",                                 value: 45  },
+  { group: "Zelo",       category: "Espiritualidade", text: "Passar a Carta Missionária",                                       value: 40  },
+  { group: "Missão",     category: "Missão real",     text: "Orar em Público",                                                  value: 20  },
+  { group: "Zelo",       category: "Compromisso",     text: "Ter assinatura da lição da escola sabatina",                       value: 5,  note: "por sábado" },
 ];
+
+/**
+ * Utilitários Oficiais de Data (Sem fuso UTC / sem gambiarra de timezone)
+ */
+function getLocalDateISO(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatDateBR(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dateStr;
+}
 
 /**
  * ─────────────────────────────────────────────────────────────

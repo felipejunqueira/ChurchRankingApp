@@ -129,10 +129,8 @@
 
     <!-- BARRA DE FERRAMENTAS DO RANKING -->
     <div class="ranking-toolbar">
-      <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-1);">
-        Classificação Geral
-      </h3>
-      <div style="display:flex;gap:6px;">
+      <h3 class="ranking-heading">Classificação Geral</h3>
+      <div class="ranking-actions">
         <button class="tool-btn" onclick="exportCSV()" title="Exportar para Excel / Google Planilhas">
           Exportar Planilha (CSV)
         </button>
@@ -145,11 +143,9 @@
     </div>
 
     <!-- HISTÓRICO RECENTE DE REGISTROS -->
-    <div style="margin-top:32px;">
-      <h4 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text-2);margin-bottom:12px;">
-        Últimos Registros Salvos
-      </h4>
-      <div id="recentHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <div class="history-section">
+      <h4 class="history-heading">Últimos Registros Salvos</h4>
+      <div id="recentHistoryList" class="history-list"></div>
     </div>
 
   </div>

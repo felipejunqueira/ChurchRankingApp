@@ -88,15 +88,8 @@
   transform: translateY(-1px);
 }
 
-.teen-chip-visitor {
-  border-style: dashed;
-  background: #fdfaf6;
-}
-
-.teen-chip-visitor:hover {
-  border-color: var(--primary);
-  background: #fcf4eb;
-}
+.teen-chip-visitor { border-style: dashed; background: #fdfaf6; }
+.teen-chip-visitor:hover { border-color: var(--primary); background: #fcf4eb; }
 
 .teen-chip.selected {
   background: var(--primary-gradient);
@@ -122,10 +115,7 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.teen-chip.selected .teen-avatar {
-  background: rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-}
+.teen-chip.selected .teen-avatar { background: rgba(255, 255, 255, 0.22); color: #ffffff; }
 
 .teen-name-text {
   font-size: 0.86rem;
@@ -136,9 +126,7 @@
   text-overflow: ellipsis;
 }
 
-.teen-chip.selected .teen-name-text {
-  color: #ffffff;
-}
+.teen-chip.selected .teen-name-text { color: #ffffff; }
 
 /* Rodapé do Seletor */
 .selector-footer-row {
@@ -288,6 +276,10 @@
   gap: 12px;
 }
 
+.q-body {
+  flex: 1;
+}
+
 .q-cat-tag {
   display: inline-block;
   font-size: 0.72rem;
@@ -368,11 +360,7 @@
   box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
 }
 
-.btn-no {
-  background: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
-}
+.btn-no { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
 .btn-no:hover { background: #fee2e2; }
 .btn-no.selected {
   background: #dc2626;

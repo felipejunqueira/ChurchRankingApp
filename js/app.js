@@ -4,25 +4,22 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-let isSubmitting = false;
-
 function submitScore() {
-  if (isSubmitting) return;
+  if (AppState.isSubmitting) return;
 
-  if (!selectedTeenName) {
+  if (!AppState.selectedTeenName) {
     alert('Por favor, selecione o seu nome clicando em um dos botões acima!');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
-  // Data capturada 100% automaticamente
-  const now = new Date();
-  const dateISO = now.toISOString().slice(0, 10);
-  const dateFormatted = now.toLocaleDateString('pt-BR');
+  // Data capturada localmente (sem viés UTC de fuso horário)
+  const dateISO = getLocalDateISO();
+  const dateFormatted = formatDateBR(dateISO);
 
   let total = 0;
   const detailedAnswers = questions.map((q, i) => {
-    const choice = state[i] || 'no';
+    const choice = AppState.getAnswer(i) || 'no';
     if (choice === 'yes') total += q.value;
     return {
       index: i,
@@ -40,31 +37,31 @@ function submitScore() {
   }
 
   // Trava temporária contra duplo clique / spam
-  isSubmitting = true;
-  setTimeout(() => { isSubmitting = false; }, 1500);
+  AppState.isSubmitting = true;
+  setTimeout(() => { AppState.isSubmitting = false; }, 1500);
 
-  // 1. Salvar no banco de dados local
+  // 1. Salvar no banco de dados local com prevenção automática de duplicatas na mesma data
   const record = {
     id: 'sub_' + Date.now(),
-    name: selectedTeenName,
+    name: AppState.selectedTeenName,
     date: dateISO,
     total,
     answers: detailedAnswers,
-    submittedAt: now.toISOString()
+    submittedAt: new Date().toISOString()
   };
   TeenDB.save(record);
 
-  // 2. Atualizar ranking
+  // 2. Atualizar ranking em tempo real
   renderRanking();
 
-  // 3. Disparar confetes festivos!
+  // 3. Disparar confetes festivos com controle de ciclo de vida
   triggerConfetti();
 
-  // 4. Preparar WhatsApp formatado
+  // 4. Preparar mensagem formatada para WhatsApp
   const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
   
   let msg = `*ESCOLA SABATINA DOS ADOLESCENTES*\n`;
-  msg += `*Adolescente:* ${selectedTeenName}\n`;
+  msg += `*Adolescente:* ${AppState.selectedTeenName}\n`;
   msg += `*Data:* ${dateFormatted}\n`;
   msg += `*Pontuação da semana:* +${total} pontos\n\n`;
   
@@ -83,10 +80,15 @@ function submitScore() {
   const waUrl = `https://api.whatsapp.com/send?text=${encodedMsg}`;
 
   // 5. Exibir Modal de Sucesso
-  document.getElementById('modalTeenName').textContent = `Parabéns, ${selectedTeenName}!`;
-  document.getElementById('modalFinalScore').textContent = `+${total}`;
-  document.getElementById('modalWaBtn').href = waUrl;
-  document.getElementById('successModal').classList.add('open');
+  const modalName = document.getElementById('modalTeenName');
+  const modalScore = document.getElementById('modalFinalScore');
+  const modalWa = document.getElementById('modalWaBtn');
+  const modal = document.getElementById('successModal');
+
+  if (modalName) modalName.textContent = `Parabéns, ${AppState.selectedTeenName}!`;
+  if (modalScore) modalScore.textContent = `+${total}`;
+  if (modalWa) modalWa.href = waUrl;
+  if (modal) modal.classList.add('open');
 }
 
 function closeModal() {
@@ -108,10 +110,19 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
 
+// Animação de confetes com cancelamento do frame anterior (previne vazamento de CPU)
+let confettiAnimId = null;
+
 function triggerConfetti() {
   const canvas = document.getElementById('confettiCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+
+  if (confettiAnimId) {
+    cancelAnimationFrame(confettiAnimId);
+    confettiAnimId = null;
+  }
+
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
@@ -157,12 +168,13 @@ function triggerConfetti() {
 
     frame++;
     if (alive && frame < 120) {
-      requestAnimationFrame(render);
+      confettiAnimId = requestAnimationFrame(render);
     } else {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiAnimId = null;
     }
   }
-  requestAnimationFrame(render);
+  confettiAnimId = requestAnimationFrame(render);
 }
 
 // ─── PWA & Service Worker ───

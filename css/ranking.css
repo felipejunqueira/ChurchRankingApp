@@ -331,3 +331,97 @@
   pointer-events: none;
   z-index: 1000;
 }
+
+/* Toolbar Semântica do Ranking */
+.ranking-heading {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+
+.ranking-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Seção de Histórico Recente */
+.history-section {
+  margin-top: 32px;
+}
+
+.history-heading {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.history-card:hover {
+  transform: translateX(2px);
+  box-shadow: var(--shadow-md);
+}
+
+.history-card-name {
+  color: var(--text-1);
+  font-weight: 700;
+}
+
+.history-card-date {
+  color: var(--text-3);
+  font-size: 0.78rem;
+  margin-left: 6px;
+}
+
+.history-card-score {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* Estado Vazio Elegante */
+.empty-ranking {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-3);
+}
+
+.empty-ranking-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.empty-ranking-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-1);
+  margin-bottom: 6px;
+}
+
+.empty-ranking-desc {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  max-width: 360px;
+  margin: 0 auto;
+}

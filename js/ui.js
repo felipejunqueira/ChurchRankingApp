@@ -1,11 +1,41 @@
 /**
  * ─────────────────────────────────────────────────────────────
- * INTERFACE DO USUÁRIO, COMPONENTES & ESTADOS
+ * ESTADO CENTRALIZADO DA APLICAÇÃO (SEM VARIÁVEIS SOLTAS)
  * ─────────────────────────────────────────────────────────────
  */
-const state = new Array(questions.length).fill(null);
-let activeCategory = 'all';
-let selectedTeenName = '';
+const AppState = {
+  answers: new Array(questions.length).fill(null),
+  activeCategory: 'all',
+  selectedTeenName: '',
+  isSubmitting: false,
+
+  setAnswer(index, choice) {
+    this.answers[index] = choice;
+  },
+  getAnswer(index) {
+    return this.answers[index];
+  },
+  calculateTotal() {
+    return this.answers.reduce((acc, choice, idx) => {
+      return choice === 'yes' ? acc + questions[idx].value : acc;
+    }, 0);
+  },
+  getAnsweredCount() {
+    return this.answers.filter(a => a !== null).length;
+  },
+  hasAnyAnswer() {
+    return this.answers.some(a => a !== null);
+  },
+  reset() {
+    this.answers.fill(null);
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────────
+ * INTERFACE DO USUÁRIO & COMPONENTES VISUAIS
+ * ─────────────────────────────────────────────────────────────
+ */
 
 function setupAutoDate() {
   const now = new Date();
@@ -25,12 +55,14 @@ function setupTeenSelector() {
   const grid = document.getElementById('teenGrid');
   const select = document.getElementById('teenSelect');
   
+  if (!grid || !select) return;
+
   grid.innerHTML = '';
   select.innerHTML = '<option value="">-- Selecione na lista suspensa --</option>';
 
-  // Lembrar o último usuário
+  // Lembrar o último usuário selecionado
   const lastUser = TeenDB.getLastUser();
-  let initialChoice = lastUser.name || (REGISTERED_TEENS[0] ? REGISTERED_TEENS[0].name : '');
+  const initialChoice = lastUser.name || (REGISTERED_TEENS[0] ? REGISTERED_TEENS[0].name : '');
 
   // 1. Chips dos Adolescentes Cadastrados
   REGISTERED_TEENS.forEach(teen => {
@@ -98,12 +130,12 @@ function promptCustomVisitor() {
   } else {
     // Se cancelou ou deixou vazio, restaura o dropdown
     const select = document.getElementById('teenSelect');
-    if (select) select.value = selectedTeenName || '';
+    if (select) select.value = AppState.selectedTeenName || '';
   }
 }
 
 function selectTeen(name, isVisitor = false) {
-  selectedTeenName = name;
+  AppState.selectedTeenName = name;
 
   // Atualizar classe visual nos chips
   document.querySelectorAll('.teen-chip').forEach(chip => chip.classList.remove('selected'));
@@ -144,10 +176,11 @@ function onSelectChange(val) {
 
 function buildQuestionsUI() {
   const list = document.getElementById('questionsList');
+  if (!list) return;
   list.innerHTML = '';
 
   questions.forEach((q, i) => {
-    const isVisible = checkCategoryMatch(q.category, activeCategory);
+    const isVisible = checkCategoryMatch(q, AppState.activeCategory);
     const card = document.createElement('div');
     card.className = 'question-card';
     card.id = `card-${i}`;
@@ -155,7 +188,7 @@ function buildQuestionsUI() {
 
     card.innerHTML = `
       <div class="q-top-row">
-        <div style="flex:1">
+        <div class="q-body">
           <span class="q-cat-tag">${q.category}</span>
           <div class="q-text">${q.text}</div>
           ${q.note ? `<div class="q-note">${q.note}</div>` : ''}
@@ -175,31 +208,25 @@ function buildQuestionsUI() {
   });
 }
 
-function checkCategoryMatch(cat, filter) {
-  if (filter === 'all') return true;
-  if (filter === 'Liderança' && cat.includes('Liderança')) return true;
-  if (filter === 'Missão' && (cat.includes('Missão') || cat.includes('Competição') || cat.includes('Engajamento'))) return true;
-  if (filter === 'Estudo' && cat.includes('Estudo')) return true;
-  if (filter === 'Comunidade' && (cat.includes('Comunidade') || cat.includes('Serviço'))) return true;
-  if (filter === 'Zelo' && (cat.includes('Zelo') || cat.includes('Generosidade') || cat.includes('Mordomia') || cat.includes('Pontualidade') || cat.includes('Assiduidade') || cat.includes('Compromisso') || cat.includes('Espiritualidade'))) return true;
-  return false;
+function checkCategoryMatch(question, filter) {
+  return filter === 'all' || question.group === filter;
 }
 
 function filterCategory(cat, btn) {
-  activeCategory = cat;
+  AppState.activeCategory = cat;
   document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
   questions.forEach((q, i) => {
     const card = document.getElementById(`card-${i}`);
     if (card) {
-      card.style.display = checkCategoryMatch(q.category, cat) ? 'flex' : 'none';
+      card.style.display = checkCategoryMatch(q, cat) ? 'flex' : 'none';
     }
   });
 }
 
 function answer(index, choice) {
-  state[index] = choice;
+  AppState.setAnswer(index, choice);
   
   if (navigator.vibrate) navigator.vibrate(25);
 
@@ -207,31 +234,40 @@ function answer(index, choice) {
   const yesBtn = document.getElementById(`yes-${index}`);
   const noBtn = document.getElementById(`no-${index}`);
 
-  yesBtn.classList.toggle('selected', choice === 'yes');
-  noBtn.classList.toggle('selected', choice === 'no');
+  if (yesBtn) yesBtn.classList.toggle('selected', choice === 'yes');
+  if (noBtn) noBtn.classList.toggle('selected', choice === 'no');
 
-  card.classList.toggle('answered-yes', choice === 'yes');
-  card.classList.toggle('answered-no', choice === 'no');
+  if (card) {
+    card.classList.toggle('answered-yes', choice === 'yes');
+    card.classList.toggle('answered-no', choice === 'no');
+  }
 
   updateTotal();
   updateProgress();
 }
 
 function updateTotal() {
-  let total = 0;
-  state.forEach((s, i) => {
-    if (s === 'yes') total += questions[i].value;
-  });
-
+  const total = AppState.calculateTotal();
   const el = document.getElementById('totalScore');
+  if (!el) return;
+
   el.textContent = `${total} pts`;
-  el.classList.remove('pop');
-  void el.offsetWidth;
-  el.classList.add('pop');
+
+  // Animação suave nativa via Web Animations API (elimina hack de reflow forçado)
+  if (typeof el.animate === 'function') {
+    el.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.2)' },
+      { transform: 'scale(1)' }
+    ], {
+      duration: 220,
+      easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+    });
+  }
 }
 
 function updateProgress() {
-  const answered = state.filter(s => s !== null).length;
+  const answered = AppState.getAnsweredCount();
   const total = questions.length;
   const pct = Math.round((answered / total) * 100);
 
@@ -243,10 +279,10 @@ function updateProgress() {
 }
 
 function resetAll() {
-  if (state.some(s => s !== null)) {
+  if (AppState.hasAnyAnswer()) {
     if (!confirm('Deseja zerar as respostas da pontuação atual?')) return;
   }
-  state.fill(null);
+  AppState.reset();
   buildQuestionsUI();
   updateTotal();
   updateProgress();
@@ -255,13 +291,19 @@ function resetAll() {
 function switchTab(tab) {
   const isScore = tab === 'score';
   
-  document.getElementById('tabScore').classList.toggle('active', isScore);
-  document.getElementById('tabRank').classList.toggle('active', !isScore);
+  const tabScore = document.getElementById('tabScore');
+  const tabRank = document.getElementById('tabRank');
+  const tabScoreBtn = document.getElementById('tabScoreBtn');
+  const tabRankBtn = document.getElementById('tabRankBtn');
+  const stickyBar = document.getElementById('stickyBar');
 
-  document.getElementById('tabScoreBtn').classList.toggle('active', isScore);
-  document.getElementById('tabRankBtn').classList.toggle('active', !isScore);
+  if (tabScore) tabScore.classList.toggle('active', isScore);
+  if (tabRank) tabRank.classList.toggle('active', !isScore);
 
-  document.getElementById('stickyBar').style.display = isScore ? 'block' : 'none';
+  if (tabScoreBtn) tabScoreBtn.classList.toggle('active', isScore);
+  if (tabRankBtn) tabRankBtn.classList.toggle('active', !isScore);
+
+  if (stickyBar) stickyBar.style.display = isScore ? 'block' : 'none';
 
   if (!isScore) {
     renderRanking();
@@ -276,15 +318,17 @@ function renderRanking() {
   const recent = document.getElementById('recentHistoryList');
 
   if (!leaderboard.length) {
-    podium.innerHTML = '';
-    list.innerHTML = `
-      <div style="text-align:center;padding:40px 20px;color:var(--text-3);">
-        <div style="font-size:2.5rem;margin-bottom:12px;">🏆</div>
-        <h4>Nenhum ponto registrado ainda</h4>
-        <p>Preencha sua pontuação na aba anterior e clique em "Salvar & Enviar" para inaugurar o ranking!</p>
-      </div>
-    `;
-    recent.innerHTML = '';
+    if (podium) podium.innerHTML = '';
+    if (list) {
+      list.innerHTML = `
+        <div class="empty-ranking">
+          <div class="empty-ranking-icon">🏆</div>
+          <h4 class="empty-ranking-title">Nenhum ponto registrado ainda</h4>
+          <p class="empty-ranking-desc">Preencha sua pontuação na aba anterior e salve para inaugurar o ranking!</p>
+        </div>
+      `;
+    }
+    if (recent) recent.innerHTML = '';
     return;
   }
 
@@ -293,81 +337,87 @@ function renderRanking() {
   const top2 = leaderboard[1];
   const top3 = leaderboard[2];
 
-  podium.innerHTML = `
-    <!-- 2º LUGAR -->
-    <div class="podium-spot second">
-      ${top2 ? `
-        <div class="podium-avatar">🥈</div>
-        <div class="podium-name">${top2.name}</div>
-        <div class="podium-pts">${top2.totalPoints.toLocaleString('pt-BR')} pts</div>
-        <div class="podium-pillar">2</div>
-      ` : ''}
-    </div>
-
-    <!-- 1º LUGAR -->
-    <div class="podium-spot first">
-      <div class="podium-avatar">
-        <span class="podium-crown">👑</span>
-        🥇
+  if (podium) {
+    podium.innerHTML = `
+      <!-- 2º LUGAR -->
+      <div class="podium-spot second">
+        ${top2 ? `
+          <div class="podium-avatar">🥈</div>
+          <div class="podium-name">${top2.name}</div>
+          <div class="podium-pts">${top2.totalPoints.toLocaleString('pt-BR')} pts</div>
+          <div class="podium-pillar">2</div>
+        ` : ''}
       </div>
-      <div class="podium-name">${top1.name}</div>
-      <div class="podium-pts">${top1.totalPoints.toLocaleString('pt-BR')} pts</div>
-      <div class="podium-pillar">1</div>
-    </div>
 
-    <!-- 3º LUGAR -->
-    <div class="podium-spot third">
-      ${top3 ? `
-        <div class="podium-avatar">🥉</div>
-        <div class="podium-name">${top3.name}</div>
-        <div class="podium-pts">${top3.totalPoints.toLocaleString('pt-BR')} pts</div>
-        <div class="podium-pillar">3</div>
-      ` : ''}
-    </div>
-  `;
+      <!-- 1º LUGAR -->
+      <div class="podium-spot first">
+        <div class="podium-avatar">
+          <span class="podium-crown">👑</span>
+          🥇
+        </div>
+        <div class="podium-name">${top1.name}</div>
+        <div class="podium-pts">${top1.totalPoints.toLocaleString('pt-BR')} pts</div>
+        <div class="podium-pillar">1</div>
+      </div>
+
+      <!-- 3º LUGAR -->
+      <div class="podium-spot third">
+        ${top3 ? `
+          <div class="podium-avatar">🥉</div>
+          <div class="podium-name">${top3.name}</div>
+          <div class="podium-pts">${top3.totalPoints.toLocaleString('pt-BR')} pts</div>
+          <div class="podium-pillar">3</div>
+        ` : ''}
+      </div>
+    `;
+  }
 
   // LISTA COMPLETA
-  list.innerHTML = '';
-  leaderboard.forEach((user, index) => {
-    const pos = index + 1;
-    const row = document.createElement('div');
-    row.className = 'leader-row';
+  if (list) {
+    list.innerHTML = '';
+    leaderboard.forEach((user, index) => {
+      const pos = index + 1;
+      const row = document.createElement('div');
+      row.className = 'leader-row';
 
-    let rankClass = '';
-    let medal = `#${pos}`;
-    if (pos === 1) { rankClass = 'top-1'; medal = '🥇'; }
-    else if (pos === 2) { rankClass = 'top-2'; medal = '🥈'; }
-    else if (pos === 3) { rankClass = 'top-3'; medal = '🥉'; }
+      let rankClass = '';
+      let medal = `#${pos}`;
+      if (pos === 1) { rankClass = 'top-1'; medal = '🥇'; }
+      else if (pos === 2) { rankClass = 'top-2'; medal = '🥈'; }
+      else if (pos === 3) { rankClass = 'top-3'; medal = '🥉'; }
 
-    row.innerHTML = `
-      <div class="leader-rank ${rankClass}">${medal}</div>
-      <div class="leader-info">
-        <div class="leader-name">${user.name}</div>
-        <div class="leader-sub">${user.count} lançamento(s) somados</div>
-      </div>
-      <div class="leader-score">${user.totalPoints.toLocaleString('pt-BR')} pts</div>
-    `;
-    list.appendChild(row);
-  });
+      row.innerHTML = `
+        <div class="leader-rank ${rankClass}">${medal}</div>
+        <div class="leader-info">
+          <div class="leader-name">${user.name}</div>
+          <div class="leader-sub">${user.count} lançamento(s) somados</div>
+        </div>
+        <div class="leader-score">${user.totalPoints.toLocaleString('pt-BR')} pts</div>
+      `;
+      list.appendChild(row);
+    });
+  }
 
-  // ÚLTIMOS REGISTROS ENVIADOS (ordenados da data mais recente para a mais antiga)
-  const all = [...TeenDB.getAll()]
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-    .slice(0, 25);
-  recent.innerHTML = '';
-  all.forEach(sub => {
-    const card = document.createElement('div');
-    card.style.cssText = 'background:#ffffff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;box-shadow:var(--shadow-sm);';
-    const fDate = sub.date ? sub.date.split('-').reverse().join('/') : '';
-    card.innerHTML = `
-      <div>
-        <strong style="color:var(--text-1);">${sub.name}</strong>
-        <span style="color:var(--text-3);font-size:0.78rem;margin-left:6px;">(${fDate})</span>
-      </div>
-      <div style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--primary);">
-        +${sub.total.toLocaleString('pt-BR')} pts
-      </div>
-    `;
-    recent.appendChild(card);
-  });
+  // ÚLTIMOS REGISTROS ENVIADOS
+  if (recent) {
+    const all = [...TeenDB.getAll()]
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .slice(0, 25);
+    recent.innerHTML = '';
+    all.forEach(sub => {
+      const card = document.createElement('div');
+      card.className = 'history-card';
+      const fDate = formatDateBR(sub.date);
+      card.innerHTML = `
+        <div>
+          <span class="history-card-name">${sub.name}</span>
+          <span class="history-card-date">(${fDate})</span>
+        </div>
+        <div class="history-card-score">
+          +${Number(sub.total).toLocaleString('pt-BR')} pts
+        </div>
+      `;
+      recent.appendChild(card);
+    });
+  }
 }
