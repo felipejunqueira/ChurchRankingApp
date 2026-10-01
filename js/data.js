@@ -52,6 +52,26 @@ const REGISTERED_TEENS = [
  * ─────────────────────────────────────────────────────────────
  */
 const OFFICIAL_SEED_RECORDS = [
+  // ─── SÁBADO 26/09/2026 ───
+  { id: 'rec_2609_jonas',   name: 'Jonas',           date: '2026-09-26', total: 390, answers: [] },
+  { id: 'rec_2609_isac',    name: 'Isac',            date: '2026-09-26', total: 160, answers: [] },
+
+  // ─── SÁBADO 19/09/2026 ───
+  { id: 'rec_1909_jonas',   name: 'Jonas',           date: '2026-09-19', total: 465, answers: [] },
+
+  // ─── SÁBADO 29/08/2026 ───
+  { id: 'rec_2908_jonas',   name: 'Jonas',           date: '2026-08-29', total: 355, answers: [] },
+
+  // ─── SÁBADO 22/08/2026 ───
+  { id: 'rec_2208_jonas',   name: 'Jonas',           date: '2026-08-22', total: 290, answers: [] },
+
+  // ─── SÁBADO 27/06/2026 ───
+  { id: 'rec_2706_jonas',   name: 'Jonas',           date: '2026-06-27', total: 225, answers: [] },
+  { id: 'rec_2706_luiza',   name: 'Luiza',           date: '2026-06-27', total: 135, answers: [] },
+
+  // ─── SÁBADO 13/06/2026 ───
+  { id: 'rec_1306_luiza',   name: 'Luiza',           date: '2026-06-13', total: 135, answers: [] },
+
   // ─── SÁBADO 30/05/2026 ───
   { id: 'rec_3005_jonas',   name: 'Jonas',           date: '2026-05-30', total: 330, answers: [] },
   { id: 'rec_3005_luiza1',  name: 'Luiza',           date: '2026-05-30', total: 295, answers: [] },
@@ -86,16 +106,6 @@ const OFFICIAL_SEED_RECORDS = [
 
   // ─── SÁBADO 21/02/2026 ───
   { id: 'rec_2102_isac',    name: 'Isac',            date: '2026-02-21', total: 130, answers: [] },
-
-  // ─── DEMAIS LANÇAMENTOS DO PERÍODO ───
-  { id: 'rec_extra_j5',     name: 'Jonas',           date: '2026-07-04', total: 390, answers: [] },
-  { id: 'rec_extra_j4',     name: 'Jonas',           date: '2026-06-27', total: 465, answers: [] },
-  { id: 'rec_extra_j3',     name: 'Jonas',           date: '2026-06-20', total: 355, answers: [] },
-  { id: 'rec_extra_j2',     name: 'Jonas',           date: '2026-06-13', total: 290, answers: [] },
-  { id: 'rec_extra_j1',     name: 'Jonas',           date: '2026-06-06', total: 225, answers: [] },
-  { id: 'rec_extra_l2',     name: 'Luiza',           date: '2026-06-13', total: 135, answers: [] },
-  { id: 'rec_extra_l1',     name: 'Luiza',           date: '2026-06-06', total: 135, answers: [] },
-  { id: 'rec_extra_i1',     name: 'Isac',            date: '2026-06-06', total: 160, answers: [] },
 
   // ─── PONTUAÇÕES ANTERIORES ACUMULADAS (BASE DO DRIVE) ───
   { id: 'base_luiza',       name: 'Luiza',           date: '2026-02-14', total: 1920, answers: [] },

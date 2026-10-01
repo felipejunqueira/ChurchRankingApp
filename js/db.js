@@ -3,8 +3,8 @@
  * BANCO DE DADOS LOCAL (STORAGE) & EXPORTAÇÃO
  * ─────────────────────────────────────────────────────────────
  */
-const DB_KEY = 'church_ranking_db_v3';
-const USER_KEY = 'church_ranking_last_user_v3';
+const DB_KEY = 'church_ranking_db_v4';
+const USER_KEY = 'church_ranking_last_user_v4';
 
 const TeenDB = {
   getAll() {
