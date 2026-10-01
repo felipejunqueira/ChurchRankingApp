@@ -158,35 +158,39 @@
   color: var(--primary);
 }
 
-/* Barra de Ações do Ranking */
+/* Barra de Título do Ranking */
 .ranking-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
   margin: 24px 0 16px;
 }
 
-.tool-btn {
+/* Ações no Final do Ranking */
+.ranking-footer-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-export-csv {
   background: #ffffff;
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  padding: 8px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 0.82rem;
-  font-weight: 700;
+  border: 1.5px solid var(--border);
+  color: var(--text-1);
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
-.tool-btn:hover {
-  background: #fbf7f2;
+.btn-export-csv:hover {
+  background: var(--bg-warm-tint);
   border-color: #d6bead;
-  color: var(--text-1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 /* ══════════ MODAL DE SUCESSO ══════════ */
@@ -426,7 +430,15 @@
   margin: 0 auto;
 }
 
-/* Badge de Nuvem / Realtime */
+/* Rodapé Global & Badge */
+.app-footer {
+  margin-top: 36px;
+  padding-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .cloud-badge {
   display: inline-flex;
   align-items: center;
@@ -434,28 +446,14 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-2);
-  margin-top: 8px;
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
 
-.cloud-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.cloud-dot.online {
-  background: #16a34a;
-  box-shadow: 0 0 8px rgba(22, 163, 74, 0.7);
-}
-
-.cloud-dot.local {
-  background: #f59e0b;
-  box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
-}
+.cloud-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.cloud-dot.online { background: #16a34a; box-shadow: 0 0 8px rgba(22, 163, 74, 0.7); }
+.cloud-dot.local { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }

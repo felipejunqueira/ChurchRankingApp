@@ -37,11 +37,6 @@
     <div class="brand-badge">Escola Sabatina dos Adolescentes</div>
     <h1>Tabela Oficial de Pontos</h1>
     <p>Pontuação semanal, ranking automático e registro oficial da classe</p>
-    <div>
-      <div class="cloud-badge" id="cloudSyncBadge" title="Status de conexão">
-        <span class="cloud-dot local"></span> Sincronizado
-      </div>
-    </div>
 
     <!-- NAVEGAÇÃO DE ABAS -->
     <div class="nav-tabs">
@@ -132,14 +127,9 @@
       <!-- Inserido dinamicamente via JS -->
     </div>
 
-    <!-- BARRA DE FERRAMENTAS DO RANKING -->
+    <!-- BARRA DE TÍTULO DO RANKING -->
     <div class="ranking-toolbar">
       <h3 class="ranking-heading">Classificação Geral</h3>
-      <div class="ranking-actions">
-        <button class="tool-btn" onclick="exportCSV()" title="Exportar para Excel / Google Planilhas">
-          Exportar Planilha (CSV)
-        </button>
-      </div>
     </div>
 
     <!-- LISTA COMPLETA DE CLASSIFICAÇÃO -->
@@ -153,7 +143,21 @@
       <div id="recentHistoryList" class="history-list"></div>
     </div>
 
+    <!-- AÇÕES NO FINAL DO RANKING -->
+    <div class="ranking-footer-actions">
+      <button class="btn-export-csv" onclick="exportCSV()" title="Exportar dados para Excel ou Google Planilhas">
+        📊 Exportar Planilha Completa (CSV)
+      </button>
+    </div>
+
   </div>
+
+  <!-- RODAPÉ DA APLICAÇÃO (STATUS DISCRETO) -->
+  <footer class="app-footer">
+    <div class="cloud-badge" id="cloudSyncBadge" title="Status de sincronização com a nuvem">
+      <span class="cloud-dot local"></span> Sincronizado
+    </div>
+  </footer>
 
 </div>
 
