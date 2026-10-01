@@ -32,8 +32,8 @@ function setupTeenSelector() {
   const lastUser = TeenDB.getLastUser();
   let initialChoice = lastUser.name || (REGISTERED_TEENS[0] ? REGISTERED_TEENS[0].name : '');
 
+  // 1. Chips dos Adolescentes Cadastrados
   REGISTERED_TEENS.forEach(teen => {
-    // 1. Chip Clicável
     const chip = document.createElement('div');
     chip.className = 'teen-chip';
     chip.id = `teen-chip-${teen.name.replace(/\s+/g, '_')}`;
@@ -45,17 +45,27 @@ function setupTeenSelector() {
     `;
     grid.appendChild(chip);
 
-    // 2. Opção no Select
     const opt = document.createElement('option');
     opt.value = teen.name;
     opt.textContent = teen.name;
     select.appendChild(opt);
   });
 
-  // Opção de Visitante / Novo Aluno
+  // 2. Chip Clicável de Visitante na Grade
+  const visitorChip = document.createElement('div');
+  visitorChip.className = 'teen-chip teen-chip-visitor';
+  visitorChip.id = 'teen-chip-visitor';
+  visitorChip.onclick = () => promptCustomVisitor();
+  visitorChip.innerHTML = `
+    <div class="teen-avatar">+</div>
+    <div class="teen-name-text">Visitante</div>
+  `;
+  grid.appendChild(visitorChip);
+
+  // 3. Opção de Visitante / Novo Aluno no Dropdown
   const visitorOpt = document.createElement('option');
   visitorOpt.value = "__custom__";
-  visitorOpt.textContent = "+ Outro / Visitante";
+  visitorOpt.textContent = "+ Adicionar Visitante";
   select.appendChild(visitorOpt);
 
   // Selecionar o inicial
@@ -64,13 +74,49 @@ function setupTeenSelector() {
   }
 }
 
-function selectTeen(name) {
+function promptCustomVisitor() {
+  const custom = prompt('Digite o nome do visitante ou novo adolescente:');
+  if (custom && custom.trim()) {
+    const clean = custom.trim().replace(/["<>]/g, '').slice(0, 30);
+    if (!clean) return;
+
+    // Adiciona ao select se ainda não estiver listado
+    const select = document.getElementById('teenSelect');
+    if (select) {
+      const exists = Array.from(select.options).some(o => o.value.toLowerCase() === clean.toLowerCase());
+      if (!exists) {
+        const newOpt = document.createElement('option');
+        newOpt.value = clean;
+        newOpt.textContent = `${clean} (Visitante)`;
+        const customOpt = select.querySelector('option[value="__custom__"]');
+        if (customOpt) select.insertBefore(newOpt, customOpt);
+        else select.appendChild(newOpt);
+      }
+    }
+
+    selectTeen(clean, true);
+  } else {
+    // Se cancelou ou deixou vazio, restaura o dropdown
+    const select = document.getElementById('teenSelect');
+    if (select) select.value = selectedTeenName || '';
+  }
+}
+
+function selectTeen(name, isVisitor = false) {
   selectedTeenName = name;
 
   // Atualizar classe visual nos chips
   document.querySelectorAll('.teen-chip').forEach(chip => chip.classList.remove('selected'));
   const safeId = `teen-chip-${name.replace(/\s+/g, '_')}`;
-  const activeChip = document.getElementById(safeId);
+  let activeChip = document.getElementById(safeId);
+  
+  if (!activeChip && isVisitor) {
+    activeChip = document.getElementById('teen-chip-visitor');
+    if (activeChip) {
+      const nameText = activeChip.querySelector('.teen-name-text');
+      if (nameText) nameText.textContent = name;
+    }
+  }
   if (activeChip) activeChip.classList.add('selected');
 
   // Atualizar Dropdown
@@ -83,20 +129,14 @@ function selectTeen(name) {
   // Atualizar Preview
   const preview = document.getElementById('selectedNamePreview');
   if (preview) {
-    preview.textContent = name || 'Selecione seu nome acima';
+    preview.textContent = name ? (isVisitor ? `${name} (Visitante)` : name) : 'Selecione seu nome acima';
   }
 }
 
 function onSelectChange(val) {
   if (!val) return;
   if (val === '__custom__') {
-    const custom = prompt('Digite o nome do novo adolescente ou visitante:');
-    if (custom && custom.trim()) {
-      const cleanCustom = custom.trim();
-      selectTeen(cleanCustom);
-      const preview = document.getElementById('selectedNamePreview');
-      if (preview) preview.textContent = `${cleanCustom} (Visitante)`;
-    }
+    promptCustomVisitor();
     return;
   }
   selectTeen(val);

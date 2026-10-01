@@ -4,7 +4,11 @@
  * ─────────────────────────────────────────────────────────────
  */
 
+let isSubmitting = false;
+
 function submitScore() {
+  if (isSubmitting) return;
+
   if (!selectedTeenName) {
     alert('Por favor, selecione o seu nome clicando em um dos botões acima!');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -29,6 +33,16 @@ function submitScore() {
     };
   });
 
+  // Proteção se bater o dedo e enviar com 0 pontos sem querer
+  if (total === 0) {
+    const confirmZero = confirm('Você não marcou nenhum item com "Sim" (pontuação 0). Deseja salvar mesmo assim?');
+    if (!confirmZero) return;
+  }
+
+  // Trava temporária contra duplo clique / spam
+  isSubmitting = true;
+  setTimeout(() => { isSubmitting = false; }, 1500);
+
   // 1. Salvar no banco de dados local
   const record = {
     id: 'sub_' + Date.now(),
@@ -43,7 +57,7 @@ function submitScore() {
   // 2. Atualizar ranking
   renderRanking();
 
-  // 3. Disparar confetes festivos! 🎊
+  // 3. Disparar confetes festivos!
   triggerConfetti();
 
   // 4. Preparar WhatsApp formatado
@@ -76,8 +90,23 @@ function submitScore() {
 }
 
 function closeModal() {
-  document.getElementById('successModal').classList.remove('open');
+  const modal = document.getElementById('successModal');
+  if (modal) modal.classList.remove('open');
 }
+
+// Fechar modal ao clicar fora ou apertar Escape (prevenção de toque acidental)
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('successModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+});
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
 
 function triggerConfetti() {
   const canvas = document.getElementById('confettiCanvas');

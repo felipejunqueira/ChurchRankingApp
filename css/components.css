@@ -88,6 +88,16 @@
   transform: translateY(-1px);
 }
 
+.teen-chip-visitor {
+  border-style: dashed;
+  background: #fdfaf6;
+}
+
+.teen-chip-visitor:hover {
+  border-color: var(--primary);
+  background: #fcf4eb;
+}
+
 .teen-chip.selected {
   background: var(--primary-gradient);
   border-color: #5c3826;
