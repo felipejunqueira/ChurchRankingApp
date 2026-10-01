@@ -3,8 +3,8 @@
  * BANCO DE DADOS HÍBRIDO (SUPABASE AO VIVO + CACHE LOCAL OFFLINE)
  * ─────────────────────────────────────────────────────────────
  */
-const DB_KEY = 'church_ranking_db_v9';
-const USER_KEY = 'church_ranking_last_user_v9';
+const DB_KEY = 'church_ranking_db_v10';
+const USER_KEY = 'church_ranking_last_user_v10';
 
 const SUPABASE_CONFIG = {
   url: 'https://akqckxynvvavroiwijxo.supabase.co',
@@ -163,6 +163,22 @@ const TeenDB = {
   getLeaderboard() {
     const all = this.getAll();
     const grouped = {};
+
+    // Inicializa todos os adolescentes cadastrados com 0 pontos e 0 lançamentos
+    if (typeof REGISTERED_TEENS !== 'undefined' && Array.isArray(REGISTERED_TEENS)) {
+      REGISTERED_TEENS.forEach(teen => {
+        const clean = (teen.name || '').trim();
+        if (clean) {
+          grouped[clean.toLowerCase()] = {
+            name: clean,
+            totalPoints: 0,
+            count: 0,
+            lastDate: ''
+          };
+        }
+      });
+    }
+
     all.forEach(sub => {
       const cleanName = (sub.name || '').trim();
       if (!cleanName) return;
@@ -181,7 +197,13 @@ const TeenDB = {
         grouped[key].lastDate = sub.date;
       }
     });
-    return Object.values(grouped).sort((a, b) => b.totalPoints - a.totalPoints);
+
+    return Object.values(grouped).sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) {
+        return b.totalPoints - a.totalPoints;
+      }
+      return a.name.localeCompare(b.name, 'pt-BR');
+    });
   }
 };
 

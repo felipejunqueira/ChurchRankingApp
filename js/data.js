@@ -187,6 +187,5 @@ const OFFICIAL_SEED_RECORDS = [
   { id: 'base_luiza',       name: 'Luiza',    date: '2026-02-14', total: 325,  answers: [] },
   { id: 'base_isac',        name: 'Isac',     date: '2026-02-14', total: 710,  answers: [] },
   { id: 'base_vitor',       name: 'Victor',   date: '2026-02-14', total: 585,  answers: [] },
-  { id: 'base_jonas',       name: 'Jonas',    date: '2026-02-14', total: 240,  answers: [] },
-  { id: 'base_nicholas',    name: 'Nicholas', date: '2026-02-14', total: 0,    answers: [] }
+  { id: 'base_jonas',       name: 'Jonas',    date: '2026-02-14', total: 240,  answers: [] }
 ];
