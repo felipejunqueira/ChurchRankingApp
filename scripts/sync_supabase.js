@@ -1,12 +1,23 @@
 /**
- * Script de Sincronização e Migração Inicial para o Supabase
+ * Script de Sincronização e Migração para o Supabase
  */
 const fs = require('fs');
 const path = require('path');
+const {
+  SUPABASE_CONFIG,
+  formatAnswersForStorage,
+  buildHistoricAnswers,
+  extractAuditCode,
+  extractWhatsappConfirmed,
+  isPortalRecord
+} = require('../js/db');
+
+const ROOT_DIR = path.resolve(__dirname, '..');
 
 // Carregar variáveis de .env se existir
-if (fs.existsSync('.env')) {
-  const envContent = fs.readFileSync('.env', 'utf8');
+const envPath = path.join(ROOT_DIR, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
   envContent.split('\n').forEach(line => {
     const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
     if (match) {
@@ -18,58 +29,81 @@ if (fs.existsSync('.env')) {
   });
 }
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://akqckxynvvavroiwijxo.supabase.co';
-const SUPABASE_SECRET = process.env.SUPABASE_SECRET_KEY || process.argv[2];
+const cliArgs = process.argv.slice(2);
+const cliFlags = new Set(cliArgs.filter(a => a.startsWith('--')));
+const cliKey = cliArgs.find(a => !a.startsWith('--'));
 
-if (!SUPABASE_SECRET) {
-  console.error('Erro: SUPABASE_SECRET_KEY não fornecida. Configure em .env ou passe como argumento.');
-  process.exit(1);
+const SUPABASE_URL = process.env.SUPABASE_URL || SUPABASE_CONFIG.url;
+const SUPABASE_KEY =
+  process.env.SUPABASE_SECRET_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  cliKey ||
+  SUPABASE_CONFIG.anonKey;
+
+function loadOfficialSeedRecords() {
+  const dataPath = path.join(ROOT_DIR, 'js', 'data.js');
+  const dataCode = fs.readFileSync(dataPath, 'utf8');
+  const scope = {};
+  new Function('scope', `${dataCode}; scope.OFFICIAL_SEED_RECORDS = OFFICIAL_SEED_RECORDS;`)(scope);
+
+  return scope.OFFICIAL_SEED_RECORDS.map(r => ({
+    id: r.id,
+    name: r.name,
+    date: r.date,
+    total: r.total,
+    answers: (Array.isArray(r.answers) && r.answers.length > 0)
+      ? formatAnswersForStorage(r.answers, r.auditCode, r.whatsappConfirmed)
+      : buildHistoricAnswers(r.total),
+    submitted_at: new Date(`${r.date}T12:00:00Z`).toISOString()
+  }));
 }
 
-// Carregar OFFICIAL_SEED_RECORDS de js/data.js
-const dataCode = fs.readFileSync('js/data.js', 'utf8');
-const scope = {};
-new Function('scope', `${dataCode}; scope.OFFICIAL_SEED_RECORDS = OFFICIAL_SEED_RECORDS;`)(scope);
+function buildHeaders(apiKey, extra = {}) {
+  return {
+    'apikey': apiKey,
+    'Authorization': `Bearer ${apiKey}`,
+    ...extra
+  };
+}
 
-const records = scope.OFFICIAL_SEED_RECORDS.map(r => ({
-  id: r.id,
-  name: r.name,
-  date: r.date,
-  total: r.total,
-  answers: r.answers || [],
-  submitted_at: new Date(`${r.date}T12:00:00Z`).toISOString()
-}));
+function canonicalJson(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(',')}]`;
+  }
+  if (value && typeof value === 'object') {
+    const keys = Object.keys(value).sort();
+    return `{${keys.map(k => `${JSON.stringify(k)}:${canonicalJson(value[k])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
 
-async function checkAndSync() {
-  console.log(`Verificando tabela 'teen_scores' no Supabase (${records.length} registros)...`);
-  
+async function checkAndSync(apiKey = SUPABASE_KEY) {
+  const records = loadOfficialSeedRecords();
+  console.log(`Verificando tabela 'teen_scores' no Supabase (${records.length} registros oficiais)...`);
+
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores?select=count`, {
       method: 'GET',
-      headers: {
-        'apikey': SUPABASE_SECRET,
-        'Authorization': `Bearer ${SUPABASE_SECRET}`,
+      headers: buildHeaders(apiKey, {
         'Range-Unit': 'items',
         'Range': '0-0',
         'Prefer': 'count=exact'
-      }
+      })
     });
 
     if (res.status === 404 || !res.ok) {
       const err = await res.text();
-      console.log('Tabela ainda não criada no Supabase:', res.status, err);
+      console.log('Erro ao acessar tabela no Supabase:', res.status, err);
       return false;
     }
 
-    console.log('Tabela encontrada! Inserindo/atualizando registros oficiais...');
+    console.log('Tabela encontrada! Inserindo/atualizando registros oficiais enriquecidos...');
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores`, {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_SECRET,
-        'Authorization': `Bearer ${SUPABASE_SECRET}`,
+      headers: buildHeaders(apiKey, {
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
+      }),
       body: JSON.stringify(records)
     });
 
@@ -86,8 +120,101 @@ async function checkAndSync() {
   }
 }
 
-if (require.main === module) {
-  checkAndSync();
+async function enrichExistingCloudRows(apiKey = SUPABASE_KEY) {
+  console.log('Buscando todos os registros atuais de adolescentes em teen_scores para migração/enriquecimento...');
+  const getRes = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores?select=*&id=not.like.portal_*&order=date.desc,submitted_at.desc`, {
+    method: 'GET',
+    headers: buildHeaders(apiKey)
+  });
+
+  if (!getRes.ok) {
+    const errText = await getRes.text();
+    console.error('Erro ao buscar registros:', getRes.status, errText);
+    return { ok: false, status: getRes.status, body: errText };
+  }
+
+  const rows = await getRes.json();
+  console.log(`Encontrados ${rows.length} registros no Supabase.`);
+
+  let updatedSub = 0;
+  let updatedHist = 0;
+  let skipped = 0;
+
+  for (const row of rows) {
+    if (isPortalRecord(row)) {
+      skipped++;
+      continue;
+    }
+    const currentAnswers = Array.isArray(row.answers) ? row.answers : [];
+    const hasDetailed = currentAnswers.some(a => a && (a.choice === 'yes' || a.choice === 'no'));
+
+    let nextAnswers;
+    let kind;
+
+    if (hasDetailed) {
+      nextAnswers = formatAnswersForStorage(
+        currentAnswers,
+        extractAuditCode(currentAnswers),
+        extractWhatsappConfirmed(currentAnswers)
+      );
+      kind = 'sub';
+    } else if (currentAnswers.length === 0) {
+      nextAnswers = buildHistoricAnswers(row.total);
+      kind = 'hist';
+    } else {
+      nextAnswers = formatAnswersForStorage(
+        currentAnswers,
+        extractAuditCode(currentAnswers),
+        extractWhatsappConfirmed(currentAnswers)
+      );
+      kind = 'hist';
+    }
+
+    if (canonicalJson(currentAnswers) === canonicalJson(nextAnswers)) {
+      skipped++;
+      continue;
+    }
+
+    const patchRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/teen_scores?id=eq.${encodeURIComponent(row.id)}`,
+      {
+        method: 'PATCH',
+        headers: buildHeaders(apiKey, {
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        }),
+        body: JSON.stringify({ answers: nextAnswers })
+      }
+    );
+
+    if (!patchRes.ok) {
+      const errBody = await patchRes.text();
+      console.error(`Falha ao atualizar ${row.id}:`, patchRes.status, errBody);
+      return { ok: false, status: patchRes.status, body: errBody, failedId: row.id };
+    }
+
+    if (kind === 'sub') updatedSub++;
+    else updatedHist++;
+  }
+
+  console.log(`Migração concluída: ${updatedSub} detalhados reordenados, ${updatedHist} históricos enriquecidos, ${skipped} já atualizados.`);
+  return { ok: true, total: rows.length, updatedSub, updatedHist, skipped };
 }
 
-module.exports = { checkAndSync };
+if (require.main === module) {
+  (async () => {
+    if (cliFlags.has('--enrich-cloud')) {
+      const result = await enrichExistingCloudRows(SUPABASE_KEY);
+      if (!result.ok) process.exit(1);
+    } else {
+      const ok = await checkAndSync(SUPABASE_KEY);
+      if (!ok) process.exit(1);
+    }
+  })();
+}
+
+module.exports = {
+  loadOfficialSeedRecords,
+  checkAndSync,
+  enrichExistingCloudRows
+};

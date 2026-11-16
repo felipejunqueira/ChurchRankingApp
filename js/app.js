@@ -1,11 +1,20 @@
 /**
  * ─────────────────────────────────────────────────────────────
- * LÓGICA DE APLICAÇÃO, ENVIO, MODAL, CONFETES E PWA
+ * LÓGICA DE APLICAÇÃO, GATE DO WHATSAPP, MODAL, CONFETES E PWA
  * ─────────────────────────────────────────────────────────────
  */
 
-function submitScore() {
-  if (AppState.isSubmitting) return;
+const ModalGateState = {
+  isOpen: false,
+  waTriggered: false,
+  waOpened: false,
+  confirmed: false,
+  currentWaUrl: '',
+  savedRecordId: ''
+};
+
+async function submitScore() {
+  if (AppState.isSubmitting || ModalGateState.isOpen) return;
 
   if (!AppState.selectedTeenName) {
     alert('Por favor, selecione o seu nome clicando em um dos botões acima!');
@@ -13,10 +22,7 @@ function submitScore() {
     return;
   }
 
-  // Data capturada localmente (sem viés UTC de fuso horário)
   const dateISO = getLocalDateISO();
-  const dateFormatted = formatDateBR(dateISO);
-
   let total = 0;
   const detailedAnswers = questions.map((q, i) => {
     const choice = AppState.getAnswer(i) || 'no';
@@ -30,89 +36,268 @@ function submitScore() {
     };
   });
 
-  // Proteção se bater o dedo e enviar com 0 pontos sem querer
   if (total === 0) {
-    const confirmZero = confirm('Você não marcou nenhum item com "Sim" (pontuação 0). Deseja salvar mesmo assim?');
+    const confirmZero = confirm('Você não marcou nenhum item com "Sim" (pontuação 0). Deseja salvar e enviar mesmo assim?');
     if (!confirmZero) return;
   }
 
-  // Trava temporária contra duplo clique / spam
+  const submitBtn = document.getElementById('btnSubmitScore');
+  const submitLabel = submitBtn ? submitBtn.querySelector('.btn-submit-label') : null;
   AppState.isSubmitting = true;
-  setTimeout(() => { AppState.isSubmitting = false; }, 1500);
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.classList.add('is-saving');
+  }
+  if (submitLabel) submitLabel.textContent = 'Salvando...';
 
-  // 1. Salvar no banco de dados local com prevenção automática de duplicatas na mesma data
-  const record = {
-    id: 'sub_' + Date.now(),
-    name: AppState.selectedTeenName,
-    date: dateISO,
-    total,
-    answers: detailedAnswers,
-    submittedAt: new Date().toISOString()
-  };
-  TeenDB.save(record);
+  let cloudPromise = null;
+  try {
+    const auditCode = generateAuditCode(AppState.selectedTeenName, dateISO, total);
+    const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
 
-  // 2. Atualizar ranking em tempo real
-  renderRanking();
+    const record = {
+      id: 'sub_' + Date.now(),
+      name: AppState.selectedTeenName,
+      date: dateISO,
+      total,
+      answers: detailedAnswers,
+      auditCode,
+      submittedAt: new Date().toISOString()
+    };
 
-  // 3. Disparar confetes festivos com controle de ciclo de vida
-  triggerConfetti();
+    const saveResult = TeenDB.save(record);
+    const savedRecord = (saveResult && saveResult.savedRecord) ? saveResult.savedRecord : record;
+    cloudPromise = saveResult && saveResult.cloudPromise ? saveResult.cloudPromise : null;
 
-  // 4. Preparar mensagem formatada para WhatsApp
-  const yesItems = detailedAnswers.filter(a => a.choice === 'yes');
-  
-  let msg = `*ESCOLA SABATINA DOS ADOLESCENTES*\n`;
-  msg += `*Adolescente:* ${AppState.selectedTeenName}\n`;
-  msg += `*Data:* ${dateFormatted}\n`;
-  msg += `*Pontuação da semana:* +${total} pontos\n\n`;
-  
-  if (yesItems.length > 0) {
-    msg += `*Atividades cumpridas:*\n`;
-    yesItems.forEach(item => {
-      msg += `• ${item.text} (+${item.value} pts)\n`;
+    const waUrl = buildWhatsAppShareUrl({
+      name: AppState.selectedTeenName,
+      date: dateISO,
+      total,
+      yesItems,
+      auditCode,
+      isHistoric: false
     });
-  } else {
-    msg += `Nenhum item marcado nesta rodada.\n`;
+
+    ModalGateState.isOpen = true;
+    ModalGateState.confirmed = false;
+    ModalGateState.waOpened = false;
+    ModalGateState.waTriggered = false;
+    ModalGateState.currentWaUrl = waUrl;
+    ModalGateState.savedRecordId = savedRecord && savedRecord.id ? savedRecord.id : record.id;
+
+    // Abre o WhatsApp sincronamente dentro do clique antes de qualquer await
+    try {
+      window.open(waUrl, '_blank', 'noopener');
+      ModalGateState.waTriggered = true;
+    } catch (err) {
+      console.warn('Não foi possível abrir o WhatsApp automaticamente:', err);
+    }
+
+    renderRanking();
+    openVerificationGateModal({
+      teenName: AppState.selectedTeenName,
+      total,
+      auditCode,
+      yesItems,
+      waUrl,
+      hasCloudPromise: Boolean(cloudPromise)
+    });
+    triggerConfetti();
+  } finally {
+    AppState.isSubmitting = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('is-saving');
+    }
+    if (submitLabel) submitLabel.textContent = 'Salvar & Enviar no WhatsApp';
   }
 
-  msg += `\n_Registro enviado via Tabela de Pontos dos Adolescentes_`;
-
-  const encodedMsg = encodeURIComponent(msg);
-  const waUrl = `https://api.whatsapp.com/send?text=${encodedMsg}`;
-
-  // 5. Exibir Modal de Sucesso
-  const modalName = document.getElementById('modalTeenName');
-  const modalScore = document.getElementById('modalFinalScore');
-  const modalWa = document.getElementById('modalWaBtn');
-  const modal = document.getElementById('successModal');
-
-  if (modalName) modalName.textContent = `Parabéns, ${AppState.selectedTeenName}!`;
-  if (modalScore) modalScore.textContent = `+${total}`;
-  if (modalWa) modalWa.href = waUrl;
-  if (modal) modal.classList.add('open');
+  if (cloudPromise) {
+    try {
+      const ok = await cloudPromise;
+      updateModalSyncStatus(Boolean(ok));
+      renderRanking();
+    } catch (err) {
+      console.warn('Falha ao aguardar sincronização na nuvem:', err);
+      updateModalSyncStatus(false);
+    }
+  }
 }
 
-function closeModal() {
+function openVerificationGateModal({ teenName, total, auditCode, yesItems, waUrl, hasCloudPromise }) {
   const modal = document.getElementById('successModal');
-  if (modal) modal.classList.remove('open');
-  // Prepara o formulário limpo para a próxima avaliação
+  const modalName = document.getElementById('modalTeenName');
+  const modalScore = document.getElementById('modalFinalScore');
+  const modalAuditCode = document.getElementById('modalAuditCode');
+  const modalItemsCount = document.getElementById('modalItemsCount');
+  const modalItemsList = document.getElementById('modalMarkedItemsList');
+  const modalWa = document.getElementById('modalWaBtn');
+  const modalSync = document.getElementById('modalSyncStatus');
+  const gateWarning = document.getElementById('modalGateWarning');
+
+  if (modalName) modalName.textContent = `Parabéns, ${teenName}!`;
+  if (modalScore) modalScore.textContent = `+${Number(total || 0)}`;
+  if (modalAuditCode) modalAuditCode.textContent = auditCode;
+  if (modalItemsCount) modalItemsCount.textContent = `${yesItems.length} de ${questions.length} itens`;
+  if (modalWa) modalWa.href = waUrl;
+  if (gateWarning) gateWarning.classList.remove('visible');
+
+  if (modalItemsList) {
+    if (yesItems.length > 0) {
+      modalItemsList.innerHTML = yesItems.map(item => `
+        <li>
+          <span>✅ ${escapeHtml(item.text)}</span>
+          <span class="modal-item-pts">+${Number(item.value || 0)} pts</span>
+        </li>
+      `).join('');
+    } else {
+      modalItemsList.innerHTML = `<li class="modal-items-empty"><span>Nenhum item marcado nesta rodada (0 pts).</span></li>`;
+    }
+  }
+
+  if (modalSync) {
+    modalSync.className = 'modal-sync-status';
+    if (hasCloudPromise) {
+      modalSync.innerHTML = '<span class="sync-spinner" aria-hidden="true"></span> Salvando na nuvem...';
+    } else {
+      modalSync.classList.add('local');
+      modalSync.textContent = '📱 Salvo neste dispositivo';
+    }
+  }
+
+  updateModalGateUI();
+
+  if (modal) {
+    if (typeof modal.showModal === 'function') {
+      if (!modal.open) modal.showModal();
+    } else {
+      modal.setAttribute('open', '');
+    }
+  }
+}
+
+function updateModalSyncStatus(synced) {
+  const modalSync = document.getElementById('modalSyncStatus');
+  if (!modalSync) return;
+  modalSync.className = 'modal-sync-status';
+  if (synced) {
+    modalSync.classList.add('synced');
+    modalSync.textContent = '☁️ Salvo na nuvem! Ranking atualizado.';
+  } else {
+    modalSync.classList.add('local');
+    modalSync.textContent = '📱 Salvo no aparelho — sincronizará quando online.';
+  }
+}
+
+function updateModalGateUI() {
+  const stepWa = document.getElementById('gateStepWa');
+  const stepWaIcon = document.getElementById('gateStepWaIcon');
+  const stepWaText = document.getElementById('gateStepWaText');
+  const stepConfirm = document.getElementById('gateStepConfirm');
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+
+  if (stepWa && stepWaIcon && stepWaText) {
+    if (ModalGateState.waOpened) {
+      stepWa.className = 'check-step done';
+      stepWaIcon.textContent = '✓';
+      stepWaText.textContent = 'WhatsApp aberto! Envie no grupo e confirme abaixo';
+    } else if (ModalGateState.waTriggered) {
+      stepWa.className = 'check-step active';
+      stepWaIcon.textContent = '📲';
+      stepWaText.textContent = 'WhatsApp acionado! Se não abriu, use o botão verde';
+    } else {
+      stepWa.className = 'check-step active';
+      stepWaIcon.textContent = '1';
+      stepWaText.textContent = 'Envie a mensagem no grupo do WhatsApp';
+    }
+  }
+
+  const canConfirm = Boolean(ModalGateState.waTriggered || ModalGateState.waOpened);
+  if (confirmBtn) {
+    confirmBtn.disabled = !canConfirm;
+  }
+  if (stepConfirm) {
+    stepConfirm.className = canConfirm ? 'check-step active' : 'check-step pending';
+  }
+}
+
+function showGateWarning() {
+  const gateWarning = document.getElementById('modalGateWarning');
+  if (gateWarning) gateWarning.classList.add('visible');
+}
+
+function confirmWhatsAppGate() {
+  if (!(ModalGateState.waTriggered || ModalGateState.waOpened)) {
+    showGateWarning();
+    return;
+  }
+
+  ModalGateState.confirmed = true;
+  ModalGateState.isOpen = false;
+
+  if (ModalGateState.savedRecordId && typeof TeenDB.confirmWhatsapp === 'function') {
+    Promise.resolve(TeenDB.confirmWhatsapp(ModalGateState.savedRecordId))
+      .then(() => renderRanking())
+      .catch(err => console.warn('Aviso ao confirmar WhatsApp na nuvem:', err));
+  }
+
+  const modal = document.getElementById('successModal');
+  if (modal) {
+    if (typeof modal.close === 'function') {
+      if (modal.open) modal.close('confirmed');
+    } else {
+      modal.removeAttribute('open');
+    }
+  }
+
   AppState.reset();
   buildQuestionsUI();
   updateTotal();
   updateProgress();
+  renderRanking();
+  showActionToast('Envio confirmado no WhatsApp! Formulário pronto.');
 }
 
-// Fechar modal ao clicar fora ou apertar Escape (prevenção de toque acidental)
+function closeModal() {
+  if (!ModalGateState.confirmed) {
+    showGateWarning();
+    return;
+  }
+  confirmWhatsAppGate();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('successModal');
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
+  const modalWaBtn = document.getElementById('modalWaBtn');
+
+  if (modalWaBtn) {
+    modalWaBtn.addEventListener('click', () => {
+      ModalGateState.waOpened = true;
+      const gateWarning = document.getElementById('modalGateWarning');
+      if (gateWarning) gateWarning.classList.remove('visible');
+      updateModalGateUI();
     });
   }
-});
 
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
+  if (modal) {
+    // Impede fechar com Escape enquanto a confirmação obrigatória no WhatsApp não ocorrer
+    modal.addEventListener('cancel', (e) => {
+      if (!ModalGateState.confirmed) {
+        e.preventDefault();
+        showGateWarning();
+      }
+    });
+
+    // Proteção extra em navegadores antigos caso tentem fechar antes de confirmar
+    modal.addEventListener('close', () => {
+      if (ModalGateState.isOpen && !ModalGateState.confirmed) {
+        if (typeof modal.showModal === 'function' && !modal.open) {
+          modal.showModal();
+          showGateWarning();
+        }
+      }
+    });
+  }
 });
 
 // Animação de confetes com cancelamento do frame anterior (previne vazamento de CPU)
@@ -120,8 +305,9 @@ let confettiAnimId = null;
 
 function triggerConfetti() {
   const canvas = document.getElementById('confettiCanvas');
-  if (!canvas) return;
+  if (!canvas || typeof canvas.getContext !== 'function') return;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
 
   if (confettiAnimId) {
     cancelAnimationFrame(confettiAnimId);
@@ -222,6 +408,7 @@ async function initApp() {
   setupAutoDate();
   setupTeenSelector();
   buildQuestionsUI();
+  setupAuditControls();
   renderRanking();
 
   // Conectar com a Nuvem Supabase e habilitar Realtime

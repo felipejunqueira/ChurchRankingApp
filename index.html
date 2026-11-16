@@ -15,12 +15,12 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <title>Tabela de Pontos — Escola Sabatina dos Adolescentes</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Estilos Modularizados (Subarquivos) -->
+  <!-- Estilos Modularizados -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/ranking.css" />
@@ -28,7 +28,10 @@
 <body>
 
 <!-- Canvas de Confetes -->
-<canvas id="confettiCanvas"></canvas>
+<canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+<!-- Toast de Feedback -->
+<div id="appToast" class="app-toast" role="status" aria-live="polite" hidden></div>
 
 <div class="container">
 
@@ -36,15 +39,29 @@
   <header>
     <div class="brand-badge">Escola Sabatina dos Adolescentes</div>
     <h1>Tabela Oficial de Pontos</h1>
-    <p>Pontuação semanal, ranking automático e registro oficial da classe</p>
+    <p>Pontuação semanal, auditoria no WhatsApp e ranking ao vivo da classe</p>
 
     <!-- NAVEGAÇÃO DE ABAS -->
-    <div class="nav-tabs">
-      <button class="tab-btn active" id="tabScoreBtn" onclick="switchTab('score')">
+    <div class="nav-tabs" role="tablist" aria-label="Seções do aplicativo">
+      <button
+        type="button"
+        class="tab-btn active"
+        id="tabScoreBtn"
+        role="tab"
+        aria-selected="true"
+        onclick="switchTab('score')"
+      >
         Lançar Pontos
       </button>
-      <button class="tab-btn" id="tabRankBtn" onclick="switchTab('rank')">
-        Ranking Geral
+      <button
+        type="button"
+        class="tab-btn"
+        id="tabRankBtn"
+        role="tab"
+        aria-selected="false"
+        onclick="switchTab('rank')"
+      >
+        Ranking &amp; Auditoria
       </button>
     </div>
   </header>
@@ -52,14 +69,14 @@
   <!-- PWA Install Banner -->
   <div id="installBanner">
     <p><strong>Instalar Aplicativo</strong> Salve no celular para preencher sua pontuação todo sábado.</p>
-    <button id="installBtn">Instalar</button>
-    <button id="dismissBanner">✕</button>
+    <button type="button" id="installBtn">Instalar</button>
+    <button type="button" id="dismissBanner" aria-label="Dispensar aviso">✕</button>
   </div>
 
   <!-- ═══════════ ABA 1: CALCULADORA DE PONTOS ═══════════ -->
-  <div id="tabScore" class="tab-content active">
+  <div id="tabScore" class="tab-content active" role="tabpanel" aria-labelledby="tabScoreBtn">
 
-    <!-- SELEÇÃO RÁPIDA DO ADOLESCENTE (ZERO DIGITAÇÃO) -->
+    <!-- SELEÇÃO RÁPIDA DO ADOLESCENTE -->
     <div class="student-card">
       <div class="student-header-row">
         <div class="student-card-title">
@@ -67,7 +84,7 @@
         </div>
         <!-- Data 100% Automática -->
         <div class="auto-date-badge">
-          <span class="auto-date-dot"></span>
+          <span class="auto-date-dot" aria-hidden="true"></span>
           <span id="displayCurrentDate">Carregando data...</span>
         </div>
       </div>
@@ -87,7 +104,7 @@
           <span>Adolescente Selecionado:</span>
           <strong id="selectedNamePreview">Selecione seu nome acima</strong>
         </div>
-        <select id="teenSelect" class="styled-select" onchange="onSelectChange(this.value)">
+        <select id="teenSelect" class="styled-select" aria-label="Selecionar adolescente na lista" onchange="onSelectChange(this.value)">
           <option value="">-- Ou escolha na lista --</option>
         </select>
       </div>
@@ -105,13 +122,13 @@
     </div>
 
     <!-- FILTRO DE CATEGORIAS -->
-    <div class="filter-pills" id="filterPills">
-      <button class="pill-btn active" onclick="filterCategory('all', this)">Todos (18)</button>
-      <button class="pill-btn" onclick="filterCategory('Liderança', this)">Liderança</button>
-      <button class="pill-btn" onclick="filterCategory('Missão', this)">Missão</button>
-      <button class="pill-btn" onclick="filterCategory('Estudo', this)">Estudo</button>
-      <button class="pill-btn" onclick="filterCategory('Comunidade', this)">Comunidade</button>
-      <button class="pill-btn" onclick="filterCategory('Zelo', this)">Zelo &amp; Oferta</button>
+    <div class="filter-pills" id="filterPills" role="group" aria-label="Filtrar atividades por categoria">
+      <button type="button" class="pill-btn active" onclick="filterCategory('all', this)">Todos (18)</button>
+      <button type="button" class="pill-btn" onclick="filterCategory('Liderança', this)">Liderança</button>
+      <button type="button" class="pill-btn" onclick="filterCategory('Missão', this)">Missão</button>
+      <button type="button" class="pill-btn" onclick="filterCategory('Estudo', this)">Estudo</button>
+      <button type="button" class="pill-btn" onclick="filterCategory('Comunidade', this)">Comunidade</button>
+      <button type="button" class="pill-btn" onclick="filterCategory('Zelo', this)">Zelo &amp; Oferta</button>
     </div>
 
     <!-- LISTA DE PERGUNTAS -->
@@ -119,9 +136,9 @@
 
   </div>
 
-  <!-- ═══════════ ABA 2: RANKING GERAL & HISTÓRICO ═══════════ -->
-  <div id="tabRank" class="tab-content">
-    
+  <!-- ═══════════ ABA 2: RANKING GERAL & AUDITORIA ═══════════ -->
+  <div id="tabRank" class="tab-content" role="tabpanel" aria-labelledby="tabRankBtn" hidden>
+
     <!-- PÓDIO DOS TOP 3 -->
     <div class="podium-wrap" id="podiumArea">
       <!-- Inserido dinamicamente via JS -->
@@ -129,7 +146,10 @@
 
     <!-- BARRA DE TÍTULO DO RANKING -->
     <div class="ranking-toolbar">
-      <h3 class="ranking-heading">Classificação Geral</h3>
+      <div>
+        <h3 class="ranking-heading">Classificação Geral</h3>
+        <p class="ranking-subheading">Toque em um adolescente para conferir seus lançamentos na auditoria abaixo.</p>
+      </div>
     </div>
 
     <!-- LISTA COMPLETA DE CLASSIFICAÇÃO -->
@@ -137,16 +157,45 @@
       <!-- Inserido dinamicamente via JS -->
     </div>
 
-    <!-- HISTÓRICO RECENTE DE REGISTROS -->
-    <div class="history-section">
-      <h4 class="history-heading">Últimos Registros Salvos</h4>
+    <!-- PAINEL DE AUDITORIA AOS PARES -->
+    <section class="history-section" id="peerAuditSection" aria-labelledby="peerAuditHeading">
+      <div class="audit-header-row">
+        <div>
+          <h4 class="history-heading" id="peerAuditHeading">Auditoria aos Pares — Lançamentos Detalhados</h4>
+          <p class="audit-subheading">Confira exatamente o que cada adolescente marcou e o código de validação.</p>
+        </div>
+        <span class="audit-total-badge" id="auditTotalBadge">0 registros</span>
+      </div>
+
+      <!-- Barra Compacta de Filtros -->
+      <div class="audit-filter-bar">
+        <div class="audit-search-wrap">
+          <span class="audit-search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="auditSearchInput"
+            class="audit-search-input"
+            placeholder="Buscar adolescente ou código #AUD..."
+            aria-label="Buscar por nome do adolescente ou código de auditoria"
+          />
+        </div>
+        <select
+          id="auditDateFilter"
+          class="audit-date-select"
+          aria-label="Filtrar lançamentos por sábado ou data"
+        >
+          <option value="all">Todas as datas</option>
+        </select>
+      </div>
+
+      <div id="auditActiveFilterBar" class="audit-active-filter-bar" hidden></div>
       <div id="recentHistoryList" class="history-list"></div>
       <div id="historyToggleWrap" class="history-toggle-wrap"></div>
-    </div>
+    </section>
 
     <!-- AÇÕES NO FINAL DO RANKING -->
     <div class="ranking-footer-actions">
-      <button class="btn-export-csv" onclick="exportCSV()" title="Exportar dados para Excel ou Google Planilhas">
+      <button type="button" class="btn-export-csv" onclick="exportCSV()" title="Exportar dados para Excel ou Google Planilhas">
         📊 Exportar Planilha Completa (CSV)
       </button>
     </div>
@@ -164,52 +213,102 @@
 
 <!-- ═══════════ BARRA INFERIOR FIXA ═══════════ -->
 <div class="sticky-bar" id="stickyBar">
-  <div class="sticky-bar-inner">
-    <div class="score-summary">
-      <span class="score-label">Pontuação Atual</span>
-      <span class="score-number" id="totalScore">0 pts</span>
+  <div class="sticky-bar-shell">
+    <div class="sticky-summary-strip">
+      <span class="selected-items-badge" id="selectedItemsBadge">
+        <span class="selected-dot" aria-hidden="true"></span>
+        <span id="selectedItemsText">0 atividades marcadas</span>
+      </span>
+      <span class="sticky-validation-note">Envio no WhatsApp valida os pontos</span>
     </div>
-    <div class="action-btns">
-      <button class="btn-reset" onclick="resetAll()" title="Limpar respostas desta rodada">
-        Limpar
-      </button>
-      <button class="btn-submit" onclick="submitScore()">
-        Salvar Pontuação
-      </button>
+    <div class="sticky-bar-inner">
+      <div class="score-summary">
+        <span class="score-label">Pontuação Atual</span>
+        <span class="score-number" id="totalScore">0 pts</span>
+      </div>
+      <div class="action-btns">
+        <button type="button" class="btn-reset" onclick="resetAll()" title="Limpar respostas desta rodada">
+          Limpar
+        </button>
+        <button type="button" class="btn-submit" id="btnSubmitScore" onclick="submitScore()">
+          <span class="btn-submit-label">Salvar &amp; Enviar no WhatsApp</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ MODAL DE SUCESSO ═══════════ -->
-<div class="modal-overlay" id="successModal">
+<!-- ═══════════ MODAL DE VERIFICAÇÃO OBRIGATÓRIA NO WHATSAPP ═══════════ -->
+<dialog class="modal-dialog" id="successModal" closedby="none" aria-labelledby="modalTeenName">
   <div class="modal-card">
-    <button class="btn-close-modal" onclick="closeModal()">✕</button>
-    
-    <div class="modal-confetti-badge">✓</div>
-    
+    <div class="modal-gate-pill">
+      <span aria-hidden="true">📲</span> Validação Obrigatória no Grupo
+    </div>
+
+    <div class="modal-confetti-badge" aria-hidden="true">✓</div>
+
     <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
-    <p class="modal-desc">Seus pontos foram salvos com sucesso e o ranking já foi atualizado.</p>
+    <p class="modal-desc">
+      Para validar seus pontos, envie o resumo no grupo do WhatsApp dos Adolescentes e confirme abaixo.
+    </p>
+
+    <div class="modal-sync-status" id="modalSyncStatus" aria-live="polite">
+      <span class="sync-spinner" aria-hidden="true"></span> Salvando na nuvem...
+    </div>
 
     <div class="modal-score-box">
-      <div class="modal-score-val" id="modalFinalScore">0</div>
-      <div class="modal-score-caption">Pontos Conquistados Hoje</div>
+      <div class="modal-score-main">
+        <div class="modal-score-val" id="modalFinalScore">+0</div>
+        <div class="modal-score-caption">Pontos da Semana</div>
+      </div>
+      <div class="modal-audit-row">
+        <span class="modal-audit-label">Código de Auditoria</span>
+        <code class="modal-audit-code" id="modalAuditCode">#AUD-0000-XX-0</code>
+      </div>
     </div>
 
+    <div class="modal-items-box">
+      <div class="modal-items-header">
+        <span>Resumo para Conferência</span>
+        <span class="modal-items-count" id="modalItemsCount">0 de 18 itens</span>
+      </div>
+      <ul class="modal-items-list" id="modalMarkedItemsList"></ul>
+    </div>
+
+    <div class="modal-checklist" id="modalChecklist">
+      <div class="check-step done" id="gateStepSaved">
+        <span class="check-icon" aria-hidden="true">✓</span>
+        <span>Pontuação salva com código de auditoria</span>
+      </div>
+      <div class="check-step active" id="gateStepWa">
+        <span class="check-icon" id="gateStepWaIcon" aria-hidden="true">1</span>
+        <span id="gateStepWaText">Envie a mensagem no grupo do WhatsApp</span>
+      </div>
+      <div class="check-step pending" id="gateStepConfirm">
+        <span class="check-icon" id="gateStepConfirmIcon" aria-hidden="true">2</span>
+        <span>Confirme abaixo após enviar no grupo</span>
+      </div>
+    </div>
+
+    <p class="modal-gate-warning" id="modalGateWarning" role="status" aria-live="polite">
+      Conclua o envio no WhatsApp e toque em confirmar para fechar esta janela.
+    </p>
+
     <div class="modal-btns">
-      <a href="#" id="modalWaBtn" target="_blank" class="btn-wa-share">
-        Compartilhar no WhatsApp
+      <a href="#" id="modalWaBtn" target="_blank" rel="noopener" class="btn-wa-share">
+        📲 Abrir / Reenviar no WhatsApp
       </a>
-      <button class="btn-modal-rank" onclick="closeModal(); switchTab('rank');">
-        Ver Ranking Geral
+      <button type="button" id="modalConfirmBtn" class="btn-wa-confirm" onclick="confirmWhatsAppGate()" disabled>
+        ✅ Confirmo que enviei no Grupo do WhatsApp
       </button>
     </div>
   </div>
-</div>
+</dialog>
 
 <!-- Supabase JS Client Oficial -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Scripts Modularizados (Subarquivos) -->
+<!-- Scripts Modularizados -->
 <script src="js/data.js"></script>
 <script src="js/db.js"></script>
 <script src="js/ui.js"></script>
