@@ -1,5 +1,5 @@
 /**
- * Script de Sincronização e Migração para o Supabase
+ * Script de Sincronização, Auditoria e Migração para o Supabase
  */
 const fs = require('fs');
 const path = require('path');
@@ -9,6 +9,9 @@ const {
   buildHistoricAnswers,
   extractAuditCode,
   extractWhatsappConfirmed,
+  isDetailedAnswer,
+  isYesAnswer,
+  isNoAnswer,
   isPortalRecord
 } = require('../js/db');
 
@@ -77,6 +80,58 @@ function canonicalJson(value) {
   return JSON.stringify(value);
 }
 
+async function auditCloudRows(apiKey = SUPABASE_KEY) {
+  const getRes = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores?select=*&order=date.desc,submitted_at.desc`, {
+    method: 'GET',
+    headers: buildHeaders(apiKey)
+  });
+
+  if (!getRes.ok) {
+    const errText = await getRes.text();
+    console.error('Erro ao auditar registros:', getRes.status, errText);
+    return { ok: false, status: getRes.status, body: errText };
+  }
+
+  const rows = await getRes.json();
+  const teenRows = rows.filter(r => !isPortalRecord(r));
+  const portalRows = rows.filter(isPortalRecord);
+  const byNameDate = new Map();
+  const missingAnswers = [];
+
+  for (const r of teenRows) {
+    const ans = Array.isArray(r.answers) ? r.answers : [];
+    if (ans.length === 0) missingAnswers.push(r.id);
+    const key = `${(r.name || '').trim().toLowerCase()}|${r.date}`;
+    if (!byNameDate.has(key)) byNameDate.set(key, []);
+    byNameDate.get(key).push(r.id);
+  }
+
+  const duplicates = Array.from(byNameDate.entries())
+    .filter(([, ids]) => ids.length > 1)
+    .map(([key, ids]) => ({ key, ids }));
+
+  console.log(`Auditoria Supabase: ${teenRows.length} registros de adolescentes, ${portalRows.length} registros portal_ isolados.`);
+  console.log(`Sem answers: ${missingAnswers.length}, Duplicatas (nome|data): ${duplicates.length}`);
+
+  teenRows.slice(0, 10).forEach(r => {
+    const ans = Array.isArray(r.answers) ? r.answers : [];
+    const yesCount = ans.filter(isYesAnswer).length;
+    const noCount = ans.filter(isNoAnswer).length;
+    const audit = extractAuditCode(ans);
+    const wa = extractWhatsappConfirmed(ans);
+    console.log(`  - ${r.date} | ${r.name} (${r.id}) | ${r.total} pts | SIM=${yesCount}, NÃO=${noCount} | WA=${wa} | ${audit || '-'}`);
+  });
+
+  return {
+    ok: true,
+    totalRows: rows.length,
+    teenRows: teenRows.length,
+    portalRows: portalRows.length,
+    missingAnswers,
+    duplicates
+  };
+}
+
 async function checkAndSync(apiKey = SUPABASE_KEY) {
   const records = loadOfficialSeedRecords();
   console.log(`Verificando tabela 'teen_scores' no Supabase (${records.length} registros oficiais)...`);
@@ -122,7 +177,7 @@ async function checkAndSync(apiKey = SUPABASE_KEY) {
 
 async function enrichExistingCloudRows(apiKey = SUPABASE_KEY) {
   console.log('Buscando todos os registros atuais de adolescentes em teen_scores para migração/enriquecimento...');
-  const getRes = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores?select=*&id=not.like.portal_*&order=date.desc,submitted_at.desc`, {
+  const getRes = await fetch(`${SUPABASE_URL}/rest/v1/teen_scores?select=*&id=not.ilike.portal_*&order=date.desc,submitted_at.desc`, {
     method: 'GET',
     headers: buildHeaders(apiKey)
   });
@@ -146,7 +201,7 @@ async function enrichExistingCloudRows(apiKey = SUPABASE_KEY) {
       continue;
     }
     const currentAnswers = Array.isArray(row.answers) ? row.answers : [];
-    const hasDetailed = currentAnswers.some(a => a && (a.choice === 'yes' || a.choice === 'no'));
+    const hasDetailed = currentAnswers.some(isDetailedAnswer);
 
     let nextAnswers;
     let kind;
@@ -203,7 +258,10 @@ async function enrichExistingCloudRows(apiKey = SUPABASE_KEY) {
 
 if (require.main === module) {
   (async () => {
-    if (cliFlags.has('--enrich-cloud')) {
+    if (cliFlags.has('--audit')) {
+      const result = await auditCloudRows(SUPABASE_KEY);
+      if (!result.ok) process.exit(1);
+    } else if (cliFlags.has('--enrich-cloud')) {
       const result = await enrichExistingCloudRows(SUPABASE_KEY);
       if (!result.ok) process.exit(1);
     } else {
@@ -215,6 +273,7 @@ if (require.main === module) {
 
 module.exports = {
   loadOfficialSeedRecords,
+  auditCloudRows,
   checkAndSync,
   enrichExistingCloudRows
 };

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#7c4424" />
-  <meta name="description" content="Tabela Oficial de Pontos — Escola Sabatina dos Adolescentes" />
+  <meta name="description" content="Tabela Oficial de Pontos — Escola Sabatina dos Adolescentes (IASD São Mateus)" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="TabelaTeens" />
@@ -37,9 +37,11 @@
 
   <!-- HEADER -->
   <header>
-    <div class="brand-badge">Escola Sabatina dos Adolescentes</div>
+    <div class="brand-badge">
+      <span aria-hidden="true">🏆</span> Escola Sabatina dos Adolescentes · IASD São Mateus
+    </div>
     <h1>Tabela Oficial de Pontos</h1>
-    <p>Pontuação semanal, auditoria no WhatsApp e ranking ao vivo da classe</p>
+    <p>Marque suas atividades, envie no grupo do WhatsApp e confira as respostas de toda a classe</p>
 
     <!-- NAVEGAÇÃO DE ABAS -->
     <div class="nav-tabs" role="tablist" aria-label="Seções do aplicativo">
@@ -51,7 +53,8 @@
         aria-selected="true"
         onclick="switchTab('score')"
       >
-        Lançar Pontos
+        <span aria-hidden="true">📝</span>
+        <span>Lançar Pontos</span>
       </button>
       <button
         type="button"
@@ -61,7 +64,9 @@
         aria-selected="false"
         onclick="switchTab('rank')"
       >
-        Ranking &amp; Auditoria
+        <span aria-hidden="true">🔍</span>
+        <span>Ranking &amp; Auditoria</span>
+        <span class="tab-count-pill" id="tabAuditCountPill" hidden>0</span>
       </button>
     </div>
   </header>
@@ -77,10 +82,10 @@
   <div id="tabScore" class="tab-content active" role="tabpanel" aria-labelledby="tabScoreBtn">
 
     <!-- SELEÇÃO RÁPIDA DO ADOLESCENTE -->
-    <div class="student-card">
+    <section class="student-card" aria-labelledby="studentSelectTitle">
       <div class="student-header-row">
-        <div class="student-card-title">
-          Selecione o seu nome na lista abaixo
+        <div class="student-card-title" id="studentSelectTitle">
+          1. Quem está preenchendo?
         </div>
         <!-- Data 100% Automática -->
         <div class="auto-date-badge">
@@ -90,7 +95,7 @@
       </div>
 
       <div class="select-instruction">
-        Toque no seu nome para marcar as atividades realizadas nesta semana:
+        Toque no seu nome abaixo antes de marcar suas atividades desta semana:
       </div>
 
       <!-- Grade de chips interativos -->
@@ -98,37 +103,82 @@
         <!-- Preenchido dinamicamente via JS -->
       </div>
 
-      <!-- Rodapé da seleção com sincronização e opção de visitante -->
+      <!-- Entrada inline de Visitante (substitui window.prompt no mobile) -->
+      <div class="visitor-inline-box" id="visitorInputWrap" hidden>
+        <label class="visitor-inline-label" for="visitorNameInput">Nome do visitante ou novo adolescente:</label>
+        <div class="visitor-inline-row">
+          <input
+            type="text"
+            id="visitorNameInput"
+            class="visitor-inline-input"
+            maxlength="30"
+            placeholder="Ex: Lucas"
+            autocomplete="name"
+          />
+          <button type="button" class="btn-visitor-save" onclick="confirmVisitorInline()">Usar nome</button>
+          <button type="button" class="btn-visitor-cancel" onclick="cancelVisitorInline()">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Rodapé da seleção com sincronização -->
       <div class="selector-footer-row">
         <div class="current-selected-label">
-          <span>Adolescente Selecionado:</span>
-          <strong id="selectedNamePreview">Selecione seu nome acima</strong>
+          <span>Selecionado:</span>
+          <strong id="selectedNamePreview">Nenhum nome selecionado</strong>
         </div>
         <select id="teenSelect" class="styled-select" aria-label="Selecionar adolescente na lista" onchange="onSelectChange(this.value)">
-          <option value="">-- Ou escolha na lista --</option>
+          <option value="">-- Escolher na lista --</option>
         </select>
+      </div>
+
+      <!-- Banner quando o adolescente já lançou hoje -->
+      <div class="today-saved-banner" id="todaySubmissionBanner" hidden>
+        <div class="today-saved-top">
+          <div class="today-saved-info">
+            <span class="today-saved-title" id="todaySavedTitle">Lançamento de hoje já salvo</span>
+            <span class="today-saved-meta" id="todaySavedMeta"></span>
+          </div>
+          <span class="today-saved-pts" id="todaySavedPts">+0 pts</span>
+        </div>
+        <div class="today-saved-actions">
+          <button type="button" class="btn-today-view" onclick="viewSelectedTeenTodayInAudit()">
+            👁️ Ver respostas salvas
+          </button>
+          <button type="button" class="btn-today-edit" onclick="loadTodaySubmissionIntoForm()">
+            ✏️ Carregar para editar
+          </button>
+        </div>
       </div>
 
       <!-- Barra de Progresso de Perguntas Respondidas -->
       <div class="progress-bar-wrap">
         <div class="progress-label-row">
-          <span>Itens respondidos</span>
+          <span>2. Atividades marcadas / respondidas</span>
           <span id="progressText">0 de 18 (0%)</span>
         </div>
         <div class="progress-track">
           <div class="progress-fill" id="progressFill"></div>
         </div>
+        <div class="progress-breakdown-row" id="progressBreakdown">
+          <span class="breakdown-chip yes">✅ 0 Sim</span>
+          <span class="breakdown-chip no">❌ 0 Não</span>
+          <span class="breakdown-chip blank">⏳ 18 em branco (contam como Não)</span>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- FILTRO DE CATEGORIAS -->
     <div class="filter-pills" id="filterPills" role="group" aria-label="Filtrar atividades por categoria">
-      <button type="button" class="pill-btn active" onclick="filterCategory('all', this)">Todos (18)</button>
-      <button type="button" class="pill-btn" onclick="filterCategory('Liderança', this)">Liderança</button>
-      <button type="button" class="pill-btn" onclick="filterCategory('Missão', this)">Missão</button>
-      <button type="button" class="pill-btn" onclick="filterCategory('Estudo', this)">Estudo</button>
-      <button type="button" class="pill-btn" onclick="filterCategory('Comunidade', this)">Comunidade</button>
-      <button type="button" class="pill-btn" onclick="filterCategory('Zelo', this)">Zelo &amp; Oferta</button>
+      <button type="button" class="pill-btn active" data-category="all" onclick="filterCategory('all', this)">Todos (18)</button>
+      <button type="button" class="pill-btn" data-category="Liderança" onclick="filterCategory('Liderança', this)">Liderança (2)</button>
+      <button type="button" class="pill-btn" data-category="Missão" onclick="filterCategory('Missão', this)">Missão (5)</button>
+      <button type="button" class="pill-btn" data-category="Estudo" onclick="filterCategory('Estudo', this)">Estudo (2)</button>
+      <button type="button" class="pill-btn" data-category="Comunidade" onclick="filterCategory('Comunidade', this)">Comunidade (2)</button>
+      <button type="button" class="pill-btn" data-category="Zelo" onclick="filterCategory('Zelo', this)">Zelo &amp; Oferta (7)</button>
+    </div>
+
+    <div class="questions-helper-note">
+      Toque em <strong>Sim</strong> nas atividades que você cumpriu. Itens não respondidos contam como <strong>Não (0 pts)</strong> ao salvar.
     </div>
 
     <!-- LISTA DE PERGUNTAS -->
@@ -139,6 +189,19 @@
   <!-- ═══════════ ABA 2: RANKING GERAL & AUDITORIA ═══════════ -->
   <div id="tabRank" class="tab-content" role="tabpanel" aria-labelledby="tabRankBtn" hidden>
 
+    <!-- BARRA DE ATALHO RÁPIDO NO TOPO DO RANKING -->
+    <div class="rank-quick-nav" id="rankQuickNav">
+      <button type="button" class="rank-quick-btn active" data-target="podiumArea" onclick="scrollToRankSection('podiumArea', this)">
+        🏆 Pódio &amp; Ranking
+      </button>
+      <button type="button" class="rank-quick-btn audit-jump" data-target="peerAuditSection" onclick="scrollToRankSection('peerAuditSection', this)">
+        🔍 Conferir Respostas Salvas
+      </button>
+    </div>
+
+    <!-- DESTAQUE DA ÚLTIMA ATIVIDADE / AUDITORIA IMEDIATA -->
+    <div class="audit-spotlight-card" id="latestAuditSpotlight" hidden></div>
+
     <!-- PÓDIO DOS TOP 3 -->
     <div class="podium-wrap" id="podiumArea">
       <!-- Inserido dinamicamente via JS -->
@@ -148,7 +211,7 @@
     <div class="ranking-toolbar">
       <div>
         <h3 class="ranking-heading">Classificação Geral</h3>
-        <p class="ranking-subheading">Toque em um adolescente para conferir seus lançamentos na auditoria abaixo.</p>
+        <p class="ranking-subheading">Toque em qualquer adolescente para abrir suas respostas detalhadas na auditoria abaixo.</p>
       </div>
     </div>
 
@@ -161,10 +224,26 @@
     <section class="history-section" id="peerAuditSection" aria-labelledby="peerAuditHeading">
       <div class="audit-header-row">
         <div>
-          <h4 class="history-heading" id="peerAuditHeading">Auditoria aos Pares — Lançamentos Detalhados</h4>
-          <p class="audit-subheading">Confira exatamente o que cada adolescente marcou e o código de validação.</p>
+          <h4 class="history-heading" id="peerAuditHeading">🔍 Auditoria aos Pares — Respostas Detalhadas</h4>
+          <p class="audit-subheading">Veja exatamente o que cada adolescente marcou (Sim e Não), o código e o envio no WhatsApp.</p>
         </div>
         <span class="audit-total-badge" id="auditTotalBadge">0 registros</span>
+      </div>
+
+      <!-- Chips Rápidos de Auditoria -->
+      <div class="audit-quick-chips" id="auditQuickChips">
+        <button type="button" class="audit-qchip active" data-qfilter="all" onclick="setAuditQuickFilter('all')">
+          Todos
+        </button>
+        <button type="button" class="audit-qchip" data-qfilter="latest" onclick="setAuditQuickFilter('latest')">
+          📅 Última data
+        </button>
+        <button type="button" class="audit-qchip" data-qfilter="detailed" onclick="setAuditQuickFilter('detailed')">
+          ✅ Só com respostas
+        </button>
+        <button type="button" class="audit-qchip expand-all" id="btnToggleExpandAll" onclick="toggleExpandAllAudit()">
+          ▾ Expandir visíveis
+        </button>
       </div>
 
       <!-- Barra Compacta de Filtros -->
@@ -215,11 +294,14 @@
 <div class="sticky-bar" id="stickyBar">
   <div class="sticky-bar-shell">
     <div class="sticky-summary-strip">
+      <span class="sticky-teen-pill" id="selectedTeenStickyBadge">
+        <span aria-hidden="true">👤</span>
+        <span id="selectedTeenStickyName">Escolha um nome</span>
+      </span>
       <span class="selected-items-badge" id="selectedItemsBadge">
         <span class="selected-dot" aria-hidden="true"></span>
         <span id="selectedItemsText">0 atividades marcadas</span>
       </span>
-      <span class="sticky-validation-note">Envio no WhatsApp valida os pontos</span>
     </div>
     <div class="sticky-bar-inner">
       <div class="score-summary">
@@ -242,14 +324,14 @@
 <dialog class="modal-dialog" id="successModal" closedby="none" aria-labelledby="modalTeenName">
   <div class="modal-card">
     <div class="modal-gate-pill">
-      <span aria-hidden="true">📲</span> Validação Obrigatória no Grupo
+      <span aria-hidden="true">📲</span> Envio Obrigatório no Grupo
     </div>
 
     <div class="modal-confetti-badge" aria-hidden="true">✓</div>
 
     <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
     <p class="modal-desc">
-      Para validar seus pontos, envie o resumo no grupo do WhatsApp dos Adolescentes e confirme abaixo.
+      Suas respostas foram registradas! Agora envie o resumo no grupo do WhatsApp dos Adolescentes e confirme abaixo.
     </p>
 
     <div class="modal-sync-status" id="modalSyncStatus" aria-live="polite">
@@ -269,7 +351,7 @@
 
     <div class="modal-items-box">
       <div class="modal-items-header">
-        <span>Resumo para Conferência</span>
+        <span>Respostas que serão enviadas</span>
         <span class="modal-items-count" id="modalItemsCount">0 de 18 itens</span>
       </div>
       <ul class="modal-items-list" id="modalMarkedItemsList"></ul>
@@ -278,26 +360,29 @@
     <div class="modal-checklist" id="modalChecklist">
       <div class="check-step done" id="gateStepSaved">
         <span class="check-icon" aria-hidden="true">✓</span>
-        <span>Pontuação salva com código de auditoria</span>
+        <span>Pontuação e respostas salvas no sistema</span>
       </div>
       <div class="check-step active" id="gateStepWa">
         <span class="check-icon" id="gateStepWaIcon" aria-hidden="true">1</span>
-        <span id="gateStepWaText">Envie a mensagem no grupo do WhatsApp</span>
+        <span id="gateStepWaText">Toque no botão verde abaixo para enviar no WhatsApp</span>
       </div>
       <div class="check-step pending" id="gateStepConfirm">
         <span class="check-icon" id="gateStepConfirmIcon" aria-hidden="true">2</span>
-        <span>Confirme abaixo após enviar no grupo</span>
+        <span id="gateStepConfirmText">Após enviar no grupo, confirme para ver na Auditoria</span>
       </div>
     </div>
 
     <p class="modal-gate-warning" id="modalGateWarning" role="status" aria-live="polite">
-      Conclua o envio no WhatsApp e toque em confirmar para fechar esta janela.
+      Toque primeiro no botão verde do WhatsApp, envie no grupo e depois confirme abaixo.
     </p>
 
     <div class="modal-btns">
       <a href="#" id="modalWaBtn" target="_blank" rel="noopener" class="btn-wa-share">
-        📲 Abrir / Reenviar no WhatsApp
+        📲 Abrir e Enviar no WhatsApp
       </a>
+      <button type="button" id="modalCopyWaBtn" class="btn-wa-copy" onclick="copyModalWhatsAppText()">
+        📋 Copiar mensagem para o WhatsApp
+      </button>
       <button type="button" id="modalConfirmBtn" class="btn-wa-confirm" onclick="confirmWhatsAppGate()" disabled>
         ✅ Confirmo que enviei no Grupo do WhatsApp
       </button>

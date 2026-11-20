@@ -5,6 +5,8 @@
  */
 const DB_KEY = 'church_ranking_db_v10';
 const USER_KEY = 'church_ranking_last_user_v10';
+const PENDING_SYNC_KEY = 'church_ranking_pending_sync_v10';
+const KEEPALIVE_MAX_BYTES = 60000;
 
 const SUPABASE_CONFIG = {
   url: 'https://akqckxynvvavroiwijxo.supabase.co',
@@ -13,6 +15,7 @@ const SUPABASE_CONFIG = {
 
 let supabaseClient = null;
 const pendingCloudWrites = new Map();
+let pendingFlushPromise = null;
 
 /**
  * Normaliza nome para geração determinística de IDs por (data, adolescente).
@@ -27,11 +30,41 @@ function slugifyName(name) {
     .replace(/^_+|_+$/g, '') || 'teen';
 }
 
+function normalizeChoiceToken(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toUpperCase();
+}
+
+function isYesAnswer(ans) {
+  if (!ans || typeof ans !== 'object') return false;
+  if (ans.choice === 'yes') return true;
+  return normalizeChoiceToken(ans.escolha) === 'SIM';
+}
+
+function isNoAnswer(ans) {
+  if (!ans || typeof ans !== 'object') return false;
+  if (ans.choice === 'no') return true;
+  return normalizeChoiceToken(ans.escolha) === 'NAO';
+}
+
+function isDetailedAnswer(ans) {
+  return isYesAnswer(ans) || isNoAnswer(ans);
+}
+
+function isHistoricAnswer(ans) {
+  if (!ans || typeof ans !== 'object') return false;
+  if (ans.choice === 'historic') return true;
+  return normalizeChoiceToken(ans.escolha) === 'HISTORICO';
+}
+
 /**
  * Gera objeto descritivo padrão para registros históricos sem checklist individual.
  */
 function buildHistoricAnswers(total) {
-  const pts = Number(total || 0);
+  const pts = Number.isFinite(Number(total)) ? Number(total) : 0;
   return [{
     escolha: 'HISTORICO',
     item: 'Registro histórico consolidado',
@@ -63,8 +96,8 @@ function extractWhatsappConfirmed(answers, fallbackConfirmed) {
 
 /**
  * Formata e ordena answers para persistência no Supabase/cache:
- * - Itens marcados ("yes") vêm PRIMEIRO, com campos claros em português
- * - Itens não marcados ("no") vêm em seguida, preservando todas as perguntas
+ * - Itens marcados ("yes"/"SIM") vêm PRIMEIRO, com campos claros em português
+ * - Itens não marcados ("no"/"NÃO") vêm em seguida, preservando todas as perguntas
  * - Metadados (audit_code, whatsapp_confirmed) ficam embutidos no JSONB
  */
 function formatAnswersForStorage(answers, auditCode = '', whatsappConfirmed) {
@@ -75,7 +108,7 @@ function formatAnswersForStorage(answers, auditCode = '', whatsappConfirmed) {
     ? whatsappConfirmed
     : extractWhatsappConfirmed(answers);
 
-  const hasDetailedChoice = answers.some(a => a && (a.choice === 'yes' || a.choice === 'no'));
+  const hasDetailedChoice = answers.some(isDetailedAnswer);
   if (!hasDetailedChoice) {
     return answers.map(a => {
       const pts = Number((a && (a.pontos ?? a.value)) || 0);
@@ -94,7 +127,7 @@ function formatAnswersForStorage(answers, auditCode = '', whatsappConfirmed) {
   }
 
   const normalized = answers.map((a, pos) => {
-    const choice = a && a.choice === 'yes' ? 'yes' : 'no';
+    const choice = isYesAnswer(a) ? 'yes' : 'no';
     const text = (a && (a.text || a.item)) || '';
     const value = Number((a && (a.value ?? a.pontos)) || 0);
     const category = (a && (a.category || a.categoria)) || '';
@@ -146,7 +179,7 @@ function formatAnswersForStorage(answers, auditCode = '', whatsappConfirmed) {
  * que devem permanecer estritamente isolados do ranking dos adolescentes.
  */
 function isPortalRecord(item) {
-  return Boolean(item && String(item.id || '').startsWith('portal_'));
+  return Boolean(item && String(item.id || '').trim().toLowerCase().startsWith('portal_'));
 }
 
 /**
@@ -155,7 +188,7 @@ function isPortalRecord(item) {
 function normalizeRecord(rec) {
   if (!rec || typeof rec !== 'object' || isPortalRecord(rec)) return null;
   const rawAnswers = Array.isArray(rec.answers) ? rec.answers : [];
-  const auditCode = extractAuditCode(rawAnswers, rec.auditCode);
+  const auditCode = extractAuditCode(rawAnswers, rec.auditCode || rec.audit_code);
   const whatsappConfirmed = extractWhatsappConfirmed(rawAnswers, rec.whatsappConfirmed);
   const isHistoricEmpty = rawAnswers.length === 0 && /^(rec|base)_/i.test(String(rec.id || ''));
 
@@ -164,11 +197,12 @@ function normalizeRecord(rec) {
     : (rawAnswers.length > 0 ? formatAnswersForStorage(rawAnswers, auditCode, whatsappConfirmed) : []);
 
   const submittedAt = rec.submittedAt || rec.submitted_at || (rec.date ? `${rec.date}T12:00:00.000Z` : '');
+  const numericTotal = Number.isFinite(Number(rec.total)) ? Number(rec.total) : 0;
 
   const normalized = {
     ...rec,
     name: (rec.name || '').trim(),
-    total: Number(rec.total || 0),
+    total: numericTotal,
     answers,
     ...(submittedAt ? { submittedAt, submitted_at: rec.submitted_at || submittedAt } : {}),
     ...(auditCode ? { auditCode } : {}),
@@ -180,7 +214,7 @@ function normalizeRecord(rec) {
 
 function getRecordRichnessRank(rec) {
   const answers = Array.isArray(rec && rec.answers) ? rec.answers : [];
-  if (answers.some(a => a && (a.choice === 'yes' || a.choice === 'no'))) return 2;
+  if (answers.some(isDetailedAnswer)) return 2;
   if (answers.length > 0) return 1;
   return 0;
 }
@@ -196,17 +230,24 @@ function isBetterRecord(candidate, current) {
   const currRank = getRecordRichnessRank(current);
   if (candRank !== currRank) return candRank > currRank;
 
-  const candWa = Boolean(candidate && candidate.whatsappConfirmed);
-  const currWa = Boolean(current && current.whatsappConfirmed);
-  if (candWa !== currWa) return candWa;
-
   const candTs = getRecordTimestamp(candidate);
   const currTs = getRecordTimestamp(current);
   if (candTs !== currTs) return candTs > currTs;
 
+  const candWa = Boolean(candidate && candidate.whatsappConfirmed);
+  const currWa = Boolean(current && current.whatsappConfirmed);
+  if (candWa !== currWa) return candWa;
+
   const candAnsLen = Array.isArray(candidate && candidate.answers) ? candidate.answers.length : 0;
   const currAnsLen = Array.isArray(current && current.answers) ? current.answers.length : 0;
   return candAnsLen > currAnsLen;
+}
+
+function getDedupKey(rec, fallbackIdx = 0) {
+  const cleanName = (rec && rec.name ? rec.name : '').trim().toLowerCase();
+  return (cleanName && rec && rec.date)
+    ? `${cleanName}|${rec.date}`
+    : `id:${(rec && rec.id) || fallbackIdx}`;
 }
 
 /**
@@ -220,10 +261,7 @@ function deduplicateRecords(records) {
     if (!raw || isPortalRecord(raw)) return;
     const rec = normalizeRecord(raw);
     if (!rec) return;
-    const cleanName = (rec.name || '').trim().toLowerCase();
-    const key = (cleanName && rec.date)
-      ? `${cleanName}|${rec.date}`
-      : `id:${rec.id || idx}`;
+    const key = getDedupKey(rec, idx);
 
     const existing = byKey.get(key);
     if (!existing || isBetterRecord(rec, existing)) {
@@ -238,13 +276,92 @@ function deduplicateRecords(records) {
   });
 }
 
+function getSafeStorage() {
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage : null;
+  } catch {
+    return null;
+  }
+}
+
+function buildPendingSignature(rec) {
+  if (!rec) return '';
+  const answers = Array.isArray(rec.answers) ? rec.answers : [];
+  const yesCount = answers.filter(isYesAnswer).length;
+  return [
+    String(rec.id || ''),
+    String(rec.submitted_at || rec.submittedAt || ''),
+    Number.isFinite(Number(rec.total)) ? Number(rec.total) : 0,
+    yesCount,
+    Boolean(extractWhatsappConfirmed(answers, rec.whatsappConfirmed)),
+    String(extractAuditCode(answers, rec.auditCode || rec.audit_code) || '')
+  ].join('|');
+}
+
+function readPendingQueue() {
+  const storage = getSafeStorage();
+  if (!storage) return {};
+  try {
+    const raw = storage.getItem(PENDING_SYNC_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePendingQueue(queueMap) {
+  const storage = getSafeStorage();
+  if (!storage) return;
+  try {
+    const keys = Object.keys(queueMap || {});
+    if (keys.length === 0) {
+      storage.removeItem(PENDING_SYNC_KEY);
+    } else {
+      storage.setItem(PENDING_SYNC_KEY, JSON.stringify(queueMap));
+    }
+  } catch (e) {
+    console.warn('Falha ao gravar fila de sincronização pendente:', e);
+  }
+}
+
+function enqueuePendingRecord(record) {
+  const normalized = normalizeRecord(record);
+  if (!normalized || isPortalRecord(normalized)) return;
+  const queue = readPendingQueue();
+  const key = getDedupKey(normalized);
+  queue[key] = normalized;
+  writePendingQueue(queue);
+}
+
+function clearPendingRecordIfUnchanged(record) {
+  if (!record) return;
+  const normalized = normalizeRecord(record);
+  if (!normalized) return;
+  const queue = readPendingQueue();
+  const key = getDedupKey(normalized);
+  if (!queue[key]) return;
+  if (buildPendingSignature(queue[key]) === buildPendingSignature(normalized)) {
+    delete queue[key];
+    writePendingQueue(queue);
+  }
+}
+
+function getPendingRecords() {
+  return Object.values(readPendingQueue())
+    .map(normalizeRecord)
+    .filter(Boolean);
+}
+
 const TeenDB = {
   getAll() {
+    const storage = getSafeStorage();
     try {
-      const raw = localStorage.getItem(DB_KEY);
+      const raw = storage ? storage.getItem(DB_KEY) : null;
       if (!raw) {
         const seeded = OFFICIAL_SEED_RECORDS.map(normalizeRecord).filter(Boolean);
-        localStorage.setItem(DB_KEY, JSON.stringify(seeded));
+        if (storage) storage.setItem(DB_KEY, JSON.stringify(seeded));
         return seeded;
       }
       const parsed = JSON.parse(raw);
@@ -256,9 +373,24 @@ const TeenDB = {
       return OFFICIAL_SEED_RECORDS.map(normalizeRecord).filter(Boolean);
     }
   },
+  findRecord(name, date) {
+    const cleanName = (name || '').trim().toLowerCase();
+    const targetDate = String(date || '').trim();
+    if (!cleanName || !targetDate) return null;
+    const all = this.getAll();
+    return all.find(item =>
+      item &&
+      !isPortalRecord(item) &&
+      item.date === targetDate &&
+      (item.name || '').trim().toLowerCase() === cleanName
+    ) || null;
+  },
+  getPendingCount() {
+    return getPendingRecords().length;
+  },
   save(entry) {
     const list = this.getAll();
-    const entryDate = entry.date;
+    const entryDate = entry.date || (typeof getLocalDateISO === 'function' ? getLocalDateISO() : '');
     const cleanName = (entry.name || '').trim();
     const entryNameLower = cleanName.toLowerCase();
 
@@ -284,6 +416,7 @@ const TeenDB = {
       resolvedWaConfirmed
     );
     const submittedAt = entry.submittedAt || entry.submitted_at || new Date().toISOString();
+    const numericTotal = Number.isFinite(Number(entry.total)) ? Number(entry.total) : 0;
 
     const finalRecord = {
       ...(existingRecord || {}),
@@ -291,7 +424,7 @@ const TeenDB = {
       id: resolvedId,
       name: cleanName || entry.name,
       date: entryDate,
-      total: Number(entry.total || 0),
+      total: numericTotal,
       answers: formattedAnswers,
       submittedAt,
       submitted_at: submittedAt
@@ -316,8 +449,12 @@ const TeenDB = {
     }
 
     const dedupedList = deduplicateRecords(list);
-    localStorage.setItem(DB_KEY, JSON.stringify(dedupedList));
-    localStorage.setItem(USER_KEY, JSON.stringify({ name: finalRecord.name }));
+    const storage = getSafeStorage();
+    if (storage) {
+      storage.setItem(DB_KEY, JSON.stringify(dedupedList));
+      storage.setItem(USER_KEY, JSON.stringify({ name: finalRecord.name }));
+    }
+    enqueuePendingRecord(finalRecord);
 
     // Sincroniza o registro final (ID preservado + answers priorizadas) com o Supabase
     const cloudPromise = this.saveToCloud(finalRecord).catch(err => {
@@ -332,30 +469,92 @@ const TeenDB = {
     };
   },
   confirmWhatsapp(recordOrId) {
-    const targetId = typeof recordOrId === 'string' ? recordOrId : (recordOrId && recordOrId.id);
-    if (!targetId) return Promise.resolve(false);
+    const isObj = recordOrId && typeof recordOrId === 'object';
+    const targetId = isObj ? recordOrId.id : recordOrId;
+    const targetName = isObj && recordOrId.name ? String(recordOrId.name).trim().toLowerCase() : '';
+    const targetDate = isObj && recordOrId.date ? String(recordOrId.date).trim() : '';
+
+    if (!targetId && !(targetName && targetDate)) return Promise.resolve(false);
 
     const list = this.getAll();
-    const idx = list.findIndex(item => item.id === targetId);
-    if (idx < 0) return Promise.resolve(false);
+    let idx = targetId ? list.findIndex(item => item.id === targetId) : -1;
+    if (idx < 0 && targetName && targetDate) {
+      idx = list.findIndex(item =>
+        item.date === targetDate && (item.name || '').trim().toLowerCase() === targetName
+      );
+    }
 
-    const current = list[idx];
+    let current = idx >= 0 ? list[idx] : null;
+    if (!current) {
+      const pending = getPendingRecords();
+      current = pending.find(item =>
+        (targetId && item.id === targetId) ||
+        (targetName && targetDate && item.date === targetDate && (item.name || '').trim().toLowerCase() === targetName)
+      ) || null;
+    }
+    if (!current) return Promise.resolve(false);
+
+    const auditCode = current.auditCode || extractAuditCode(current.answers);
     const updated = {
       ...current,
       whatsappConfirmed: true,
-      answers: formatAnswersForStorage(current.answers || [], current.auditCode, true)
+      answers: formatAnswersForStorage(current.answers || [], auditCode, true)
     };
-    list[idx] = updated;
-    localStorage.setItem(DB_KEY, JSON.stringify(list));
+    if (auditCode) updated.auditCode = auditCode;
+
+    if (idx >= 0) {
+      list[idx] = updated;
+    } else {
+      list.unshift(updated);
+    }
+
+    const dedupedList = deduplicateRecords(list);
+    const storage = getSafeStorage();
+    if (storage) {
+      storage.setItem(DB_KEY, JSON.stringify(dedupedList));
+    }
+    enqueuePendingRecord(updated);
 
     return this.saveToCloud(updated).catch(err => {
       console.warn('Supabase WhatsApp confirm sync notice:', err);
       return false;
     });
   },
+  async syncPending() {
+    if (pendingFlushPromise) return pendingFlushPromise;
+
+    pendingFlushPromise = (async () => {
+      const pending = getPendingRecords();
+      if (pending.length === 0) {
+        return { total: 0, synced: 0, remaining: 0 };
+      }
+
+      let synced = 0;
+      for (const rec of pending) {
+        const ok = await this.saveToCloud(rec);
+        if (ok) synced++;
+      }
+
+      const remaining = this.getPendingCount();
+      if (remaining === 0) {
+        this.updateSyncBadge('online');
+      }
+      return { total: pending.length, synced, remaining };
+    })().finally(() => {
+      pendingFlushPromise = null;
+    });
+
+    return pendingFlushPromise;
+  },
   async fetchFromCloud() {
     try {
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores?select=*&id=not.like.portal_*&order=date.desc,submitted_at.desc`, {
+      // Tenta enviar pendências locais antes de puxar estado consolidado da nuvem
+      if (this.getPendingCount() > 0) {
+        await this.syncPending();
+      }
+
+      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores?select=*&id=not.ilike.portal_*&order=date.desc,submitted_at.desc`, {
+        cache: 'no-store',
         headers: {
           'apikey': SUPABASE_CONFIG.anonKey,
           'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
@@ -366,11 +565,17 @@ const TeenDB = {
         const filteredCloud = Array.isArray(cloudData)
           ? cloudData.filter(item => !isPortalRecord(item))
           : [];
-        if (filteredCloud.length > 0) {
-          const deduped = deduplicateRecords(filteredCloud);
-          localStorage.setItem(DB_KEY, JSON.stringify(deduped));
-          this.updateSyncBadge('online');
-          return deduped;
+        const pendingRecords = getPendingRecords();
+
+        if (filteredCloud.length > 0 || pendingRecords.length > 0) {
+          // Mescla pendências locais ainda não confirmadas na nuvem para jamais sobrescrever lançamentos em voo/offline
+          const merged = deduplicateRecords([...filteredCloud, ...pendingRecords]);
+          const storage = getSafeStorage();
+          if (storage) {
+            storage.setItem(DB_KEY, JSON.stringify(merged));
+          }
+          this.updateSyncBadge(pendingRecords.length > 0 ? 'local' : 'online');
+          return merged;
         }
       }
     } catch (e) {
@@ -396,24 +601,29 @@ const TeenDB = {
     return run;
   },
   async _postToCloud(entry) {
+    if (!entry || isPortalRecord(entry)) return false;
     try {
+      const cleanName = (entry.name || '').trim();
+      const entryDate = entry.date || (typeof getLocalDateISO === 'function' ? getLocalDateISO() : '');
+      const resolvedId = entry.id || (entryDate && cleanName ? `sub_${entryDate}_${slugifyName(cleanName)}` : `sub_${Date.now()}`);
       const rawAnswers = Array.isArray(entry.answers) ? entry.answers : [];
-      const isHistoricEmpty = rawAnswers.length === 0 && /^(rec|base)_/i.test(String(entry.id || ''));
+      const isHistoricEmpty = rawAnswers.length === 0 && /^(rec|base)_/i.test(String(resolvedId));
       const answers = isHistoricEmpty
         ? buildHistoricAnswers(entry.total)
         : formatAnswersForStorage(rawAnswers, entry.auditCode, entry.whatsappConfirmed);
 
       // Payload estritamente alinhado às 6 colunas da tabela teen_scores no PostgREST
       const payload = {
-        id: entry.id,
-        name: (entry.name || '').trim(),
-        date: entry.date,
-        total: Number(entry.total || 0),
+        id: resolvedId,
+        name: cleanName,
+        date: entryDate,
+        total: Number.isFinite(Number(entry.total)) ? Number(entry.total) : 0,
         answers,
         submitted_at: entry.submittedAt || entry.submitted_at || new Date().toISOString()
       };
 
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores`, {
+      const body = JSON.stringify(payload);
+      const fetchOpts = {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_CONFIG.anonKey,
@@ -421,10 +631,27 @@ const TeenDB = {
           'Content-Type': 'application/json',
           'Prefer': 'resolution=merge-duplicates,return=minimal'
         },
-        body: JSON.stringify(payload)
-      });
+        body
+      };
+
+      // keepalive garante envio em segundo plano quando o celular abre o WhatsApp imediatamente
+      if (body.length <= KEEPALIVE_MAX_BYTES) {
+        fetchOpts.keepalive = true;
+      }
+
+      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/teen_scores`, fetchOpts);
       if (res.ok) {
-        this.updateSyncBadge('online');
+        clearPendingRecordIfUnchanged({
+          ...entry,
+          id: resolvedId,
+          name: cleanName,
+          date: entryDate,
+          total: payload.total,
+          answers,
+          submittedAt: payload.submitted_at,
+          submitted_at: payload.submitted_at
+        });
+        this.updateSyncBadge(this.getPendingCount() > 0 ? 'local' : 'online');
         return true;
       }
       console.warn('Supabase saveToCloud HTTP error:', res.status, await res.text());
@@ -442,8 +669,11 @@ const TeenDB = {
       badge.innerHTML = '<span class="cloud-dot online"></span> Nuvem Ao Vivo';
       badge.title = 'Conectado ao Supabase em tempo real';
     } else {
+      const pendingCount = this.getPendingCount();
       badge.innerHTML = '<span class="cloud-dot local"></span> Sincronizado Local';
-      badge.title = 'Armazenamento local ativo';
+      badge.title = pendingCount > 0
+        ? `${pendingCount} lançamento(s) aguardando conexão para sincronizar`
+        : 'Armazenamento local ativo';
     }
   },
   initRealtime() {
@@ -463,7 +693,7 @@ const TeenDB = {
             })
             .subscribe((status) => {
               if (status === 'SUBSCRIBED') {
-                TeenDB.updateSyncBadge('online');
+                TeenDB.updateSyncBadge(TeenDB.getPendingCount() > 0 ? 'local' : 'online');
               }
             });
         } catch (e) {
@@ -473,6 +703,29 @@ const TeenDB = {
     };
 
     if (typeof window === 'undefined') return;
+
+    if (!window.__teenDbSyncListenersBound) {
+      window.__teenDbSyncListenersBound = true;
+      window.addEventListener('online', () => {
+        TeenDB.syncPending().then((res) => {
+          if (res && res.synced > 0 && typeof renderRanking === 'function') {
+            renderRanking();
+          }
+        }).catch(() => {});
+      });
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible' && TeenDB.getPendingCount() > 0) {
+            TeenDB.syncPending().then((res) => {
+              if (res && res.synced > 0 && typeof renderRanking === 'function') {
+                renderRanking();
+              }
+            }).catch(() => {});
+          }
+        });
+      }
+    }
+
     if (window.supabase) {
       setup();
     } else {
@@ -480,19 +733,27 @@ const TeenDB = {
     }
   },
   getLastUser() {
+    const storage = getSafeStorage();
     try {
-      const raw = localStorage.getItem(USER_KEY);
+      const raw = storage ? storage.getItem(USER_KEY) : null;
       return raw ? JSON.parse(raw) : { name: '' };
     } catch {
       return { name: '' };
     }
   },
   clear() {
-    localStorage.removeItem(DB_KEY);
+    const storage = getSafeStorage();
+    if (!storage) return;
+    storage.removeItem(DB_KEY);
+    storage.removeItem(PENDING_SYNC_KEY);
   },
   resetToOfficial() {
     const seeded = OFFICIAL_SEED_RECORDS.map(normalizeRecord).filter(Boolean);
-    localStorage.setItem(DB_KEY, JSON.stringify(seeded));
+    const storage = getSafeStorage();
+    if (storage) {
+      storage.setItem(DB_KEY, JSON.stringify(seeded));
+      storage.removeItem(PENDING_SYNC_KEY);
+    }
     return seeded;
   },
   getLeaderboard() {
@@ -551,8 +812,8 @@ function buildCSVContent(records, formatDateFn) {
   sorted.forEach(sub => {
     const fDate = fmtDate(sub.date);
     const answers = Array.isArray(sub.answers) ? sub.answers : [];
-    const yesItems = answers.filter(a => a && a.choice === 'yes');
-    const isHistoric = yesItems.length === 0 && answers.some(a => a && a.choice === 'historic');
+    const yesItems = answers.filter(isYesAnswer);
+    const isHistoric = yesItems.length === 0 && answers.some(isHistoricAnswer);
 
     const cumpridos = yesItems.length > 0
       ? yesItems.map(a => `${a.text || a.item} (+${Number(a.value ?? a.pontos ?? 0)})`).join(' | ')
@@ -591,9 +852,16 @@ function exportCSV() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    DB_KEY,
+    USER_KEY,
+    PENDING_SYNC_KEY,
     SUPABASE_CONFIG,
     TeenDB,
     slugifyName,
+    isYesAnswer,
+    isNoAnswer,
+    isDetailedAnswer,
+    isHistoricAnswer,
     buildHistoricAnswers,
     extractAuditCode,
     extractWhatsappConfirmed,

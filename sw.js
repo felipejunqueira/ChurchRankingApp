@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pontos-es-v24';
+const CACHE_NAME = 'pontos-es-v25';
 
 // Core files only — fonts load from network (or cache if already fetched)
 const CORE_ASSETS = [
@@ -17,16 +17,24 @@ const CORE_ASSETS = [
   './js/app.js'
 ];
 
-// Install: cache core files — don't let fonts block this
+const STATIC_ASSET_RE = /\.(?:png|svg|ico|webp)$/i;
+const FONT_ORIGINS = new Set([
+  'https://fonts.googleapis.com',
+  'https://fonts.gstatic.com'
+]);
+
+// Install: force fresh fetch into new cache version
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS);
+      return cache.addAll(
+        CORE_ASSETS.map((asset) => new Request(asset, { cache: 'reload' }))
+      );
     }).then(() => self.skipWaiting())
   );
 });
 
-// Activate: remove old caches
+// Activate: remove old caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -37,34 +45,66 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: cache-first for our files, network-first for everything else
+// Fetch: network-first for HTML/JS/CSS/manifest so updates apply on first load;
+// cache-first for static icons; never intercept Supabase API calls.
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
   const url = new URL(event.request.url);
 
-  // For our own origin: serve from cache, update in background
   if (url.origin === location.origin) {
+    if (STATIC_ASSET_RE.test(url.pathname)) {
+      event.respondWith(
+        caches.open(CACHE_NAME).then((cache) =>
+          cache.match(event.request).then((cached) => {
+            const networkFetch = fetch(event.request).then((response) => {
+              if (response && response.ok) {
+                cache.put(event.request, response.clone());
+              }
+              return response;
+            }).catch(() => cached);
+            return cached || networkFetch;
+          })
+        )
+      );
+      return;
+    }
+
     event.respondWith(
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((cached) => {
-          const networkFetch = fetch(event.request).then((response) => {
-            if (response.ok) cache.put(event.request, response.clone());
+      caches.open(CACHE_NAME).then((cache) =>
+        fetch(event.request, { cache: 'no-cache' })
+          .then((response) => {
+            if (response && response.ok) {
+              cache.put(event.request, response.clone());
+            }
             return response;
-          }).catch(() => cached);
-          return cached || networkFetch;
-        });
-      })
+          })
+          .catch(async () => {
+            const cached = await cache.match(event.request);
+            if (cached) return cached;
+            if (event.request.mode === 'navigate') {
+              return cache.match('./index.html');
+            }
+            return Response.error();
+          })
+      )
     );
     return;
   }
 
-  // For external resources (fonts etc): try network, fallback to cache
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const cloned = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
+  // Only cache external font stylesheets/files; never cache Supabase API responses
+  if (FONT_ORIGINS.has(url.origin)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) =>
+        fetch(event.request)
+          .then((response) => {
+            if (response && response.ok) {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cache.match(event.request))
+      )
+    );
+  }
 });
