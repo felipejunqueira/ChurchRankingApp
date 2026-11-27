@@ -15,7 +15,6 @@ const AppState = {
   auditDate: 'all',
   auditQuickFilter: 'all', // 'all' | 'latest' | 'detailed'
   expandedAuditKeys: new Set(),
-  hasInitializedDefaultExpand: false,
   recentSavedRecordId: '',
 
   setAnswer(index, choice) {
@@ -549,7 +548,6 @@ function viewSelectedTeenTodayInAudit() {
   switchTab('rank', { skipScrollTop: true });
   if (todayRec) {
     const recKey = getRecordKey(todayRec, 0);
-    AppState.expandedAuditKeys.add(recKey);
     AppState.recentSavedRecordId = recKey;
   }
   filterAuditByTeen(targetName);
@@ -788,6 +786,7 @@ function switchTab(tab, options = {}) {
   if (stickyBar) stickyBar.style.display = isScore ? 'block' : 'none';
 
   if (!isScore) {
+    AppState.expandedAuditKeys.clear();
     renderRanking();
     if (!options.skipScrollTop) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -981,8 +980,6 @@ function setAuditQuickFilter(mode) {
     const firstDetailed = all.find(sub => !isHistoricRecord(sub)) || all[0];
     if (firstDetailed && firstDetailed.date) {
       AppState.auditDate = firstDetailed.date;
-      all.filter(sub => sub.date === firstDetailed.date && !isHistoricRecord(sub))
-        .forEach((sub, idx) => AppState.expandedAuditKeys.add(getRecordKey(sub, idx)));
     }
   } else if (mode === 'all') {
     AppState.auditDate = 'all';
@@ -1041,18 +1038,6 @@ function renderAuditHistory(preloadedAll) {
   if (!recent) return;
 
   const all = Array.isArray(preloadedAll) ? preloadedAll : getSortedAllRecords();
-
-  // Auto-expande os 3 lançamentos detalhados mais recentes na primeira carga com registros detalhados
-  // para que as respostas salvas já fiquem imediatamente visíveis sem precisar adivinhar
-  if (!AppState.hasInitializedDefaultExpand && all.length > 0) {
-    const recentDetailed = all.filter(sub => !isHistoricRecord(sub)).slice(0, 3);
-    if (recentDetailed.length > 0) {
-      recentDetailed.forEach((sub, idx) => {
-        AppState.expandedAuditKeys.add(getRecordKey(sub, idx));
-      });
-      AppState.hasInitializedDefaultExpand = true;
-    }
-  }
 
   populateAuditDateOptions(all);
   syncQuickFilterChipsUI();
@@ -1310,17 +1295,12 @@ function filterAuditByTeen(name) {
   AppState.auditSearch = name;
   AppState.auditDate = 'all';
   AppState.auditQuickFilter = 'all';
+  AppState.expandedAuditKeys.clear();
 
   const searchInput = document.getElementById('auditSearchInput');
   const dateSelect = document.getElementById('auditDateFilter');
   if (searchInput) searchInput.value = name;
   if (dateSelect) dateSelect.value = 'all';
-
-  const targetNorm = normalizeText(name);
-  const matches = getSortedAllRecords().filter(sub => normalizeText(sub.name) === targetNorm);
-  if (matches.length > 0) {
-    AppState.expandedAuditKeys.add(getRecordKey(matches[0], 0));
-  }
 
   renderAuditHistory();
 

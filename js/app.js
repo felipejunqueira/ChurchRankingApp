@@ -94,7 +94,6 @@ async function submitScore() {
 
     const resolvedId = savedRecord && savedRecord.id ? String(savedRecord.id) : record.id;
     AppState.recentSavedRecordId = resolvedId;
-    AppState.expandedAuditKeys.add(resolvedId);
 
     ModalGateState.isOpen = true;
     ModalGateState.confirmed = false;
@@ -355,7 +354,6 @@ function confirmWhatsAppGate() {
 
   if (confirmedId) {
     AppState.recentSavedRecordId = confirmedId;
-    AppState.expandedAuditKeys.add(confirmedId);
   }
 
   switchTab('rank', { skipScrollTop: true });
