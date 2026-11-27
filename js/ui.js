@@ -520,8 +520,11 @@ function loadTodaySubmissionIntoForm() {
 
   const answers = Array.isArray(todayRec.answers) ? todayRec.answers : [];
   questions.forEach((q, idx) => {
+    const targetText = normalizeText(q.text);
     const match = answers.find(a =>
-      a && ((typeof a.index === 'number' && a.index === idx) || normalizeText(a.text || a.item) === normalizeText(q.text))
+      a && normalizeText(a.text || a.item) === targetText
+    ) || answers.find(a =>
+      a && !(a.text || a.item) && typeof a.index === 'number' && a.index === idx
     );
     if (match) {
       const isYes = match.choice === 'yes' || match.escolha === 'SIM';
@@ -641,6 +644,23 @@ function filterCategory(cat, btn) {
 
 function answer(index, choice) {
   AppState.setAnswer(index, choice);
+
+  const currentQ = questions[index];
+  if (choice === 'yes' && currentQ && currentQ.exclusiveGroup) {
+    questions.forEach((otherQ, otherIdx) => {
+      if (otherIdx !== index && otherQ.exclusiveGroup === currentQ.exclusiveGroup && AppState.getAnswer(otherIdx) === 'yes') {
+        AppState.setAnswer(otherIdx, null);
+        const otherCard = document.getElementById(`card-${otherIdx}`);
+        const otherYes = document.getElementById(`yes-${otherIdx}`);
+        const otherNo = document.getElementById(`no-${otherIdx}`);
+        if (otherYes) otherYes.classList.remove('selected');
+        if (otherNo) otherNo.classList.remove('selected');
+        if (otherCard) {
+          otherCard.classList.remove('answered-yes', 'answered-no');
+        }
+      }
+    });
+  }
 
   if (navigator.vibrate) navigator.vibrate(20);
 

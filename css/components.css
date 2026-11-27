@@ -809,7 +809,7 @@
 }
 
 /* Interface simplificada: informações redundantes ocultas (elementos mantidos para o JS) */
-.current-selected-label,
+.selector-footer-row,
 #progressBreakdown,
 #selectedItemsBadge {
   display: none;
