@@ -45,15 +45,6 @@
   color: var(--accent-gold-dark);
 }
 
-.auto-date-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #16a34a;
-  box-shadow: 0 0 6px rgba(22, 163, 74, 0.55);
-  display: inline-block;
-}
-
 .select-instruction {
   font-size: 0.86rem;
   color: var(--text-2);

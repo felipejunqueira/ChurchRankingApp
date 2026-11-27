@@ -376,14 +376,6 @@ function confirmWhatsAppGate() {
   showActionToast('Pontuação salva e confirmada! Suas respostas estão visíveis na Auditoria.');
 }
 
-function closeModal() {
-  if (!ModalGateState.confirmed) {
-    showGateWarning();
-    return;
-  }
-  confirmWhatsAppGate();
-}
-
 function handleReturnFromWhatsApp() {
   if (!ModalGateState.isOpen) return;
 
@@ -548,7 +540,6 @@ if (dismissBtn) {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => console.log('SW ativo:', reg.scope))
       .catch(err => console.error('Erro no SW:', err));
   });
 }

@@ -462,13 +462,6 @@
   align-items: center;
 }
 
-.audit-search-icon {
-  position: absolute;
-  left: 11px;
-  font-size: 0.85rem;
-  pointer-events: none;
-}
-
 .audit-search-input {
   width: 100%;
   min-height: 44px;
@@ -1505,11 +1498,6 @@ dialog.modal-dialog[open] .modal-card {
   text-align: center;
   padding: 40px 20px;
   color: var(--text-3);
-}
-
-.empty-ranking-icon {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
 }
 
 .empty-ranking-title {
