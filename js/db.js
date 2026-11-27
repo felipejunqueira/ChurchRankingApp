@@ -687,7 +687,7 @@ const TeenDB = {
               if (payload && (isPortalRecord(payload.new) || isPortalRecord(payload.old))) {
                 return;
               }
-              console.log('⚡ Atualização em tempo real recebida do Supabase!');
+              console.log('Atualização em tempo real recebida do Supabase!');
               await TeenDB.fetchFromCloud();
               if (typeof renderRanking === 'function') renderRanking();
             })

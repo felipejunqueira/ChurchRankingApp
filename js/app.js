@@ -176,7 +176,7 @@ function openVerificationGateModal({ teenName, total, auditCode, yesItems, waUrl
   if (modalAuditCode) modalAuditCode.textContent = auditCode;
   if (modalItemsCount) modalItemsCount.textContent = `${yesItems.length} de ${questions.length} itens`;
   if (modalWa) modalWa.href = waUrl;
-  if (modalCopyBtn) modalCopyBtn.textContent = '📋 Copiar mensagem para o WhatsApp';
+  if (modalCopyBtn) modalCopyBtn.textContent = 'Copiar mensagem para o WhatsApp';
   if (gateWarning) gateWarning.classList.remove('visible');
 
   if (modalItemsList) {
@@ -185,7 +185,7 @@ function openVerificationGateModal({ teenName, total, auditCode, yesItems, waUrl
         <li>
           <span class="modal-item-left">
             ${item.category ? `<span class="modal-item-cat">${escapeHtml(item.category)}</span>` : ''}
-            <span>✅ ${escapeHtml(item.text)}</span>
+            <span>${escapeHtml(item.text)}</span>
           </span>
           <span class="modal-item-pts">+${Number(item.value || 0)} pts</span>
         </li>
@@ -201,7 +201,7 @@ function openVerificationGateModal({ teenName, total, auditCode, yesItems, waUrl
       modalSync.innerHTML = '<span class="sync-spinner" aria-hidden="true"></span> Salvando na nuvem...';
     } else {
       modalSync.classList.add('local');
-      modalSync.textContent = '📱 Salvo neste dispositivo';
+      modalSync.textContent = 'Salvo neste dispositivo';
     }
   }
 
@@ -222,10 +222,10 @@ function updateModalSyncStatus(synced) {
   modalSync.className = 'modal-sync-status';
   if (synced) {
     modalSync.classList.add('synced');
-    modalSync.textContent = '☁️ Salvo na nuvem! Respostas e ranking atualizados.';
+    modalSync.textContent = 'Salvo na nuvem! Respostas e ranking atualizados.';
   } else {
     modalSync.classList.add('local');
-    modalSync.textContent = '📱 Salvo no aparelho — sincronizará quando online.';
+    modalSync.textContent = 'Salvo no aparelho — sincronizará quando online.';
   }
 }
 
@@ -256,7 +256,7 @@ function updateModalGateUI() {
       stepWaText.textContent = 'WhatsApp acionado! Se já enviou no grupo, confirme abaixo';
     } else if (ModalGateState.waTriggered) {
       stepWa.className = 'check-step active';
-      stepWaIcon.textContent = '📲';
+      stepWaIcon.textContent = '1';
       stepWaText.textContent = 'WhatsApp aberto em outra janela! Envie ou use o botão verde';
     } else {
       stepWa.className = 'check-step active';
@@ -274,7 +274,7 @@ function updateModalGateUI() {
     stepConfirm.className = canConfirm ? 'check-step active' : 'check-step pending';
   }
   if (stepConfirmIcon) {
-    stepConfirmIcon.textContent = canConfirm ? '2' : '🔒';
+    stepConfirmIcon.textContent = '2';
   }
   if (stepConfirmText) {
     stepConfirmText.textContent = canConfirm
@@ -373,7 +373,7 @@ function confirmWhatsAppGate() {
     }
   });
 
-  showActionToast('✅ Pontuação salva e confirmada! Suas respostas estão visíveis na Auditoria.');
+  showActionToast('Pontuação salva e confirmada! Suas respostas estão visíveis na Auditoria.');
 }
 
 function closeModal() {

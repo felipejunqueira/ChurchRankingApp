@@ -37,8 +37,7 @@
 
   <!-- HEADER -->
   <header>
-    <div class="brand-badge">
-      <span aria-hidden="true">🏆</span> Escola Sabatina dos Adolescentes · IASD São Mateus
+    <div class="brand-badge">Escola Sabatina dos Adolescentes · IASD São Mateus
     </div>
     <h1>Tabela Oficial de Pontos</h1>
     <p>Marque suas atividades, envie no grupo do WhatsApp e confira as respostas de toda a classe</p>
@@ -53,7 +52,6 @@
         aria-selected="true"
         onclick="switchTab('score')"
       >
-        <span aria-hidden="true">📝</span>
         <span>Lançar Pontos</span>
       </button>
       <button
@@ -64,7 +62,6 @@
         aria-selected="false"
         onclick="switchTab('rank')"
       >
-        <span aria-hidden="true">🔍</span>
         <span>Ranking &amp; Auditoria</span>
         <span class="tab-count-pill" id="tabAuditCountPill" hidden>0</span>
       </button>
@@ -89,7 +86,6 @@
         </div>
         <!-- Data 100% Automática -->
         <div class="auto-date-badge">
-          <span class="auto-date-dot" aria-hidden="true"></span>
           <span id="displayCurrentDate">Carregando data...</span>
         </div>
       </div>
@@ -142,10 +138,10 @@
         </div>
         <div class="today-saved-actions">
           <button type="button" class="btn-today-view" onclick="viewSelectedTeenTodayInAudit()">
-            👁️ Ver respostas salvas
+            Ver respostas salvas
           </button>
           <button type="button" class="btn-today-edit" onclick="loadTodaySubmissionIntoForm()">
-            ✏️ Carregar para editar
+            Carregar para editar
           </button>
         </div>
       </div>
@@ -160,9 +156,9 @@
           <div class="progress-fill" id="progressFill"></div>
         </div>
         <div class="progress-breakdown-row" id="progressBreakdown">
-          <span class="breakdown-chip yes">✅ 0 Sim</span>
-          <span class="breakdown-chip no">❌ 0 Não</span>
-          <span class="breakdown-chip blank">⏳ 18 em branco (contam como Não)</span>
+          <span class="breakdown-chip yes">0 Sim</span>
+          <span class="breakdown-chip no">0 Não</span>
+          <span class="breakdown-chip blank">18 em branco (contam como Não)</span>
         </div>
       </div>
     </section>
@@ -192,10 +188,10 @@
     <!-- BARRA DE ATALHO RÁPIDO NO TOPO DO RANKING -->
     <div class="rank-quick-nav" id="rankQuickNav">
       <button type="button" class="rank-quick-btn active" data-target="podiumArea" onclick="scrollToRankSection('podiumArea', this)">
-        🏆 Pódio &amp; Ranking
+        Pódio &amp; Ranking
       </button>
       <button type="button" class="rank-quick-btn audit-jump" data-target="peerAuditSection" onclick="scrollToRankSection('peerAuditSection', this)">
-        🔍 Conferir Respostas Salvas
+        Conferir Respostas Salvas
       </button>
     </div>
 
@@ -224,7 +220,7 @@
     <section class="history-section" id="peerAuditSection" aria-labelledby="peerAuditHeading">
       <div class="audit-header-row">
         <div>
-          <h4 class="history-heading" id="peerAuditHeading">🔍 Auditoria aos Pares — Respostas Detalhadas</h4>
+          <h4 class="history-heading" id="peerAuditHeading">Auditoria aos Pares — Respostas Detalhadas</h4>
           <p class="audit-subheading">Veja exatamente o que cada adolescente marcou (Sim e Não), o código e o envio no WhatsApp.</p>
         </div>
         <span class="audit-total-badge" id="auditTotalBadge">0 registros</span>
@@ -236,10 +232,10 @@
           Todos
         </button>
         <button type="button" class="audit-qchip" data-qfilter="latest" onclick="setAuditQuickFilter('latest')">
-          📅 Última data
+          Última data
         </button>
         <button type="button" class="audit-qchip" data-qfilter="detailed" onclick="setAuditQuickFilter('detailed')">
-          ✅ Só com respostas
+          Só com respostas
         </button>
         <button type="button" class="audit-qchip expand-all" id="btnToggleExpandAll" onclick="toggleExpandAllAudit()">
           ▾ Expandir visíveis
@@ -249,7 +245,6 @@
       <!-- Barra Compacta de Filtros -->
       <div class="audit-filter-bar">
         <div class="audit-search-wrap">
-          <span class="audit-search-icon" aria-hidden="true">🔍</span>
           <input
             type="search"
             id="auditSearchInput"
@@ -275,7 +270,7 @@
     <!-- AÇÕES NO FINAL DO RANKING -->
     <div class="ranking-footer-actions">
       <button type="button" class="btn-export-csv" onclick="exportCSV()" title="Exportar dados para Excel ou Google Planilhas">
-        📊 Exportar Planilha Completa (CSV)
+        Exportar Planilha Completa (CSV)
       </button>
     </div>
 
@@ -295,11 +290,9 @@
   <div class="sticky-bar-shell">
     <div class="sticky-summary-strip">
       <span class="sticky-teen-pill" id="selectedTeenStickyBadge">
-        <span aria-hidden="true">👤</span>
         <span id="selectedTeenStickyName">Escolha um nome</span>
       </span>
       <span class="selected-items-badge" id="selectedItemsBadge">
-        <span class="selected-dot" aria-hidden="true"></span>
         <span id="selectedItemsText">0 atividades marcadas</span>
       </span>
     </div>
@@ -323,8 +316,7 @@
 <!-- ═══════════ MODAL DE VERIFICAÇÃO OBRIGATÓRIA NO WHATSAPP ═══════════ -->
 <dialog class="modal-dialog" id="successModal" closedby="none" aria-labelledby="modalTeenName">
   <div class="modal-card">
-    <div class="modal-gate-pill">
-      <span aria-hidden="true">📲</span> Envio Obrigatório no Grupo
+    <div class="modal-gate-pill">Envio Obrigatório no Grupo
     </div>
 
     <div class="modal-confetti-badge" aria-hidden="true">✓</div>
@@ -334,8 +326,7 @@
       Suas respostas foram registradas! Agora envie o resumo no grupo do WhatsApp dos Adolescentes e confirme abaixo.
     </p>
 
-    <div class="modal-sync-status" id="modalSyncStatus" aria-live="polite">
-      <span class="sync-spinner" aria-hidden="true"></span> Salvando na nuvem...
+    <div class="modal-sync-status" id="modalSyncStatus" aria-live="polite">Salvando na nuvem...
     </div>
 
     <div class="modal-score-box">
@@ -378,13 +369,13 @@
 
     <div class="modal-btns">
       <a href="#" id="modalWaBtn" target="_blank" rel="noopener" class="btn-wa-share">
-        📲 Abrir e Enviar no WhatsApp
+        Abrir e Enviar no WhatsApp
       </a>
       <button type="button" id="modalCopyWaBtn" class="btn-wa-copy" onclick="copyModalWhatsAppText()">
-        📋 Copiar mensagem para o WhatsApp
+        Copiar mensagem para o WhatsApp
       </button>
       <button type="button" id="modalConfirmBtn" class="btn-wa-confirm" onclick="confirmWhatsAppGate()" disabled>
-        ✅ Confirmo que enviei no Grupo do WhatsApp
+        Confirmo que enviei no Grupo do WhatsApp
       </button>
     </div>
   </div>

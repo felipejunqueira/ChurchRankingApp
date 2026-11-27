@@ -492,13 +492,13 @@ function updateTodaySubmissionBanner() {
   const ptsEl = document.getElementById('todaySavedPts');
 
   if (titleEl) {
-    titleEl.textContent = `✅ Lançamento de hoje salvo (${AppState.selectedTeenName})`;
+    titleEl.textContent = `Lançamento de hoje salvo (${AppState.selectedTeenName})`;
   }
   if (metaEl) {
     const parts = [
       `${yesItems.length} de ${questions.length} atividades`,
       auditCode || null,
-      waConfirmed ? '✓ WhatsApp confirmado' : '⏳ Aguardando confirmação WhatsApp'
+      waConfirmed ? '✓ WhatsApp confirmado' : 'Aguardando confirmação WhatsApp'
     ].filter(Boolean);
     metaEl.textContent = parts.join(' · ');
   }
@@ -717,9 +717,9 @@ function updateProgress() {
 
   if (breakdown) {
     breakdown.innerHTML = `
-      <span class="breakdown-chip yes">✅ ${yesCount} Sim</span>
-      <span class="breakdown-chip no">❌ ${noCount} Não</span>
-      <span class="breakdown-chip blank">⏳ ${blankCount} em branco (contam como Não)</span>
+      <span class="breakdown-chip yes">${yesCount} Sim</span>
+      <span class="breakdown-chip no">${noCount} Não</span>
+      <span class="breakdown-chip blank">${blankCount} em branco (contam como Não)</span>
     `;
   }
 
@@ -825,7 +825,7 @@ function renderLatestAuditSpotlight(allRecords) {
       <div class="audit-spotlight-sub">${escapeHtml(summaryNames)}</div>
     </div>
     <button type="button" class="audit-spotlight-btn" id="btnSpotlightOpenAudit">
-      🔍 Ver respostas de ${escapeHtml(formatDateBR(latestDate))}
+      Ver respostas de ${escapeHtml(formatDateBR(latestDate))}
     </button>
   `;
 
@@ -869,7 +869,7 @@ function renderRanking() {
     if (list) {
       list.innerHTML = `
         <div class="empty-ranking">
-          <div class="empty-ranking-icon">🏆</div>
+          
           <h4 class="empty-ranking-title">Nenhum ponto registrado ainda</h4>
           <p class="empty-ranking-desc">Preencha sua pontuação na aba anterior e salve para inaugurar o ranking!</p>
         </div>
@@ -899,7 +899,7 @@ function renderRanking() {
       return `
         <button type="button" class="podium-spot ${spotClass}" data-teen-name="${escapeHtml(user.name)}" title="Ver lançamentos de ${escapeHtml(user.name)} na auditoria">
           <div class="podium-avatar">
-            ${hasCrown ? '<span class="podium-crown" aria-hidden="true">👑</span>' : ''}
+            
             ${medal}
           </div>
           <div class="podium-name">${escapeHtml(user.name)}</div>
@@ -911,9 +911,9 @@ function renderRanking() {
     };
 
     podium.innerHTML = `
-      ${buildPodiumSpot('second', 2, '🥈', top2)}
-      ${buildPodiumSpot('first', 1, '🥇', top1, true)}
-      ${buildPodiumSpot('third', 3, '🥉', top3)}
+      ${buildPodiumSpot('second', 2, '2', top2)}
+      ${buildPodiumSpot('first', 1, '1', top1, true)}
+      ${buildPodiumSpot('third', 3, '3', top3)}
     `;
   }
 
@@ -929,9 +929,9 @@ function renderRanking() {
 
       let rankClass = '';
       let medal = `#${pos}`;
-      if (pos === 1) { rankClass = 'top-1'; medal = '🥇'; }
-      else if (pos === 2) { rankClass = 'top-2'; medal = '🥈'; }
-      else if (pos === 3) { rankClass = 'top-3'; medal = '🥉'; }
+      if (pos === 1) { rankClass = 'top-1'; medal = `#${pos}`; }
+      else if (pos === 2) { rankClass = 'top-2'; medal = `#${pos}`; }
+      else if (pos === 3) { rankClass = 'top-3'; medal = `#${pos}`; }
 
       const latestRec = latestByTeen.get(normalizeText(user.name));
       let latestBadgeHtml = '';
@@ -955,7 +955,7 @@ function renderRanking() {
         </div>
         <div class="leader-right">
           <span class="leader-score">${Number(user.totalPoints || 0).toLocaleString('pt-BR')} pts</span>
-          <span class="leader-audit-hint">🔍 Respostas</span>
+          <span class="leader-audit-hint">Respostas</span>
         </div>
       `;
       list.appendChild(row);
@@ -1165,7 +1165,7 @@ function renderAuditHistory(preloadedAll) {
       const todayBadge = sub.date === todayISO ? ' · Hoje' : '';
       const grpCount = dateGroupCounts[sub.date] || 1;
       groupHeader.innerHTML = `
-        <span>📅 ${escapeHtml(formatDateWeekdayBR(sub.date))}${escapeHtml(todayBadge)}</span>
+        <span>${escapeHtml(formatDateWeekdayBR(sub.date))}${escapeHtml(todayBadge)}</span>
         <span class="audit-date-group-count">${grpCount} ${grpCount === 1 ? 'lançamento' : 'lançamentos'}</span>
       `;
       recent.appendChild(groupHeader);
@@ -1186,13 +1186,13 @@ function renderAuditHistory(preloadedAll) {
     });
 
     const badgesHtml = historic
-      ? `<span class="audit-pill historic">📜 Histórico consolidado</span>`
+      ? `<span class="audit-pill historic">Histórico consolidado</span>`
       : `
-        <span class="audit-pill items-count">✅ ${yesItems.length} de ${questions.length} Sim</span>
+        <span class="audit-pill items-count">${yesItems.length} de ${questions.length} Sim</span>
         <span class="audit-pill ${waConfirmed ? 'wa-ok' : 'wa-pending'}">
-          ${waConfirmed ? '✓ WhatsApp confirmado' : '⏳ Aguardando WhatsApp'}
+          ${waConfirmed ? '✓ WhatsApp confirmado' : 'Aguardando WhatsApp'}
         </span>
-        ${hasSumMismatch ? '<span class="audit-pill integrity-warn">⚠️ Soma divergente</span>' : ''}
+        ${hasSumMismatch ? '<span class="audit-pill integrity-warn">Soma divergente</span>' : ''}
       `;
 
     let previewHtml = '';
@@ -1211,17 +1211,17 @@ function renderAuditHistory(preloadedAll) {
     } else {
       const metaSummaryText = `${yesItems.length} marcadas (Sim) · ${noItems.length} não marcadas (Não)${timeStr ? ` · Enviado às ${timeStr}` : ''}`;
       const integrityHtml = hasSumMismatch
-        ? `<span class="audit-integrity-warn">⚠️ Soma dos itens (${computedSum}) ≠ ${totalNum} pts</span>`
+        ? `<span class="audit-integrity-warn">Soma dos itens (${computedSum}) ≠ ${totalNum} pts</span>`
         : `<span class="audit-integrity-ok">✓ Soma conferida: +${totalNum} pts</span>`;
 
       const yesListHtml = yesItems.length > 0
         ? `
-          <div class="audit-section-title">✅ Atividades Cumpridas (${yesItems.length} de ${questions.length})</div>
+          <div class="audit-section-title">Atividades Cumpridas (${yesItems.length} de ${questions.length})</div>
           <ul class="audit-answers-list">
             ${yesItems.map(item => `
               <li>
                 <span class="audit-ans-left">
-                  <span class="audit-ans-check" aria-hidden="true">✅</span>
+                  <span class="audit-ans-check" aria-hidden="true">✓</span>
                   <span class="audit-ans-text-wrap">
                     ${item.category ? `<span class="audit-ans-cat">${escapeHtml(item.category)}</span>` : ''}
                     <span>${escapeHtml(item.text)}</span>
@@ -1238,7 +1238,7 @@ function renderAuditHistory(preloadedAll) {
         ? `
           <details class="audit-no-details">
             <summary class="audit-no-summary">
-              <span>❌ Ver itens não marcados (${noItems.length} itens como Não)</span>
+              <span>Ver itens não marcados (${noItems.length} itens como Não)</span>
               <span>▾</span>
             </summary>
             <ul class="audit-no-list">
@@ -1296,10 +1296,10 @@ function renderAuditHistory(preloadedAll) {
           ${auditCode ? `<code class="audit-code-chip">${escapeHtml(auditCode)}</code>` : ''}
           <div class="audit-action-btns">
             <button type="button" class="btn-audit-copy" data-copy-key="${escapeHtml(recKey)}">
-              📋 Copiar resumo
+              Copiar resumo
             </button>
             <a class="btn-audit-wa" href="${escapeHtml(waUrl)}" target="_blank" rel="noopener">
-              📲 Enviar / Conferir no WhatsApp
+              Enviar / Conferir no WhatsApp
             </a>
           </div>
         </div>
