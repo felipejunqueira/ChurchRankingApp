@@ -7,7 +7,7 @@ const questions = [
   { group: "Liderança",  category: "Liderança",       text: "Dirigir a Escola Sabatina",                                        value: 150 },
   { group: "Missão",     category: "Missão Especial", text: "Levar Visitas NÃO ADVENTISTAS (por pessoa)",                       value: 110 },
   { group: "Estudo",     category: "Estudo Diário",   text: "Passar a Lição da Escola Sabatina",                                value: 105 },
-  { group: "Estudo",     category: "Estudo Profundo", text: "Resumo Manuscrito do Livro + Explicação Oral",                     value: 100, note: "90 pts resumo + 10 pts explicação oral" },
+  { group: "Estudo",     category: "Estudo Profundo", text: "Resumo Manuscrito do Livro + Explicação Oral",                     value: 100, note: "90 pts resumo + 10 pts explicação oral · ter entregue o resumo para o Felipe ou para a Fernanda" },
   { group: "Liderança",  category: "Iniciativa",      text: "Trazer Inovações para a sala",                                     value: 100 },
   { group: "Missão",     category: "Missão",          text: "Ser instrutor bíblico",                                            value: 90  },
   { group: "Missão",     category: "Competição",      text: "Ter ficado em primeiro lugar no quiz",                             value: 75,  exclusiveGroup: "quiz-podium" },
