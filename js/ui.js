@@ -821,50 +821,6 @@ function getSortedAllRecords() {
   });
 }
 
-function renderLatestAuditSpotlight(allRecords) {
-  const spotlight = document.getElementById('latestAuditSpotlight');
-  if (!spotlight) return;
-
-  const detailed = allRecords.filter(sub => !isHistoricRecord(sub));
-  if (!detailed.length) {
-    spotlight.hidden = true;
-    return;
-  }
-
-  const latestDate = detailed[0].date;
-  const onLatest = detailed.filter(sub => sub.date === latestDate);
-  const namesList = onLatest.map(s => `${s.name} (+${Number(s.total || 0)})`).slice(0, 4);
-  const extraCount = Math.max(0, onLatest.length - namesList.length);
-  const summaryNames = namesList.join(', ') + (extraCount > 0 ? ` e +${extraCount}` : '');
-
-  spotlight.hidden = false;
-  spotlight.innerHTML = `
-    <div class="audit-spotlight-text">
-      <div class="audit-spotlight-kicker">Auditoria Rápida · Últimos envios detalhados</div>
-      <div class="audit-spotlight-title">${escapeHtml(formatDateWeekdayBR(latestDate))} (${onLatest.length} ${onLatest.length === 1 ? 'adolescente' : 'adolescentes'})</div>
-      <div class="audit-spotlight-sub">${escapeHtml(summaryNames)}</div>
-    </div>
-    <button type="button" class="audit-spotlight-btn" id="btnSpotlightOpenAudit">
-      Ver respostas de ${escapeHtml(formatDateBR(latestDate))}
-    </button>
-  `;
-
-  const btn = document.getElementById('btnSpotlightOpenAudit');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      onLatest.forEach((sub, i) => AppState.expandedAuditKeys.add(getRecordKey(sub, i)));
-      AppState.auditDate = latestDate;
-      AppState.auditSearch = '';
-      AppState.auditQuickFilter = 'latest';
-      const searchInput = document.getElementById('auditSearchInput');
-      if (searchInput) searchInput.value = '';
-      renderAuditHistory();
-      const section = document.getElementById('peerAuditSection');
-      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-}
-
 function renderRanking() {
   const leaderboard = TeenDB.getLeaderboard();
   const allRecords = getSortedAllRecords();
@@ -881,8 +837,6 @@ function renderRanking() {
       tabCountPill.hidden = true;
     }
   }
-
-  renderLatestAuditSpotlight(allRecords);
 
   if (!leaderboard.length) {
     if (podium) podium.innerHTML = '';

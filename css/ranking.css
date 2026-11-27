@@ -49,65 +49,6 @@
   background: #dcfce7;
 }
 
-/* Destaque da Última Auditoria no Topo */
-.audit-spotlight-card {
-  background: linear-gradient(135deg, #fffdf9 0%, #fef7ed 100%);
-  border: 1.5px solid var(--accent-gold-border);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  box-shadow: var(--shadow-sm);
-}
-
-.audit-spotlight-text {
-  flex: 1 1 210px;
-}
-
-.audit-spotlight-kicker {
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--accent-gold-dark);
-}
-
-.audit-spotlight-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.94rem;
-  font-weight: 800;
-  color: var(--text-1);
-  margin-top: 2px;
-}
-
-.audit-spotlight-sub {
-  font-size: 0.78rem;
-  color: var(--text-2);
-  margin-top: 2px;
-}
-
-.audit-spotlight-btn {
-  min-height: 40px;
-  padding: 8px 14px;
-  background: var(--primary-gradient);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius-pill);
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: var(--shadow-sm);
-}
-.audit-spotlight-btn:hover {
-  opacity: 0.94;
-}
-
 /* Pódio dos 3 Primeiros */
 .podium-wrap {
   display: flex;

@@ -19,7 +19,7 @@ const questions = [
   { group: "Zelo",       category: "Assiduidade",     text: "Preencher os apontamentos no app 7me",                             value: 60, note: "por semana" },
   { group: "Zelo",       category: "Generosidade",    text: "Oferta Caixa dos Adolescentes (5 reais por sábado)",               value: 60  },
   { group: "Zelo",       category: "Mordomia",        text: "Oferta Escola Sabatina",                                           value: 60  },
-  { group: "Zelo",       category: "Pontualidade",    text: "Chegar no horário (até as 08:59h)",                                value: 50  },
+  { group: "Zelo",       category: "Pontualidade",    text: "Chegar no horário (até as 08:59h)",                                value: 55  },
   { group: "Zelo",       category: "Zelo",            text: "Arrumar a sala / cuidar da lousa",                                 value: 45  },
   { group: "Zelo",       category: "Espiritualidade", text: "Passar a Carta Missionária",                                       value: 40  },
   { group: "Missão",     category: "Missão real",     text: "Orar em Público",                                                  value: 20  },
