@@ -807,3 +807,10 @@
     border: 2px solid Highlight;
   }
 }
+
+/* Interface simplificada: informações redundantes ocultas (elementos mantidos para o JS) */
+.current-selected-label,
+#progressBreakdown,
+#selectedItemsBadge {
+  display: none;
+}

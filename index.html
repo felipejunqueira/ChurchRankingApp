@@ -40,7 +40,7 @@
     <div class="brand-badge">Escola Sabatina dos Adolescentes · IASD São Mateus
     </div>
     <h1>Tabela Oficial de Pontos</h1>
-    <p>Marque suas atividades, envie no grupo do WhatsApp e confira as respostas de toda a classe</p>
+    <p>Marque suas atividades e envie no grupo do WhatsApp</p>
 
     <!-- NAVEGAÇÃO DE ABAS -->
     <div class="nav-tabs" role="tablist" aria-label="Seções do aplicativo">
@@ -88,10 +88,6 @@
         <div class="auto-date-badge">
           <span id="displayCurrentDate">Carregando data...</span>
         </div>
-      </div>
-
-      <div class="select-instruction">
-        Toque no seu nome abaixo antes de marcar suas atividades desta semana:
       </div>
 
       <!-- Grade de chips interativos -->
@@ -174,7 +170,7 @@
     </div>
 
     <div class="questions-helper-note">
-      Toque em <strong>Sim</strong> nas atividades que você cumpriu. Itens não respondidos contam como <strong>Não (0 pts)</strong> ao salvar.
+      Toque em <strong>Sim</strong> no que você cumpriu. O que ficar em branco conta como Não.
     </div>
 
     <!-- LISTA DE PERGUNTAS -->
@@ -207,7 +203,7 @@
     <div class="ranking-toolbar">
       <div>
         <h3 class="ranking-heading">Classificação Geral</h3>
-        <p class="ranking-subheading">Toque em qualquer adolescente para abrir suas respostas detalhadas na auditoria abaixo.</p>
+        <p class="ranking-subheading">Toque em um nome para ver as respostas.</p>
       </div>
     </div>
 
@@ -221,7 +217,7 @@
       <div class="audit-header-row">
         <div>
           <h4 class="history-heading" id="peerAuditHeading">Auditoria aos Pares — Respostas Detalhadas</h4>
-          <p class="audit-subheading">Veja exatamente o que cada adolescente marcou (Sim e Não), o código e o envio no WhatsApp.</p>
+          <p class="audit-subheading">O que cada adolescente marcou, com código e envio no WhatsApp.</p>
         </div>
         <span class="audit-total-badge" id="auditTotalBadge">0 registros</span>
       </div>
@@ -316,14 +312,11 @@
 <!-- ═══════════ MODAL DE VERIFICAÇÃO OBRIGATÓRIA NO WHATSAPP ═══════════ -->
 <dialog class="modal-dialog" id="successModal" closedby="none" aria-labelledby="modalTeenName">
   <div class="modal-card">
-    <div class="modal-gate-pill">Envio Obrigatório no Grupo
-    </div>
-
     <div class="modal-confetti-badge" aria-hidden="true">✓</div>
 
     <h3 class="modal-title" id="modalTeenName">Pontuação Registrada!</h3>
     <p class="modal-desc">
-      Suas respostas foram registradas! Agora envie o resumo no grupo do WhatsApp dos Adolescentes e confirme abaixo.
+      Agora envie o resumo no grupo do WhatsApp e confirme abaixo.
     </p>
 
     <div class="modal-sync-status" id="modalSyncStatus" aria-live="polite">Salvando na nuvem...
