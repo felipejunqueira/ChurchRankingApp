@@ -22,7 +22,7 @@ const questions = [
   { group: "Zelo",       category: "Zelo",            text: "Arrumar a sala / cuidar da lousa",                                 value: 45  },
   { group: "Zelo",       category: "Espiritualidade", text: "Passar a Carta Missionária",                                       value: 40  },
   { group: "Missão",     category: "Competição",      text: "Ter ficado em terceiro lugar no quiz",                             value: 30,  exclusiveGroup: "quiz-podium" },
-  { group: "Comunidade", category: "Auditoria",       text: "Conferiu as respostas dos colegas",                                value: 30  },
+  { group: "Comunidade", category: "Auditoria",       text: "Conferiu as respostas dos colegas",                                value: 30, note: "fazer auditoria para ver se está tudo correto" },
   { group: "Missão",     category: "Missão real",     text: "Orar em Público",                                                  value: 20  },
   { group: "Zelo",       category: "Compromisso",     text: "Ter assinatura da lição da escola sabatina",                       value: 5,  note: "por sábado" },
 ];
