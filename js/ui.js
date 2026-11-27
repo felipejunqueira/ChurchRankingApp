@@ -892,14 +892,13 @@ function renderRanking() {
   const top3 = leaderboard[2];
 
   if (podium) {
-    const buildPodiumSpot = (spotClass, rankNum, medal, user, hasCrown = false) => {
+    const buildPodiumSpot = (spotClass, rankNum, medal, user) => {
       if (!user) {
         return `<div class="podium-spot ${spotClass} empty-spot" aria-hidden="true"></div>`;
       }
       return `
         <button type="button" class="podium-spot ${spotClass}" data-teen-name="${escapeHtml(user.name)}" title="Ver lançamentos de ${escapeHtml(user.name)} na auditoria">
           <div class="podium-avatar">
-            
             ${medal}
           </div>
           <div class="podium-name">${escapeHtml(user.name)}</div>
@@ -911,9 +910,9 @@ function renderRanking() {
     };
 
     podium.innerHTML = `
-      ${buildPodiumSpot('second', 2, '2', top2)}
-      ${buildPodiumSpot('first', 1, '1', top1, true)}
-      ${buildPodiumSpot('third', 3, '3', top3)}
+      ${buildPodiumSpot('second', 2, '🥈', top2)}
+      ${buildPodiumSpot('first', 1, '🥇', top1)}
+      ${buildPodiumSpot('third', 3, '🥉', top3)}
     `;
   }
 
@@ -929,9 +928,9 @@ function renderRanking() {
 
       let rankClass = '';
       let medal = `#${pos}`;
-      if (pos === 1) { rankClass = 'top-1'; medal = `#${pos}`; }
-      else if (pos === 2) { rankClass = 'top-2'; medal = `#${pos}`; }
-      else if (pos === 3) { rankClass = 'top-3'; medal = `#${pos}`; }
+      if (pos === 1) { rankClass = 'top-1'; medal = '🥇'; }
+      else if (pos === 2) { rankClass = 'top-2'; medal = '🥈'; }
+      else if (pos === 3) { rankClass = 'top-3'; medal = '🥉'; }
 
       const latestRec = latestByTeen.get(normalizeText(user.name));
       let latestBadgeHtml = '';
